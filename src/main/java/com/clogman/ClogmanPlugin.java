@@ -129,7 +129,7 @@ public class ClogmanPlugin extends Plugin
         panel = new ClogmanPanel(this, itemManager, client, clientThread, chatboxItemSearch);
 
         // Load the sidebar icon
-        BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/icon.png");
+        BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/clogman-icon.png");
 
         navButton = NavigationButton.builder()
             .tooltip("Clogman Mode")
@@ -671,6 +671,62 @@ public class ClogmanPlugin extends Plugin
             .type(ChatMessageType.CONSOLE)
             .runeLiteFormattedMessage(message)
             .build());
+
+        // Show which collection log items are required
+        List<String> requiredItems = getRequiredClogItems(itemId);
+        if (!requiredItems.isEmpty())
+        {
+            String reqMessage = new ChatMessageBuilder()
+                .append(ChatColorType.NORMAL)
+                .append("Collection log required: ")
+                .append(ChatColorType.HIGHLIGHT)
+                .append(String.join(", ", requiredItems))
+                .build();
+
+            chatMessageManager.queue(QueuedMessage.builder()
+                .type(ChatMessageType.CONSOLE)
+                .runeLiteFormattedMessage(reqMessage)
+                .build());
+        }
+    }
+
+    /**
+     * Get the list of required collection log item names for a locked item
+     */
+    private List<String> getRequiredClogItems(int itemId)
+    {
+        List<String> required = new ArrayList<>();
+
+        // Check if it's a clog item itself
+        Integer primaryClogId = clogIdToPrimaryId.get(itemId);
+        if (primaryClogId != null)
+        {
+            ClogItem clogItem = collectionLogItems.get(primaryClogId);
+            if (clogItem != null && !unlockedClogItems.contains(primaryClogId))
+            {
+                required.add(clogItem.name);
+            }
+            return required;
+        }
+
+        // Check if it's a derived item
+        DerivedItem derived = derivedItemsById.get(itemId);
+        if (derived != null && derived.clogDependencies != null)
+        {
+            for (int depId : derived.clogDependencies)
+            {
+                if (!unlockedClogItems.contains(depId))
+                {
+                    ClogItem clogItem = collectionLogItems.get(depId);
+                    if (clogItem != null)
+                    {
+                        required.add(clogItem.name);
+                    }
+                }
+            }
+        }
+
+        return required;
     }
 
     // === COLLECTION LOG DETECTION ===
