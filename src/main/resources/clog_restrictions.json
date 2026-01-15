@@ -1,12 +1,12 @@
 {
   "version": "1.2",
-  "generated": "2026-01-15 01:18:40",
+  "generated": "2026-01-15 01:44:39",
   "stats": {
     "total_clog_items": 1692,
     "total_derived_items": 615,
-    "items_with_clog_free_recipes": 3170,
-    "derived_items_with_multiple_ids": 65,
-    "derived_items_without_ids": 88
+    "items_with_clog_free_recipes": 3169,
+    "derived_items_with_multiple_ids": 64,
+    "derived_items_without_ids": 89
   },
   "collectionLogItems": {
     "1249": {
@@ -14131,59 +14131,6 @@
         31954
       ]
     },
-    "webweaver bow": {
-      "name": "webweaver bow",
-      "item_id": 27655,
-      "clog_dependencies": [
-        22547,
-        27670
-      ]
-    },
-    "accursed sceptre": {
-      "name": "accursed sceptre",
-      "item_id": 27679,
-      "clog_dependencies": [
-        22552,
-        27673
-      ],
-      "item_ids": [
-        27665,
-        27679
-      ]
-    },
-    "ursine chainmace": {
-      "name": "ursine chainmace",
-      "item_id": 27661,
-      "clog_dependencies": [
-        27667,
-        22542
-      ],
-      "item_ids": [
-        27660,
-        27661
-      ]
-    },
-    "craw's bow": {
-      "name": "craw's bow",
-      "item_id": 22550,
-      "clog_dependencies": [
-        22547
-      ]
-    },
-    "thammaron's sceptre": {
-      "name": "thammaron's sceptre",
-      "item_id": 22555,
-      "clog_dependencies": [
-        22552
-      ]
-    },
-    "viggora's chainmace": {
-      "name": "viggora's chainmace",
-      "item_id": 22545,
-      "clog_dependencies": [
-        22542
-      ]
-    },
     "decorative sword (l)": {
       "name": "decorative sword (l)",
       "item_id": 24157,
@@ -14697,6 +14644,27 @@
         22664
       ]
     },
+    "viggora's chainmace": {
+      "name": "viggora's chainmace",
+      "item_id": 22545,
+      "clog_dependencies": [
+        22542
+      ]
+    },
+    "craw's bow": {
+      "name": "craw's bow",
+      "item_id": 22550,
+      "clog_dependencies": [
+        22547
+      ]
+    },
+    "thammaron's sceptre": {
+      "name": "thammaron's sceptre",
+      "item_id": 22555,
+      "clog_dependencies": [
+        22552
+      ]
+    },
     "armadyl halo (l)": {
       "name": "armadyl halo (l)",
       "item_id": 24194,
@@ -15106,6 +15074,34 @@
       "clog_dependencies": [
         21907,
         27372
+      ]
+    },
+    "accursed sceptre": {
+      "name": "accursed sceptre",
+      "item_id": 27665,
+      "clog_dependencies": [
+        22552,
+        27673
+      ],
+      "item_ids": [
+        27665,
+        27679
+      ]
+    },
+    "ursine chainmace": {
+      "name": "ursine chainmace",
+      "item_id": 27660,
+      "clog_dependencies": [
+        27667,
+        22542
+      ]
+    },
+    "webweaver bow": {
+      "name": "webweaver bow",
+      "item_id": 27655,
+      "clog_dependencies": [
+        22547,
+        27670
       ]
     },
     "ghommal's avernic defender 5 (l)": {
