@@ -93,6 +93,9 @@ public class ClogmanPlugin extends Plugin
     // Name to ID mapping for quick lookups (clog items)
     private Map<String, Integer> itemNameToId = new HashMap<>();
 
+    // Map any clog item ID (including variants) to its primary ID
+    private Map<Integer, Integer> clogIdToPrimaryId = new HashMap<>();
+
     // Derived items by ID for quick lookups
     private Map<Integer, DerivedItem> derivedItemsById = new HashMap<>();
 
@@ -148,12 +151,29 @@ public class ClogmanPlugin extends Plugin
                 if (data.collectionLogItems != null)
                 {
                     collectionLogItems = data.collectionLogItems;
-                    // Build name to ID mapping
+                    // Build name to ID mapping and all-IDs to primary mapping
+                    int totalClogIdMappings = 0;
                     for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
                     {
-                        itemNameToId.put(entry.getValue().name.toLowerCase(), entry.getKey());
+                        Integer primaryId = entry.getKey();
+                        ClogItem clogItem = entry.getValue();
+
+                        itemNameToId.put(clogItem.name.toLowerCase(), primaryId);
+
+                        // Map all variant IDs to this primary ID
+                        for (Integer variantId : clogItem.getAllIds())
+                        {
+                            clogIdToPrimaryId.put(variantId, primaryId);
+                            totalClogIdMappings++;
+                        }
+                        // Also ensure primary ID is mapped
+                        if (!clogIdToPrimaryId.containsKey(primaryId))
+                        {
+                            clogIdToPrimaryId.put(primaryId, primaryId);
+                            totalClogIdMappings++;
+                        }
                     }
-                    log.info("Loaded {} collection log items", collectionLogItems.size());
+                    log.info("Loaded {} collection log items ({} ID mappings)", collectionLogItems.size(), totalClogIdMappings);
                 }
 
                 if (data.derivedItems != null)
@@ -304,8 +324,18 @@ public class ClogmanPlugin extends Plugin
     {
         availableItems.clear();
 
-        // All unlocked clog items are available
-        availableItems.addAll(unlockedClogItems);
+        // All unlocked clog items and their variants are available
+        for (Integer primaryId : unlockedClogItems)
+        {
+            ClogItem clogItem = collectionLogItems.get(primaryId);
+            if (clogItem != null)
+            {
+                // Add all variant IDs for this clog item
+                availableItems.addAll(clogItem.getAllIds());
+            }
+            // Also add the primary ID itself
+            availableItems.add(primaryId);
+        }
 
         // Check derived items - available if all clog dependencies are unlocked
         for (Map.Entry<String, DerivedItem> entry : derivedItems.entrySet())
@@ -382,7 +412,11 @@ public class ClogmanPlugin extends Plugin
     public boolean isItemAvailable(int itemId)
     {
         // Items not in our data are always available
-        if (!collectionLogItems.containsKey(itemId) && !derivedItemsById.containsKey(itemId))
+        // Check if it's a clog item (primary or variant) or a derived item
+        boolean isClogItem = clogIdToPrimaryId.containsKey(itemId);
+        boolean isDerivedItem = derivedItemsById.containsKey(itemId);
+
+        if (!isClogItem && !isDerivedItem)
         {
             return true;
         }
@@ -850,6 +884,16 @@ public class ClogmanPlugin extends Plugin
     {
         public String name;
         public List<String> tabs;
+        @SerializedName("all_ids")
+        public List<Integer> allIds;  // All variant IDs for this clog item (e.g., new/used states)
+
+        /**
+         * Get all valid item IDs for this clog item.
+         */
+        public List<Integer> getAllIds()
+        {
+            return allIds != null ? allIds : java.util.Collections.emptyList();
+        }
     }
 
     public static class DerivedItem
