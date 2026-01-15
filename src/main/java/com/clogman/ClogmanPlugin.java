@@ -356,26 +356,83 @@ public class ClogmanPlugin extends Plugin
     }
 
     /**
+     * Check if a clog item is "effectively unlocked" - either directly unlocked
+     * or craftable from other effectively unlocked clog items.
+     * Used for dependency checking, NOT for display (sidebar shows actual unlocks only).
+     */
+    public boolean isEffectivelyUnlocked(int clogItemId)
+    {
+        return isEffectivelyUnlocked(clogItemId, new HashSet<>());
+    }
+
+    private boolean isEffectivelyUnlocked(int clogItemId, Set<Integer> visited)
+    {
+        // Direct unlock - always counts
+        if (unlockedClogItems.contains(clogItemId))
+        {
+            return true;
+        }
+
+        // Not a clog item we know about
+        ClogItem clogItem = collectionLogItems.get(clogItemId);
+        if (clogItem == null)
+        {
+            return false;
+        }
+
+        // Cycle detection - prevent infinite recursion
+        if (visited.contains(clogItemId))
+        {
+            return false;
+        }
+        visited.add(clogItemId);
+
+        // Check if any crafting recipe is satisfiable
+        List<List<Integer>> recipes = clogItem.getCraftableFrom();
+        for (List<Integer> recipe : recipes)
+        {
+            boolean recipeWorks = true;
+            for (int depId : recipe)
+            {
+                // Create new visited set for each branch
+                if (!isEffectivelyUnlocked(depId, new HashSet<>(visited)))
+                {
+                    recipeWorks = false;
+                    break;
+                }
+            }
+            if (recipeWorks)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Recalculates which items are available based on current unlocks
      */
     public void recalculateAvailableItems()
     {
         availableItems.clear();
 
-        // All unlocked clog items and their variants are available
-        for (Integer primaryId : unlockedClogItems)
+        // Add clog items that are effectively unlocked (actual OR craftable from actual)
+        // This allows using e.g. Onyx if you have Uncut onyx
+        for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
         {
-            ClogItem clogItem = collectionLogItems.get(primaryId);
-            if (clogItem != null)
+            Integer primaryId = entry.getKey();
+            ClogItem clogItem = entry.getValue();
+
+            if (isEffectivelyUnlocked(primaryId))
             {
                 // Add all variant IDs for this clog item
                 availableItems.addAll(clogItem.getAllIds());
+                availableItems.add(primaryId);
             }
-            // Also add the primary ID itself
-            availableItems.add(primaryId);
         }
 
-        // Check derived items - available if all clog dependencies are unlocked
+        // Check derived items - available if all clog dependencies are effectively unlocked
         for (Map.Entry<String, DerivedItem> entry : derivedItems.entrySet())
         {
             DerivedItem derived = entry.getValue();
@@ -384,7 +441,7 @@ public class ClogmanPlugin extends Plugin
                 boolean allDepsUnlocked = true;
                 for (int depId : derived.clogDependencies)
                 {
-                    if (!unlockedClogItems.contains(depId))
+                    if (!isEffectivelyUnlocked(depId))
                     {
                         allDepsUnlocked = false;
                         break;
@@ -785,7 +842,8 @@ public class ClogmanPlugin extends Plugin
     }
 
     /**
-     * Get the list of required collection log item names for a locked item
+     * Get the list of required collection log item names for a locked item.
+     * Uses effective unlocking - considers items craftable from other clog items.
      */
     private List<String> getRequiredClogItems(int itemId)
     {
@@ -796,7 +854,7 @@ public class ClogmanPlugin extends Plugin
         if (primaryClogId != null)
         {
             ClogItem clogItem = collectionLogItems.get(primaryClogId);
-            if (clogItem != null && !unlockedClogItems.contains(primaryClogId))
+            if (clogItem != null && !isEffectivelyUnlocked(primaryClogId))
             {
                 required.add(clogItem.name);
             }
@@ -809,7 +867,7 @@ public class ClogmanPlugin extends Plugin
         {
             for (int depId : derived.clogDependencies)
             {
-                if (!unlockedClogItems.contains(depId))
+                if (!isEffectivelyUnlocked(depId))
                 {
                     ClogItem clogItem = collectionLogItems.get(depId);
                     if (clogItem != null)
@@ -997,6 +1055,8 @@ public class ClogmanPlugin extends Plugin
         public List<String> tabs;
         @SerializedName("all_ids")
         public List<Integer> allIds;  // All variant IDs for this clog item (e.g., new/used states)
+        @SerializedName("craftable_from")
+        public List<List<Integer>> craftableFrom;  // Optional: recipes to craft this from other clog items
 
         /**
          * Get all valid item IDs for this clog item.
@@ -1004,6 +1064,15 @@ public class ClogmanPlugin extends Plugin
         public List<Integer> getAllIds()
         {
             return allIds != null ? allIds : java.util.Collections.emptyList();
+        }
+
+        /**
+         * Get crafting recipes from other clog items (if any).
+         * Outer list: OR (any recipe works), Inner list: AND (all deps needed)
+         */
+        public List<List<Integer>> getCraftableFrom()
+        {
+            return craftableFrom != null ? craftableFrom : java.util.Collections.emptyList();
         }
     }
 
