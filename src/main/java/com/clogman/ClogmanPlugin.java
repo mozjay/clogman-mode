@@ -158,15 +158,17 @@ public class ClogmanPlugin extends Plugin
                 if (data.derivedItems != null)
                 {
                     derivedItems = data.derivedItems;
-                    // Build ID to derived item mapping
+                    // Build ID to derived item mapping (including all variant IDs)
+                    int totalIdMappings = 0;
                     for (DerivedItem derived : derivedItems.values())
                     {
-                        if (derived.itemId != null)
+                        for (Integer id : derived.getAllItemIds())
                         {
-                            derivedItemsById.put(derived.itemId, derived);
+                            derivedItemsById.put(id, derived);
+                            totalIdMappings++;
                         }
                     }
-                    log.info("Loaded {} derived items ({} with IDs)", derivedItems.size(), derivedItemsById.size());
+                    log.info("Loaded {} derived items ({} ID mappings)", derivedItems.size(), totalIdMappings);
                 }
             }
         }
@@ -220,10 +222,14 @@ public class ClogmanPlugin extends Plugin
         String playerName = getPlayerConfigKey();
         if (playerName == null)
         {
+            log.warn("Cannot load unlocked items - player name is null");
             return;
         }
 
-        String savedData = configManager.getConfiguration(CONFIG_GROUP, playerName + "." + UNLOCKED_ITEMS_KEY);
+        String configKey = playerName + "." + UNLOCKED_ITEMS_KEY;
+        String savedData = configManager.getConfiguration(CONFIG_GROUP, configKey);
+        log.debug("Loading config from key: {}.{}", CONFIG_GROUP, configKey);
+
         if (savedData != null && !savedData.isEmpty())
         {
             try
@@ -233,13 +239,17 @@ public class ClogmanPlugin extends Plugin
                 if (loaded != null)
                 {
                     unlockedClogItems.addAll(loaded);
-                    log.info("Loaded {} unlocked items for player {}", unlockedClogItems.size(), playerName);
+                    log.info("Loaded {} unlocked items for player {} from saved config", unlockedClogItems.size(), playerName);
                 }
             }
             catch (Exception e)
             {
                 log.error("Failed to load unlocked items", e);
             }
+        }
+        else
+        {
+            log.info("No saved unlocked items found for player {} (first run or data cleared)", playerName);
         }
     }
 
@@ -248,11 +258,14 @@ public class ClogmanPlugin extends Plugin
         String playerName = getPlayerConfigKey();
         if (playerName == null)
         {
+            log.warn("Cannot save unlocked items - player name is null");
             return;
         }
 
+        String configKey = playerName + "." + UNLOCKED_ITEMS_KEY;
         String json = gson.toJson(unlockedClogItems);
-        configManager.setConfiguration(CONFIG_GROUP, playerName + "." + UNLOCKED_ITEMS_KEY, json);
+        configManager.setConfiguration(CONFIG_GROUP, configKey, json);
+        log.debug("Saved {} unlocked items to config key: {}.{}", unlockedClogItems.size(), CONFIG_GROUP, configKey);
     }
 
     private String getPlayerConfigKey()
@@ -291,9 +304,10 @@ public class ClogmanPlugin extends Plugin
                     }
                 }
 
-                if (allDepsUnlocked && derived.itemId != null)
+                if (allDepsUnlocked)
                 {
-                    availableItems.add(derived.itemId);
+                    // Add all variant IDs (e.g., different imbue sources)
+                    availableItems.addAll(derived.getAllItemIds());
                 }
             }
         }
@@ -709,8 +723,27 @@ public class ClogmanPlugin extends Plugin
     {
         public String name;
         @SerializedName("item_id")
-        public Integer itemId;
+        public Integer itemId;  // Primary ID (for backwards compatibility)
+        @SerializedName("item_ids")
+        public List<Integer> itemIds;  // All valid IDs (for items with variants)
         @SerializedName("clog_dependencies")
         public List<Integer> clogDependencies;
+
+        /**
+         * Get all valid item IDs for this derived item.
+         * Returns item_ids if present, otherwise falls back to item_id.
+         */
+        public List<Integer> getAllItemIds()
+        {
+            if (itemIds != null && !itemIds.isEmpty())
+            {
+                return itemIds;
+            }
+            else if (itemId != null)
+            {
+                return java.util.Collections.singletonList(itemId);
+            }
+            return java.util.Collections.emptyList();
+        }
     }
 }
