@@ -71,23 +71,11 @@ public interface ClogmanConfig extends Config
     // === NOTIFICATIONS SECTION ===
 
     @ConfigItem(
-        keyName = "showUnlockPopup",
-        name = "Show Unlock Popup",
-        description = "Display a popup when an item is unlocked",
-        section = notificationsSection,
-        position = 0
-    )
-    default boolean showUnlockPopup()
-    {
-        return true;
-    }
-
-    @ConfigItem(
         keyName = "chatMessageOnUnlock",
         name = "Chat Message on Unlock",
         description = "Send a chat message when an item is unlocked",
         section = notificationsSection,
-        position = 1
+        position = 0
     )
     default boolean chatMessageOnUnlock()
     {
@@ -95,15 +83,15 @@ public interface ClogmanConfig extends Config
     }
 
     @ConfigItem(
-        keyName = "screenshotOnUnlock",
-        name = "Screenshot on Unlock",
-        description = "Take a screenshot when a collection log item is unlocked",
+        keyName = "showNewlyAvailable",
+        name = "Show Newly Available Items",
+        description = "Show which derived items become available when unlocking a collection log item",
         section = notificationsSection,
-        position = 2
+        position = 1
     )
-    default boolean screenshotOnUnlock()
+    default boolean showNewlyAvailable()
     {
-        return false;
+        return true;
     }
 
     // === VISUAL SECTION ===

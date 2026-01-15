@@ -417,6 +417,9 @@ public class ClogmanPlugin extends Plugin
             ClogItem item = collectionLogItems.get(itemId);
             log.info("Unlocked collection log item: {} (ID: {})", item.name, itemId);
 
+            // Capture items available before recalculation
+            Set<Integer> previouslyAvailable = new HashSet<>(availableItems);
+
             saveUnlockedItems();
             recalculateAvailableItems();
 
@@ -425,11 +428,89 @@ public class ClogmanPlugin extends Plugin
                 sendUnlockMessage(item.name);
             }
 
+            // Show newly available derived items
+            if (config.showNewlyAvailable())
+            {
+                List<String> newlyAvailable = findNewlyAvailableItems(previouslyAvailable);
+                if (!newlyAvailable.isEmpty())
+                {
+                    sendNewlyAvailableMessage(newlyAvailable);
+                }
+            }
+
             if (panel != null)
             {
                 panel.refresh();
             }
         }
+    }
+
+    /**
+     * Find derived items that are newly available after an unlock
+     */
+    private List<String> findNewlyAvailableItems(Set<Integer> previouslyAvailable)
+    {
+        List<String> newlyAvailable = new ArrayList<>();
+
+        for (Map.Entry<String, DerivedItem> entry : derivedItems.entrySet())
+        {
+            DerivedItem derived = entry.getValue();
+            List<Integer> itemIds = derived.getAllItemIds();
+
+            if (itemIds.isEmpty())
+            {
+                continue;
+            }
+
+            // Check if this item is now available but wasn't before
+            int primaryId = itemIds.get(0);
+            if (availableItems.contains(primaryId) && !previouslyAvailable.contains(primaryId))
+            {
+                newlyAvailable.add(derived.name);
+            }
+        }
+
+        // Sort alphabetically
+        newlyAvailable.sort(String::compareToIgnoreCase);
+        return newlyAvailable;
+    }
+
+    /**
+     * Send chat message about newly available items
+     */
+    private void sendNewlyAvailableMessage(List<String> items)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        // Show up to 3 items explicitly
+        int showCount = Math.min(items.size(), 3);
+        for (int i = 0; i < showCount; i++)
+        {
+            if (i > 0)
+            {
+                sb.append(", ");
+            }
+            sb.append(items.get(i));
+        }
+
+        // Add "and X more" if there are more items
+        int remaining = items.size() - showCount;
+        if (remaining > 0)
+        {
+            sb.append(" and ").append(remaining).append(" more");
+        }
+
+        String message = new ChatMessageBuilder()
+            .append(ChatColorType.NORMAL)
+            .append("Now available: ")
+            .append(ChatColorType.HIGHLIGHT)
+            .append(sb.toString())
+            .build();
+
+        chatMessageManager.queue(QueuedMessage.builder()
+            .type(ChatMessageType.CONSOLE)
+            .runeLiteFormattedMessage(message)
+            .build());
     }
 
     /**
