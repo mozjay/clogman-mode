@@ -1,6 +1,6 @@
 {
   "version": "1.2",
-  "generated": "2026-01-15 01:44:39",
+  "generated": "2026-01-15 02:03:18",
   "stats": {
     "total_clog_items": 1692,
     "total_derived_items": 615,
@@ -10370,103 +10370,120 @@
   "derivedItems": {
     "dragon sq shield": {
       "name": "dragon sq shield",
-      "item_id": 1187,
+      "item_ids": [
+        1187
+      ],
       "clog_dependencies": [
         2366
       ]
     },
     "amulet of fury": {
       "name": "amulet of fury",
-      "item_id": 6585,
-      "clog_dependencies": [
-        6573
-      ],
       "item_ids": [
         6585,
         23640
+      ],
+      "clog_dependencies": [
+        6573
       ]
     },
     "berserker necklace": {
       "name": "berserker necklace",
-      "item_id": 11128,
+      "item_ids": [
+        11128
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "crab claw": {
       "name": "crab claw",
-      "item_id": 7537,
+      "item_ids": [
+        7537
+      ],
       "clog_dependencies": [
         7536
       ]
     },
     "crab helmet": {
       "name": "crab helmet",
-      "item_id": 7539,
+      "item_ids": [
+        7539
+      ],
       "clog_dependencies": [
         7538
       ]
     },
     "crystal bow": {
       "name": "crystal bow",
-      "item_id": 23983,
-      "clog_dependencies": [
-        4207
-      ],
       "item_ids": [
         23983,
         24123
+      ],
+      "clog_dependencies": [
+        4207
       ]
     },
     "crystal shield": {
       "name": "crystal shield",
-      "item_id": 23991,
-      "clog_dependencies": [
-        4207
-      ],
       "item_ids": [
         23991,
         24127
+      ],
+      "clog_dependencies": [
+        4207
       ]
     },
     "onyx bolts (e)": {
       "name": "onyx bolts (e)",
-      "item_id": 9245,
+      "item_ids": [
+        9245
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "onyx bracelet": {
       "name": "onyx bracelet",
-      "item_id": 11130,
+      "item_ids": [
+        11130
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "onyx necklace": {
       "name": "onyx necklace",
-      "item_id": 6577,
+      "item_ids": [
+        6577
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "onyx ring": {
       "name": "onyx ring",
-      "item_id": 6575,
+      "item_ids": [
+        6575
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "regen bracelet": {
       "name": "regen bracelet",
-      "item_id": 11133,
+      "item_ids": [
+        11133
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "skull sceptre": {
       "name": "skull sceptre",
-      "item_id": 9013,
+      "item_ids": [
+        9013
+      ],
       "clog_dependencies": [
         9008,
         9010,
@@ -10476,88 +10493,109 @@
     },
     "splitbark boots": {
       "name": "splitbark boots",
-      "item_id": 3393,
+      "item_ids": [
+        3393
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "splitbark legs": {
       "name": "splitbark legs",
-      "item_id": 3389,
+      "item_ids": [
+        3389
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "dragonfire shield": {
       "name": "dragonfire shield",
-      "item_id": 11284,
-      "clog_dependencies": [
-        11286
-      ],
       "item_ids": [
         11283,
         11284
+      ],
+      "clog_dependencies": [
+        11286
       ]
     },
     "dragon spear(p)": {
       "name": "dragon spear(p)",
-      "item_id": 1263,
+      "item_ids": [
+        1263
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "dragon spear(p+)": {
       "name": "dragon spear(p+)",
-      "item_id": 5716,
+      "item_ids": [
+        5716
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "dragon spear(p++)": {
       "name": "dragon spear(p++)",
-      "item_id": 5730,
+      "item_ids": [
+        5730
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "dragon spear(kp)": {
       "name": "dragon spear(kp)",
-      "item_id": 3176,
+      "item_ids": [
+        3176
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "splitbark helm": {
       "name": "splitbark helm",
-      "item_id": 3385,
+      "item_ids": [
+        3385
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "splitbark body": {
       "name": "splitbark body",
-      "item_id": 3387,
+      "item_ids": [
+        3387
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "splitbark gauntlets": {
       "name": "splitbark gauntlets",
-      "item_id": 3391,
+      "item_ids": [
+        3391
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "ring of stone": {
       "name": "ring of stone",
-      "item_id": 6583,
+      "item_ids": [
+        6583
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "dragon platebody": {
       "name": "dragon platebody",
-      "item_id": 21892,
+      "item_ids": [
+        21892
+      ],
       "clog_dependencies": [
         3140,
         22103
@@ -10565,7 +10603,9 @@
     },
     "dragon kiteshield": {
       "name": "dragon kiteshield",
-      "item_id": 21895,
+      "item_ids": [
+        21895
+      ],
       "clog_dependencies": [
         22100,
         2366
@@ -10573,70 +10613,75 @@
     },
     "onyx amulet": {
       "name": "onyx amulet",
-      "item_id": 6581,
+      "item_ids": [
+        6581
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "onyx bolt tips": {
       "name": "onyx bolt tips",
-      "item_id": 9194,
+      "item_ids": [
+        9194
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "onyx bolts": {
       "name": "onyx bolts",
-      "item_id": 9342,
+      "item_ids": [
+        9342
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "berserker ring (i)": {
       "name": "berserker ring (i)",
-      "item_id": 11773,
-      "clog_dependencies": [
-        6737
-      ],
       "item_ids": [
         11773,
         25264,
         26770
+      ],
+      "clog_dependencies": [
+        6737
       ]
     },
     "armadyl godsword": {
       "name": "armadyl godsword",
-      "item_id": 11802,
+      "item_ids": [
+        11802,
+        20593,
+        22665
+      ],
       "clog_dependencies": [
         11810,
         11818,
         11820,
         11822
-      ],
-      "item_ids": [
-        11802,
-        20593,
-        22665
       ]
     },
     "bandos godsword": {
       "name": "bandos godsword",
-      "item_id": 11804,
+      "item_ids": [
+        11804,
+        20782,
+        21060
+      ],
       "clog_dependencies": [
         11812,
         11818,
         11820,
         11822
-      ],
-      "item_ids": [
-        11804,
-        20782,
-        21060
       ]
     },
     "saradomin godsword": {
       "name": "saradomin godsword",
-      "item_id": 11806,
+      "item_ids": [
+        11806
+      ],
       "clog_dependencies": [
         11814,
         11818,
@@ -10646,7 +10691,9 @@
     },
     "zamorak godsword": {
       "name": "zamorak godsword",
-      "item_id": 11808,
+      "item_ids": [
+        11808
+      ],
       "clog_dependencies": [
         11816,
         11818,
@@ -10656,18 +10703,19 @@
     },
     "mystic steam staff": {
       "name": "mystic steam staff",
-      "item_id": 11789,
-      "clog_dependencies": [
-        11787
-      ],
       "item_ids": [
         11789,
         12796
+      ],
+      "clog_dependencies": [
+        11787
       ]
     },
     "godsword blade": {
       "name": "godsword blade",
-      "item_id": 11798,
+      "item_ids": [
+        11798
+      ],
       "clog_dependencies": [
         11818,
         11820,
@@ -10676,7 +10724,9 @@
     },
     "strange skull": {
       "name": "strange skull",
-      "item_id": 9009,
+      "item_ids": [
+        9009
+      ],
       "clog_dependencies": [
         9008,
         9007
@@ -10684,65 +10734,70 @@
     },
     "warrior ring (i)": {
       "name": "warrior ring (i)",
-      "item_id": 11772,
-      "clog_dependencies": [
-        6735
-      ],
       "item_ids": [
         11772,
         25262,
         26769
+      ],
+      "clog_dependencies": [
+        6735
       ]
     },
     "archers ring (i)": {
       "name": "archers ring (i)",
-      "item_id": 11771,
-      "clog_dependencies": [
-        6733
-      ],
       "item_ids": [
         11771,
         25260,
         26768
+      ],
+      "clog_dependencies": [
+        6733
       ]
     },
     "seers ring (i)": {
       "name": "seers ring (i)",
-      "item_id": 11770,
-      "clog_dependencies": [
-        6731
-      ],
       "item_ids": [
         11770,
         23624,
         25258,
         26767
+      ],
+      "clog_dependencies": [
+        6731
       ]
     },
     "cap and goggles": {
       "name": "cap and goggles",
-      "item_id": 9946,
+      "item_ids": [
+        9946
+      ],
       "clog_dependencies": [
         9472
       ]
     },
     "broken crab claw": {
       "name": "broken crab claw",
-      "item_id": 7540,
+      "item_ids": [
+        7540
+      ],
       "clog_dependencies": [
         7536
       ]
     },
     "broken crab shell": {
       "name": "broken crab shell",
-      "item_id": 7541,
+      "item_ids": [
+        7541
+      ],
       "clog_dependencies": [
         7538
       ]
     },
     "runed sceptre": {
       "name": "runed sceptre",
-      "item_id": 9012,
+      "item_ids": [
+        9012
+      ],
       "clog_dependencies": [
         9010,
         9011
@@ -10750,28 +10805,36 @@
     },
     "mystic mud staff": {
       "name": "mystic mud staff",
-      "item_id": 6563,
+      "item_ids": [
+        6563
+      ],
       "clog_dependencies": [
         6562
       ]
     },
     "zamorakian hasta": {
       "name": "zamorakian hasta",
-      "item_id": 11889,
+      "item_ids": [
+        11889
+      ],
       "clog_dependencies": [
         11824
       ]
     },
     "onyx amulet (u)": {
       "name": "onyx amulet (u)",
-      "item_id": 6579,
+      "item_ids": [
+        6579
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "crabclaw hook": {
       "name": "crabclaw hook",
-      "item_id": 8929,
+      "item_ids": [
+        8929
+      ],
       "clog_dependencies": [
         7536,
         2997
@@ -10779,82 +10842,96 @@
     },
     "stuffed big shark": {
       "name": "stuffed big shark",
-      "item_id": 7994,
+      "item_ids": [
+        7994
+      ],
       "clog_dependencies": [
         7993
       ]
     },
     "hat eyepatch": {
       "name": "hat eyepatch",
-      "item_id": 8928,
+      "item_ids": [
+        8928
+      ],
       "clog_dependencies": [
         2651
       ]
     },
     "malediction ward": {
       "name": "malediction ward",
-      "item_id": 11924,
+      "item_ids": [
+        11924,
+        12806
+      ],
       "clog_dependencies": [
         11931,
         11932,
         11933
-      ],
-      "item_ids": [
-        11924,
-        12806
       ]
     },
     "odium ward": {
       "name": "odium ward",
-      "item_id": 11926,
+      "item_ids": [
+        11926,
+        12807
+      ],
       "clog_dependencies": [
         11928,
         11929,
         11930
-      ],
-      "item_ids": [
-        11926,
-        12807
       ]
     },
     "blue logs": {
       "name": "blue logs",
-      "item_id": 7406,
+      "item_ids": [
+        7406
+      ],
       "clog_dependencies": [
         7331
       ]
     },
     "green logs": {
       "name": "green logs",
-      "item_id": 7405,
+      "item_ids": [
+        7405
+      ],
       "clog_dependencies": [
         7330
       ]
     },
     "purple logs": {
       "name": "purple logs",
-      "item_id": 10329,
+      "item_ids": [
+        10329
+      ],
       "clog_dependencies": [
         10326
       ]
     },
     "red logs": {
       "name": "red logs",
-      "item_id": 7404,
+      "item_ids": [
+        7404
+      ],
       "clog_dependencies": [
         7329
       ]
     },
     "white logs": {
       "name": "white logs",
-      "item_id": 10328,
+      "item_ids": [
+        10328
+      ],
       "clog_dependencies": [
         10327
       ]
     },
     "abyssal tentacle": {
       "name": "abyssal tentacle",
-      "item_id": 12006,
+      "item_ids": [
+        12006
+      ],
       "clog_dependencies": [
         12004,
         4151
@@ -10862,7 +10939,9 @@
     },
     "cavalier mask": {
       "name": "cavalier mask",
-      "item_id": 11280,
+      "item_ids": [
+        11280
+      ],
       "clog_dependencies": [
         2643,
         2631
@@ -10870,63 +10949,81 @@
     },
     "stuffed kq head": {
       "name": "stuffed kq head",
-      "item_id": 7988,
+      "item_ids": [
+        7988
+      ],
       "clog_dependencies": [
         7981
       ]
     },
     "mystic smoke staff": {
       "name": "mystic smoke staff",
-      "item_id": 12000,
+      "item_ids": [
+        12000
+      ],
       "clog_dependencies": [
         11998
       ]
     },
     "stuffed cockatrice head": {
       "name": "stuffed cockatrice head",
-      "item_id": 7983,
+      "item_ids": [
+        7983
+      ],
       "clog_dependencies": [
         7976
       ]
     },
     "stuffed basilisk head": {
       "name": "stuffed basilisk head",
-      "item_id": 7984,
+      "item_ids": [
+        7984
+      ],
       "clog_dependencies": [
         7977
       ]
     },
     "stuffed kurask head": {
       "name": "stuffed kurask head",
-      "item_id": 7985,
+      "item_ids": [
+        7985
+      ],
       "clog_dependencies": [
         7978
       ]
     },
     "stuffed abyssal head": {
       "name": "stuffed abyssal head",
-      "item_id": 7986,
+      "item_ids": [
+        7986
+      ],
       "clog_dependencies": [
         7979
       ]
     },
     "stuffed big bass": {
       "name": "stuffed big bass",
-      "item_id": 7990,
+      "item_ids": [
+        7990
+      ],
       "clog_dependencies": [
         7989
       ]
     },
     "stuffed big swordfish": {
       "name": "stuffed big swordfish",
-      "item_id": 7992,
+      "item_ids": [
+        7992
+      ],
       "clog_dependencies": [
         7991
       ]
     },
     "baby mole-rat": {
       "name": "baby mole-rat",
-      "item_id": 25613,
+      "item_ids": [
+        25613
+      ],
       "clog_dependencies": [
         7416,
         12646
@@ -10934,7 +11031,9 @@
     },
     "beret mask": {
       "name": "beret mask",
-      "item_id": 11282,
+      "item_ids": [
+        11282
+      ],
       "clog_dependencies": [
         3057,
         2635
@@ -10942,14 +11041,18 @@
     },
     "pirate hat & patch": {
       "name": "pirate hat & patch",
-      "item_id": 12412,
+      "item_ids": [
+        12412
+      ],
       "clog_dependencies": [
         12355
       ]
     },
     "dragon full helm (g)": {
       "name": "dragon full helm (g)",
-      "item_id": 12417,
+      "item_ids": [
+        12417
+      ],
       "clog_dependencies": [
         12538,
         11335
@@ -10957,7 +11060,9 @@
     },
     "dragon chainbody (g)": {
       "name": "dragon chainbody (g)",
-      "item_id": 12414,
+      "item_ids": [
+        12414
+      ],
       "clog_dependencies": [
         3140,
         12534
@@ -10965,21 +11070,27 @@
     },
     "dragon platelegs (g)": {
       "name": "dragon platelegs (g)",
-      "item_id": 12415,
+      "item_ids": [
+        12415
+      ],
       "clog_dependencies": [
         12536
       ]
     },
     "dragon plateskirt (g)": {
       "name": "dragon plateskirt (g)",
-      "item_id": 12416,
+      "item_ids": [
+        12416
+      ],
       "clog_dependencies": [
         12536
       ]
     },
     "dragon sq shield (g)": {
       "name": "dragon sq shield (g)",
-      "item_id": 12418,
+      "item_ids": [
+        12418
+      ],
       "clog_dependencies": [
         12532,
         2366
@@ -10987,7 +11098,9 @@
     },
     "amulet of fury (or)": {
       "name": "amulet of fury (or)",
-      "item_id": 12436,
+      "item_ids": [
+        12436
+      ],
       "clog_dependencies": [
         6573,
         12526
@@ -10995,14 +11108,18 @@
     },
     "partyhat & specs": {
       "name": "partyhat & specs",
-      "item_id": 12399,
+      "item_ids": [
+        12399
+      ],
       "clog_dependencies": [
         12337
       ]
     },
     "top hat & monocle": {
       "name": "top hat & monocle",
-      "item_id": 12434,
+      "item_ids": [
+        12434
+      ],
       "clog_dependencies": [
         12432,
         12353
@@ -11010,7 +11127,9 @@
     },
     "light infinity top": {
       "name": "light infinity top",
-      "item_id": 12420,
+      "item_ids": [
+        12420
+      ],
       "clog_dependencies": [
         12530,
         6916
@@ -11018,7 +11137,9 @@
     },
     "light infinity hat": {
       "name": "light infinity hat",
-      "item_id": 12419,
+      "item_ids": [
+        12419
+      ],
       "clog_dependencies": [
         12530,
         6918
@@ -11026,7 +11147,9 @@
     },
     "light infinity bottoms": {
       "name": "light infinity bottoms",
-      "item_id": 12421,
+      "item_ids": [
+        12421
+      ],
       "clog_dependencies": [
         12530,
         6924
@@ -11034,7 +11157,9 @@
     },
     "dark infinity bottoms": {
       "name": "dark infinity bottoms",
-      "item_id": 12459,
+      "item_ids": [
+        12459
+      ],
       "clog_dependencies": [
         12528,
         6924
@@ -11042,7 +11167,9 @@
     },
     "dark infinity hat": {
       "name": "dark infinity hat",
-      "item_id": 12457,
+      "item_ids": [
+        12457
+      ],
       "clog_dependencies": [
         12528,
         6918
@@ -11050,7 +11177,9 @@
     },
     "dark infinity top": {
       "name": "dark infinity top",
-      "item_id": 12458,
+      "item_ids": [
+        12458
+      ],
       "clog_dependencies": [
         12528,
         6916
@@ -11058,31 +11187,31 @@
     },
     "tyrannical ring (i)": {
       "name": "tyrannical ring (i)",
-      "item_id": 12691,
-      "clog_dependencies": [
-        12603
-      ],
       "item_ids": [
         12691,
         25254,
         26765
+      ],
+      "clog_dependencies": [
+        12603
       ]
     },
     "treasonous ring (i)": {
       "name": "treasonous ring (i)",
-      "item_id": 12692,
-      "clog_dependencies": [
-        12605
-      ],
       "item_ids": [
         12692,
         25256,
         26766
+      ],
+      "clog_dependencies": [
+        12605
       ]
     },
     "frozen abyssal whip": {
       "name": "frozen abyssal whip",
-      "item_id": 12774,
+      "item_ids": [
+        12774
+      ],
       "clog_dependencies": [
         12769,
         4151
@@ -11090,7 +11219,9 @@
     },
     "volcanic abyssal whip": {
       "name": "volcanic abyssal whip",
-      "item_id": 12773,
+      "item_ids": [
+        12773
+      ],
       "clog_dependencies": [
         12771,
         4151
@@ -11098,27 +11229,30 @@
     },
     "saradomin's blessed sword": {
       "name": "saradomin's blessed sword",
-      "item_id": 12809,
+      "item_ids": [
+        12809
+      ],
       "clog_dependencies": [
         11838
       ]
     },
     "elysian spirit shield": {
       "name": "elysian spirit shield",
-      "item_id": 12817,
+      "item_ids": [
+        12817,
+        19559
+      ],
       "clog_dependencies": [
         12833,
         12819,
         12829
-      ],
-      "item_ids": [
-        12817,
-        19559
       ]
     },
     "arcane spirit shield": {
       "name": "arcane spirit shield",
-      "item_id": 12825,
+      "item_ids": [
+        12825
+      ],
       "clog_dependencies": [
         12833,
         12827,
@@ -11127,7 +11261,9 @@
     },
     "spectral spirit shield": {
       "name": "spectral spirit shield",
-      "item_id": 12821,
+      "item_ids": [
+        12821
+      ],
       "clog_dependencies": [
         12833,
         12829,
@@ -11136,19 +11272,20 @@
     },
     "blessed spirit shield": {
       "name": "blessed spirit shield",
-      "item_id": 12831,
-      "clog_dependencies": [
-        12833,
-        12829
-      ],
       "item_ids": [
         12831,
         23642
+      ],
+      "clog_dependencies": [
+        12833,
+        12829
       ]
     },
     "godsword shards 1 & 2": {
       "name": "godsword shards 1 & 2",
-      "item_id": 11794,
+      "item_ids": [
+        11794
+      ],
       "clog_dependencies": [
         11818,
         11820
@@ -11156,7 +11293,9 @@
     },
     "godsword shards 2 & 3": {
       "name": "godsword shards 2 & 3",
-      "item_id": 11800,
+      "item_ids": [
+        11800
+      ],
       "clog_dependencies": [
         11820,
         11822
@@ -11164,7 +11303,9 @@
     },
     "godsword shards 1 & 3": {
       "name": "godsword shards 1 & 3",
-      "item_id": 11796,
+      "item_ids": [
+        11796
+      ],
       "clog_dependencies": [
         11818,
         11822
@@ -11172,21 +11313,27 @@
     },
     "toxic blowpipe (empty)": {
       "name": "toxic blowpipe (empty)",
-      "item_id": 12924,
+      "item_ids": [
+        12924
+      ],
       "clog_dependencies": [
         12922
       ]
     },
     "serpentine helm (uncharged)": {
       "name": "serpentine helm (uncharged)",
-      "item_id": 12929,
+      "item_ids": [
+        12929
+      ],
       "clog_dependencies": [
         12927
       ]
     },
     "toxic staff (uncharged)": {
       "name": "toxic staff (uncharged)",
-      "item_id": 12902,
+      "item_ids": [
+        12902
+      ],
       "clog_dependencies": [
         12932,
         11791
@@ -11194,7 +11341,9 @@
     },
     "uncharged toxic trident": {
       "name": "uncharged toxic trident",
-      "item_id": 12900,
+      "item_ids": [
+        12900
+      ],
       "clog_dependencies": [
         12932,
         11908
@@ -11202,66 +11351,76 @@
     },
     "anti-venom(1)": {
       "name": "anti-venom(1)",
-      "item_id": 12911,
+      "item_ids": [
+        12911
+      ],
       "clog_dependencies": [
         12934
       ]
     },
     "anti-venom(2)": {
       "name": "anti-venom(2)",
-      "item_id": 12909,
+      "item_ids": [
+        12909
+      ],
       "clog_dependencies": [
         12934
       ]
     },
     "anti-venom(3)": {
       "name": "anti-venom(3)",
-      "item_id": 12907,
+      "item_ids": [
+        12907
+      ],
       "clog_dependencies": [
         12934
       ]
     },
     "anti-venom(4)": {
       "name": "anti-venom(4)",
-      "item_id": 12905,
+      "item_ids": [
+        12905
+      ],
       "clog_dependencies": [
         12934
       ]
     },
     "anti-venom+(4)": {
       "name": "anti-venom+(4)",
-      "item_id": 12913,
+      "item_ids": [
+        12913
+      ],
       "clog_dependencies": [
         12934
       ]
     },
     "ring of the gods (i)": {
       "name": "ring of the gods (i)",
-      "item_id": 13202,
-      "clog_dependencies": [
-        12601
-      ],
       "item_ids": [
         13202,
         25252,
         26764
+      ],
+      "clog_dependencies": [
+        12601
       ]
     },
     "eternal boots": {
       "name": "eternal boots",
-      "item_id": 13235,
-      "clog_dependencies": [
-        6920,
-        13227
-      ],
       "item_ids": [
         13235,
         23644
+      ],
+      "clog_dependencies": [
+        6920,
+        13227
       ]
     },
     "pegasian boots": {
       "name": "pegasian boots",
-      "item_id": 13237,
+      "item_ids": [
+        13237
+      ],
       "clog_dependencies": [
         2577,
         13229
@@ -11269,7 +11428,9 @@
     },
     "primordial boots": {
       "name": "primordial boots",
-      "item_id": 13239,
+      "item_ids": [
+        13239
+      ],
       "clog_dependencies": [
         11840,
         13231
@@ -11277,7 +11438,9 @@
     },
     "infernal pickaxe": {
       "name": "infernal pickaxe",
-      "item_id": 13243,
+      "item_ids": [
+        13243
+      ],
       "clog_dependencies": [
         11920,
         13233
@@ -11285,7 +11448,9 @@
     },
     "infernal axe": {
       "name": "infernal axe",
-      "item_id": 13241,
+      "item_ids": [
+        13241
+      ],
       "clog_dependencies": [
         13233,
         6739
@@ -11293,7 +11458,9 @@
     },
     "abyssal bludgeon": {
       "name": "abyssal bludgeon",
-      "item_id": 13263,
+      "item_ids": [
+        13263
+      ],
       "clog_dependencies": [
         13274,
         13275,
@@ -11302,71 +11469,83 @@
     },
     "abyssal dagger (p)": {
       "name": "abyssal dagger (p)",
-      "item_id": 13267,
+      "item_ids": [
+        13267
+      ],
       "clog_dependencies": [
         13265
       ]
     },
     "abyssal dagger (p+)": {
       "name": "abyssal dagger (p+)",
-      "item_id": 13269,
+      "item_ids": [
+        13269
+      ],
       "clog_dependencies": [
         13265
       ]
     },
     "abyssal dagger (p++)": {
       "name": "abyssal dagger (p++)",
-      "item_id": 13271,
+      "item_ids": [
+        13271
+      ],
       "clog_dependencies": [
         13265
       ]
     },
     "fire max cape": {
       "name": "fire max cape",
-      "item_id": 13329,
-      "clog_dependencies": [
-        6570
-      ],
       "item_ids": [
         13329,
         21186
+      ],
+      "clog_dependencies": [
+        6570
       ]
     },
     "fire max hood": {
       "name": "fire max hood",
-      "item_id": 13330,
+      "item_ids": [
+        13330
+      ],
       "clog_dependencies": [
         6570
       ]
     },
     "lizardman fang": {
       "name": "lizardman fang",
-      "item_id": 13391,
+      "item_ids": [
+        13391
+      ],
       "clog_dependencies": [
         13392
       ]
     },
     "ensouled dragon head": {
       "name": "ensouled dragon head",
-      "item_id": 13511,
-      "clog_dependencies": [
-        7980
-      ],
       "item_ids": [
         13510,
         13511
+      ],
+      "clog_dependencies": [
+        7980
       ]
     },
     "stuffed kbd heads": {
       "name": "stuffed kbd heads",
-      "item_id": 7987,
+      "item_ids": [
+        7987
+      ],
       "clog_dependencies": [
         7980
       ]
     },
     "ring of suffering": {
       "name": "ring of suffering",
-      "item_id": 19550,
+      "item_ids": [
+        19550
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11374,43 +11553,42 @@
     },
     "necklace of anguish": {
       "name": "necklace of anguish",
-      "item_id": 19547,
-      "clog_dependencies": [
-        19529,
-        6573
-      ],
       "item_ids": [
         19547,
         27172
+      ],
+      "clog_dependencies": [
+        19529,
+        6573
       ]
     },
     "tormented bracelet": {
       "name": "tormented bracelet",
-      "item_id": 19544,
-      "clog_dependencies": [
-        19529,
-        6573
-      ],
       "item_ids": [
         19544,
         27171
+      ],
+      "clog_dependencies": [
+        19529,
+        6573
       ]
     },
     "amulet of torture": {
       "name": "amulet of torture",
-      "item_id": 19553,
-      "clog_dependencies": [
-        19529,
-        6573
-      ],
       "item_ids": [
         19553,
         27173
+      ],
+      "clog_dependencies": [
+        19529,
+        6573
       ]
     },
     "zenyte bracelet": {
       "name": "zenyte bracelet",
-      "item_id": 19532,
+      "item_ids": [
+        19532
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11418,7 +11596,9 @@
     },
     "zenyte ring": {
       "name": "zenyte ring",
-      "item_id": 19538,
+      "item_ids": [
+        19538
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11426,7 +11606,9 @@
     },
     "zenyte amulet": {
       "name": "zenyte amulet",
-      "item_id": 19541,
+      "item_ids": [
+        19541
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11434,7 +11616,9 @@
     },
     "zenyte necklace": {
       "name": "zenyte necklace",
-      "item_id": 19535,
+      "item_ids": [
+        19535
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11442,35 +11626,35 @@
     },
     "heavy ballista": {
       "name": "heavy ballista",
-      "item_id": 19481,
+      "item_ids": [
+        19481,
+        23630
+      ],
       "clog_dependencies": [
         19601,
         19589,
         19592,
         19610
-      ],
-      "item_ids": [
-        19481,
-        23630
       ]
     },
     "light ballista": {
       "name": "light ballista",
-      "item_id": 19478,
+      "item_ids": [
+        19478,
+        27188
+      ],
       "clog_dependencies": [
         19601,
         19586,
         19592,
         19610
-      ],
-      "item_ids": [
-        19478,
-        27188
       ]
     },
     "incomplete heavy ballista": {
       "name": "incomplete heavy ballista",
-      "item_id": 19598,
+      "item_ids": [
+        19598
+      ],
       "clog_dependencies": [
         19592,
         19589
@@ -11478,7 +11662,9 @@
     },
     "incomplete light ballista": {
       "name": "incomplete light ballista",
-      "item_id": 19595,
+      "item_ids": [
+        19595
+      ],
       "clog_dependencies": [
         19592,
         19586
@@ -11486,7 +11672,9 @@
     },
     "zenyte": {
       "name": "zenyte",
-      "item_id": 19493,
+      "item_ids": [
+        19493
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11494,7 +11682,9 @@
     },
     "uncut zenyte": {
       "name": "uncut zenyte",
-      "item_id": 19496,
+      "item_ids": [
+        19496
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11502,7 +11692,9 @@
     },
     "unstrung heavy ballista": {
       "name": "unstrung heavy ballista",
-      "item_id": 19607,
+      "item_ids": [
+        19607
+      ],
       "clog_dependencies": [
         19592,
         19601,
@@ -11511,7 +11703,9 @@
     },
     "unstrung light ballista": {
       "name": "unstrung light ballista",
-      "item_id": 19604,
+      "item_ids": [
+        19604
+      ],
       "clog_dependencies": [
         19592,
         19601,
@@ -11520,7 +11714,9 @@
     },
     "zenyte amulet (u)": {
       "name": "zenyte amulet (u)",
-      "item_id": 19501,
+      "item_ids": [
+        19501
+      ],
       "clog_dependencies": [
         19529,
         6573
@@ -11528,91 +11724,99 @@
     },
     "black slayer helmet": {
       "name": "black slayer helmet",
-      "item_id": 19639,
+      "item_ids": [
+        19639
+      ],
       "clog_dependencies": [
         7980
       ]
     },
     "green slayer helmet": {
       "name": "green slayer helmet",
-      "item_id": 19643,
+      "item_ids": [
+        19643
+      ],
       "clog_dependencies": [
         7981
       ]
     },
     "red slayer helmet": {
       "name": "red slayer helmet",
-      "item_id": 19647,
+      "item_ids": [
+        19647
+      ],
       "clog_dependencies": [
         7979
       ]
     },
     "black slayer helmet (i)": {
       "name": "black slayer helmet (i)",
-      "item_id": 19641,
-      "clog_dependencies": [
-        7980
-      ],
       "item_ids": [
         19641,
         25179,
         26675
+      ],
+      "clog_dependencies": [
+        7980
       ]
     },
     "green slayer helmet (i)": {
       "name": "green slayer helmet (i)",
-      "item_id": 19645,
-      "clog_dependencies": [
-        7981
-      ],
       "item_ids": [
         19645,
         25181,
         26676
+      ],
+      "clog_dependencies": [
+        7981
       ]
     },
     "red slayer helmet (i)": {
       "name": "red slayer helmet (i)",
-      "item_id": 19649,
-      "clog_dependencies": [
-        7979
-      ],
       "item_ids": [
         19649,
         25183,
         26677
+      ],
+      "clog_dependencies": [
+        7979
       ]
     },
     "arclight": {
       "name": "arclight",
-      "item_id": 19675,
+      "item_ids": [
+        19675
+      ],
       "clog_dependencies": [
         19677
       ]
     },
     "ring of suffering (i)": {
       "name": "ring of suffering (i)",
-      "item_id": 19710,
-      "clog_dependencies": [
-        19529,
-        6573
-      ],
       "item_ids": [
         19710,
         25246,
         26761
+      ],
+      "clog_dependencies": [
+        19529,
+        6573
       ]
     },
     "dragon scimitar (or)": {
       "name": "dragon scimitar (or)",
-      "item_id": 20000,
+      "item_ids": [
+        20000
+      ],
       "clog_dependencies": [
         20002
       ]
     },
     "dragon defender (t)": {
       "name": "dragon defender (t)",
-      "item_id": 19722,
+      "item_ids": [
+        19722
+      ],
       "clog_dependencies": [
         12954,
         20143
@@ -11620,7 +11824,9 @@
     },
     "occult necklace (or)": {
       "name": "occult necklace (or)",
-      "item_id": 19720,
+      "item_ids": [
+        19720
+      ],
       "clog_dependencies": [
         20065,
         12002
@@ -11628,7 +11834,9 @@
     },
     "amulet of torture (or)": {
       "name": "amulet of torture (or)",
-      "item_id": 20366,
+      "item_ids": [
+        20366
+      ],
       "clog_dependencies": [
         19529,
         6573,
@@ -11637,7 +11845,9 @@
     },
     "armadyl godsword (or)": {
       "name": "armadyl godsword (or)",
-      "item_id": 20368,
+      "item_ids": [
+        20368
+      ],
       "clog_dependencies": [
         11810,
         20068,
@@ -11648,7 +11858,9 @@
     },
     "bandos godsword (or)": {
       "name": "bandos godsword (or)",
-      "item_id": 20370,
+      "item_ids": [
+        20370
+      ],
       "clog_dependencies": [
         11812,
         20071,
@@ -11659,7 +11871,9 @@
     },
     "saradomin godsword (or)": {
       "name": "saradomin godsword (or)",
-      "item_id": 20372,
+      "item_ids": [
+        20372
+      ],
       "clog_dependencies": [
         11814,
         11818,
@@ -11670,7 +11884,9 @@
     },
     "zamorak godsword (or)": {
       "name": "zamorak godsword (or)",
-      "item_id": 20374,
+      "item_ids": [
+        20374
+      ],
       "clog_dependencies": [
         11816,
         11818,
@@ -11681,14 +11897,18 @@
     },
     "double eye patch": {
       "name": "double eye patch",
-      "item_id": 19727,
+      "item_ids": [
+        19727
+      ],
       "clog_dependencies": [
         19724
       ]
     },
     "dark squirrel": {
       "name": "dark squirrel",
-      "item_id": 24701,
+      "item_ids": [
+        24701
+      ],
       "clog_dependencies": [
         20659,
         24733
@@ -11696,7 +11916,9 @@
     },
     "bone squirrel": {
       "name": "bone squirrel",
-      "item_id": 30151,
+      "item_ids": [
+        30151
+      ],
       "clog_dependencies": [
         30042,
         20659
@@ -11704,7 +11926,9 @@
     },
     "greatish guardian": {
       "name": "greatish guardian",
-      "item_id": 26899,
+      "item_ids": [
+        26899
+      ],
       "clog_dependencies": [
         20665,
         26820
@@ -11712,33 +11936,38 @@
     },
     "mystic dust staff": {
       "name": "mystic dust staff",
-      "item_id": 20739,
+      "item_ids": [
+        20739
+      ],
       "clog_dependencies": [
         20736
       ]
     },
     "mystic mist staff": {
       "name": "mystic mist staff",
-      "item_id": 20733,
+      "item_ids": [
+        20733
+      ],
       "clog_dependencies": [
         20730
       ]
     },
     "kodai wand": {
       "name": "kodai wand",
-      "item_id": 21006,
-      "clog_dependencies": [
-        6914,
-        21043
-      ],
       "item_ids": [
         21006,
         23626
+      ],
+      "clog_dependencies": [
+        6914,
+        21043
       ]
     },
     "infernal harpoon": {
       "name": "infernal harpoon",
-      "item_id": 21031,
+      "item_ids": [
+        21031
+      ],
       "clog_dependencies": [
         13233,
         21028
@@ -11746,40 +11975,47 @@
     },
     "dragon crossbow": {
       "name": "dragon crossbow",
-      "item_id": 21902,
+      "item_ids": [
+        21902
+      ],
       "clog_dependencies": [
         21918
       ]
     },
     "purple slayer helmet (i)": {
       "name": "purple slayer helmet (i)",
-      "item_id": 21266,
-      "clog_dependencies": [
-        21275
-      ],
       "item_ids": [
         21266,
         25185,
         26678
+      ],
+      "clog_dependencies": [
+        21275
       ]
     },
     "purple slayer helmet": {
       "name": "purple slayer helmet",
-      "item_id": 21264,
+      "item_ids": [
+        21264
+      ],
       "clog_dependencies": [
         21275
       ]
     },
     "slayer ring (eternal)": {
       "name": "slayer ring (eternal)",
-      "item_id": 21268,
+      "item_ids": [
+        21268
+      ],
       "clog_dependencies": [
         21270
       ]
     },
     "skull sceptre (i)": {
       "name": "skull sceptre (i)",
-      "item_id": 21276,
+      "item_ids": [
+        21276
+      ],
       "clog_dependencies": [
         9008,
         9010,
@@ -11789,43 +12025,47 @@
     },
     "infernal max cape": {
       "name": "infernal max cape",
-      "item_id": 21284,
-      "clog_dependencies": [
-        21295
-      ],
       "item_ids": [
         21284,
         21285
+      ],
+      "clog_dependencies": [
+        21295
       ]
     },
     "infernal max hood": {
       "name": "infernal max hood",
-      "item_id": 21282,
+      "item_ids": [
+        21282
+      ],
       "clog_dependencies": [
         21295
       ]
     },
     "ancient wyvern shield": {
       "name": "ancient wyvern shield",
-      "item_id": 21634,
-      "clog_dependencies": [
-        21637
-      ],
       "item_ids": [
         21633,
         21634
+      ],
+      "clog_dependencies": [
+        21637
       ]
     },
     "granite cannonball": {
       "name": "granite cannonball",
-      "item_id": 21728,
+      "item_ids": [
+        21728
+      ],
       "clog_dependencies": [
         21726
       ]
     },
     "guardian boots": {
       "name": "guardian boots",
-      "item_id": 21733,
+      "item_ids": [
+        21733
+      ],
       "clog_dependencies": [
         21730,
         11836
@@ -11833,98 +12073,113 @@
     },
     "granite ring (i)": {
       "name": "granite ring (i)",
-      "item_id": 21752,
-      "clog_dependencies": [
-        21739
-      ],
       "item_ids": [
         21752,
         25193,
         26685
+      ],
+      "clog_dependencies": [
+        21739
       ]
     },
     "onyx dragon bolts (e)": {
       "name": "onyx dragon bolts (e)",
-      "item_id": 21950,
+      "item_ids": [
+        21950
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "onyx dragon bolts": {
       "name": "onyx dragon bolts",
-      "item_id": 21973,
+      "item_ids": [
+        21973
+      ],
       "clog_dependencies": [
         6573
       ]
     },
     "vorkath's stuffed head": {
       "name": "vorkath's stuffed head",
-      "item_id": 21909,
+      "item_ids": [
+        21909
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "turquoise slayer helmet": {
       "name": "turquoise slayer helmet",
-      "item_id": 21888,
+      "item_ids": [
+        21888
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "turquoise slayer helmet (i)": {
       "name": "turquoise slayer helmet (i)",
-      "item_id": 21890,
-      "clog_dependencies": [
-        21907
-      ],
       "item_ids": [
         21890,
         25187,
         26679
+      ],
+      "clog_dependencies": [
+        21907
       ]
     },
     "ava's assembler": {
       "name": "ava's assembler",
-      "item_id": 22109,
+      "item_ids": [
+        22109
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "assembler max cape": {
       "name": "assembler max cape",
-      "item_id": 21898,
+      "item_ids": [
+        21898
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "assembler max hood": {
       "name": "assembler max hood",
-      "item_id": 21900,
+      "item_ids": [
+        21900
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "dragon crossbow (u)": {
       "name": "dragon crossbow (u)",
-      "item_id": 21921,
+      "item_ids": [
+        21921
+      ],
       "clog_dependencies": [
         21918
       ]
     },
     "dragonfire ward": {
       "name": "dragonfire ward",
-      "item_id": 22003,
-      "clog_dependencies": [
-        22006
-      ],
       "item_ids": [
         22002,
         22003
+      ],
+      "clog_dependencies": [
+        22006
       ]
     },
     "dragon platebody (g)": {
       "name": "dragon platebody (g)",
-      "item_id": 22242,
+      "item_ids": [
+        22242
+      ],
       "clog_dependencies": [
         22236,
         3140,
@@ -11933,7 +12188,9 @@
     },
     "dragon kiteshield (g)": {
       "name": "dragon kiteshield (g)",
-      "item_id": 22244,
+      "item_ids": [
+        22244
+      ],
       "clog_dependencies": [
         22100,
         2366,
@@ -11942,7 +12199,9 @@
     },
     "dragon boots (g)": {
       "name": "dragon boots (g)",
-      "item_id": 22234,
+      "item_ids": [
+        22234
+      ],
       "clog_dependencies": [
         11840,
         22231
@@ -11950,7 +12209,9 @@
     },
     "necklace of anguish (or)": {
       "name": "necklace of anguish (or)",
-      "item_id": 22249,
+      "item_ids": [
+        22249
+      ],
       "clog_dependencies": [
         19529,
         6573,
@@ -11959,7 +12220,9 @@
     },
     "staff of light": {
       "name": "staff of light",
-      "item_id": 22296,
+      "item_ids": [
+        22296
+      ],
       "clog_dependencies": [
         13256,
         11791
@@ -11967,7 +12230,9 @@
     },
     "uncharged trident (e)": {
       "name": "uncharged trident (e)",
-      "item_id": 22290,
+      "item_ids": [
+        22290
+      ],
       "clog_dependencies": [
         12004,
         11908
@@ -11975,7 +12240,9 @@
     },
     "uncharged toxic trident (e)": {
       "name": "uncharged toxic trident (e)",
-      "item_id": 22294,
+      "item_ids": [
+        22294
+      ],
       "clog_dependencies": [
         12004,
         12932,
@@ -11984,7 +12251,9 @@
     },
     "avernic defender": {
       "name": "avernic defender",
-      "item_id": 22322,
+      "item_ids": [
+        22322
+      ],
       "clog_dependencies": [
         12954,
         22477
@@ -11992,63 +12261,81 @@
     },
     "bryophyta's staff (uncharged)": {
       "name": "bryophyta's staff (uncharged)",
-      "item_id": 22368,
+      "item_ids": [
+        22368
+      ],
       "clog_dependencies": [
         22372
       ]
     },
     "bastion potion(3)": {
       "name": "bastion potion(3)",
-      "item_id": 22464,
+      "item_ids": [
+        22464
+      ],
       "clog_dependencies": [
         22446
       ]
     },
     "battlemage potion(3)": {
       "name": "battlemage potion(3)",
-      "item_id": 22452,
+      "item_ids": [
+        22452
+      ],
       "clog_dependencies": [
         22446
       ]
     },
     "cadantine blood potion (unf)": {
       "name": "cadantine blood potion (unf)",
-      "item_id": 22443,
+      "item_ids": [
+        22443
+      ],
       "clog_dependencies": [
         22446
       ]
     },
     "dragon knife(p)": {
       "name": "dragon knife(p)",
-      "item_id": 22806,
+      "item_ids": [
+        22806
+      ],
       "clog_dependencies": [
         22804
       ]
     },
     "dragon knife(p+)": {
       "name": "dragon knife(p+)",
-      "item_id": 22808,
+      "item_ids": [
+        22808
+      ],
       "clog_dependencies": [
         22804
       ]
     },
     "dragon knife(p++)": {
       "name": "dragon knife(p++)",
-      "item_id": 22810,
+      "item_ids": [
+        22810
+      ],
       "clog_dependencies": [
         22804
       ]
     },
     "boots of brimstone": {
       "name": "boots of brimstone",
-      "item_id": 22951,
+      "item_ids": [
+        22951
+      ],
       "clog_dependencies": [
         22957
       ]
     },
     "devout boots": {
       "name": "devout boots",
-      "item_id": 22954,
+      "item_ids": [
+        22954
+      ],
       "clog_dependencies": [
         22960,
         12598
@@ -12056,7 +12343,9 @@
     },
     "brimstone ring": {
       "name": "brimstone ring",
-      "item_id": 22975,
+      "item_ids": [
+        22975
+      ],
       "clog_dependencies": [
         22969,
         22971,
@@ -12065,7 +12354,9 @@
     },
     "bonecrusher necklace": {
       "name": "bonecrusher necklace",
-      "item_id": 22986,
+      "item_ids": [
+        22986
+      ],
       "clog_dependencies": [
         22988,
         22111
@@ -12073,14 +12364,18 @@
     },
     "ferocious gloves": {
       "name": "ferocious gloves",
-      "item_id": 22981,
+      "item_ids": [
+        22981
+      ],
       "clog_dependencies": [
         22983
       ]
     },
     "dragon hunter lance": {
       "name": "dragon hunter lance",
-      "item_id": 22978,
+      "item_ids": [
+        22978
+      ],
       "clog_dependencies": [
         11824,
         22966
@@ -12088,40 +12383,47 @@
     },
     "stuffed hydra heads": {
       "name": "stuffed hydra heads",
-      "item_id": 23079,
+      "item_ids": [
+        23079
+      ],
       "clog_dependencies": [
         23077
       ]
     },
     "hydra slayer helmet": {
       "name": "hydra slayer helmet",
-      "item_id": 23073,
+      "item_ids": [
+        23073
+      ],
       "clog_dependencies": [
         23077
       ]
     },
     "hydra slayer helmet (i)": {
       "name": "hydra slayer helmet (i)",
-      "item_id": 23075,
-      "clog_dependencies": [
-        23077
-      ],
       "item_ids": [
         23075,
         25189,
         26680
+      ],
+      "clog_dependencies": [
+        23077
       ]
     },
     "oily pearl fishing rod": {
       "name": "oily pearl fishing rod",
-      "item_id": 23122,
+      "item_ids": [
+        23122
+      ],
       "clog_dependencies": [
         22846
       ]
     },
     "tormented bracelet (or)": {
       "name": "tormented bracelet (or)",
-      "item_id": 23444,
+      "item_ids": [
+        23444
+      ],
       "clog_dependencies": [
         19529,
         23348,
@@ -12130,7 +12432,9 @@
     },
     "berserker necklace (or)": {
       "name": "berserker necklace (or)",
-      "item_id": 23240,
+      "item_ids": [
+        23240
+      ],
       "clog_dependencies": [
         23237,
         6573
@@ -12138,7 +12442,9 @@
     },
     "tzhaar-ket-om (t)": {
       "name": "tzhaar-ket-om (t)",
-      "item_id": 23235,
+      "item_ids": [
+        23235
+      ],
       "clog_dependencies": [
         6528,
         23232
@@ -12146,7 +12452,9 @@
     },
     "rune defender (t)": {
       "name": "rune defender (t)",
-      "item_id": 23230,
+      "item_ids": [
+        23230
+      ],
       "clog_dependencies": [
         8850,
         23227
@@ -12154,105 +12462,117 @@
     },
     "blade of saeldor": {
       "name": "blade of saeldor",
-      "item_id": 23995,
+      "item_ids": [
+        23995
+      ],
       "clog_dependencies": [
         25859
       ]
     },
     "crystal shards": {
       "name": "crystal shards",
-      "item_id": 23866,
+      "item_ids": [
+        23866
+      ],
       "clog_dependencies": [
         4207
       ]
     },
     "bloodbark legs": {
       "name": "bloodbark legs",
-      "item_id": 25416,
+      "item_ids": [
+        25416
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "bloodbark body": {
       "name": "bloodbark body",
-      "item_id": 25404,
+      "item_ids": [
+        25404
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "bloodbark helm": {
       "name": "bloodbark helm",
-      "item_id": 25413,
+      "item_ids": [
+        25413
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "crystal pickaxe": {
       "name": "crystal pickaxe",
-      "item_id": 23680,
-      "clog_dependencies": [
-        11920,
-        23953
-      ],
       "item_ids": [
         23680,
         23863
+      ],
+      "clog_dependencies": [
+        11920,
+        23953
       ]
     },
     "eternal teleport crystal": {
       "name": "eternal teleport crystal",
-      "item_id": 23946,
+      "item_ids": [
+        23946
+      ],
       "clog_dependencies": [
         23959
       ]
     },
     "crystal acorn": {
       "name": "crystal acorn",
-      "item_id": 23661,
+      "item_ids": [
+        23661
+      ],
       "clog_dependencies": [
         4207
       ]
     },
     "crystal harpoon": {
       "name": "crystal harpoon",
-      "item_id": 23762,
-      "clog_dependencies": [
-        23953,
-        21028
-      ],
       "item_ids": [
         23762,
         23864
+      ],
+      "clog_dependencies": [
+        23953,
+        21028
       ]
     },
     "crystal axe": {
       "name": "crystal axe",
-      "item_id": 23673,
-      "clog_dependencies": [
-        23953,
-        6739
-      ],
       "item_ids": [
         23673,
         23862
+      ],
+      "clog_dependencies": [
+        23953,
+        6739
       ]
     },
     "dragon pickaxe (or)": {
       "name": "dragon pickaxe (or)",
-      "item_id": 23677,
-      "clog_dependencies": [
-        11920,
-        23908
-      ],
       "item_ids": [
         23677,
         25376,
         30351
+      ],
+      "clog_dependencies": [
+        11920,
+        23908
       ]
     },
     "staff of balance": {
       "name": "staff of balance",
-      "item_id": 24144,
+      "item_ids": [
+        24144
+      ],
       "clog_dependencies": [
         24217,
         11791
@@ -12260,14 +12580,18 @@
     },
     "neitiznot faceguard": {
       "name": "neitiznot faceguard",
-      "item_id": 24271,
+      "item_ids": [
+        24271
+      ],
       "clog_dependencies": [
         24268
       ]
     },
     "eldritch nightmare staff": {
       "name": "eldritch nightmare staff",
-      "item_id": 24425,
+      "item_ids": [
+        24425
+      ],
       "clog_dependencies": [
         24517,
         24422
@@ -12275,7 +12599,9 @@
     },
     "harmonised nightmare staff": {
       "name": "harmonised nightmare staff",
-      "item_id": 24423,
+      "item_ids": [
+        24423
+      ],
       "clog_dependencies": [
         24422,
         24511
@@ -12283,19 +12609,20 @@
     },
     "volatile nightmare staff": {
       "name": "volatile nightmare staff",
-      "item_id": 24424,
-      "clog_dependencies": [
-        24514,
-        24422
-      ],
       "item_ids": [
         24424,
         25517
+      ],
+      "clog_dependencies": [
+        24514,
+        24422
       ]
     },
     "amulet of blood fury": {
       "name": "amulet of blood fury",
-      "item_id": 24780,
+      "item_ids": [
+        24780
+      ],
       "clog_dependencies": [
         24777,
         6573
@@ -12303,21 +12630,27 @@
     },
     "divine bastion potion(3)": {
       "name": "divine bastion potion(3)",
-      "item_id": 24638,
+      "item_ids": [
+        24638
+      ],
       "clog_dependencies": [
         22446
       ]
     },
     "divine battlemage potion(3)": {
       "name": "divine battlemage potion(3)",
-      "item_id": 24626,
+      "item_ids": [
+        24626
+      ],
       "clog_dependencies": [
         22446
       ]
     },
     "twisted ancestral hat": {
       "name": "twisted ancestral hat",
-      "item_id": 24664,
+      "item_ids": [
+        24664
+      ],
       "clog_dependencies": [
         21018,
         24670
@@ -12325,7 +12658,9 @@
     },
     "twisted ancestral robe top": {
       "name": "twisted ancestral robe top",
-      "item_id": 24666,
+      "item_ids": [
+        24666
+      ],
       "clog_dependencies": [
         21021,
         24670
@@ -12333,7 +12668,9 @@
     },
     "twisted ancestral robe bottom": {
       "name": "twisted ancestral robe bottom",
-      "item_id": 24668,
+      "item_ids": [
+        24668
+      ],
       "clog_dependencies": [
         21024,
         24670
@@ -12341,156 +12678,179 @@
     },
     "infernal axe (or)": {
       "name": "infernal axe (or)",
-      "item_id": 25066,
-      "clog_dependencies": [
-        13233,
-        6739
-      ],
       "item_ids": [
         25066,
         30347
+      ],
+      "clog_dependencies": [
+        13233,
+        6739
       ]
     },
     "infernal pickaxe (or)": {
       "name": "infernal pickaxe (or)",
-      "item_id": 25063,
-      "clog_dependencies": [
-        11920,
-        13233
-      ],
       "item_ids": [
         25063,
         30345
+      ],
+      "clog_dependencies": [
+        11920,
+        13233
       ]
     },
     "infernal harpoon (or)": {
       "name": "infernal harpoon (or)",
-      "item_id": 25059,
-      "clog_dependencies": [
-        13233,
-        21028
-      ],
       "item_ids": [
         25059,
         30342
+      ],
+      "clog_dependencies": [
+        13233,
+        21028
       ]
     },
     "bone fragments": {
       "name": "bone fragments",
-      "item_id": 25139,
+      "item_ids": [
+        25139
+      ],
       "clog_dependencies": [
         9008
       ]
     },
     "dragon axe (or)": {
       "name": "dragon axe (or)",
-      "item_id": 25378,
-      "clog_dependencies": [
-        6739
-      ],
       "item_ids": [
         25378,
         30352
+      ],
+      "clog_dependencies": [
+        6739
       ]
     },
     "dragon harpoon (or)": {
       "name": "dragon harpoon (or)",
-      "item_id": 25373,
-      "clog_dependencies": [
-        21028
-      ],
       "item_ids": [
         25373,
         30349
+      ],
+      "clog_dependencies": [
+        21028
       ]
     },
     "swampbark helm": {
       "name": "swampbark helm",
-      "item_id": 25398,
+      "item_ids": [
+        25398
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "swampbark body": {
       "name": "swampbark body",
-      "item_id": 25389,
+      "item_ids": [
+        25389
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "swampbark legs": {
       "name": "swampbark legs",
-      "item_id": 25401,
+      "item_ids": [
+        25401
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "swampbark gauntlets": {
       "name": "swampbark gauntlets",
-      "item_id": 25392,
+      "item_ids": [
+        25392
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "swampbark boots": {
       "name": "swampbark boots",
-      "item_id": 25395,
+      "item_ids": [
+        25395
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "bloodbark gauntlets": {
       "name": "bloodbark gauntlets",
-      "item_id": 25407,
+      "item_ids": [
+        25407
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "bloodbark boots": {
       "name": "bloodbark boots",
-      "item_id": 25410,
+      "item_ids": [
+        25410
+      ],
       "clog_dependencies": [
         3470
       ]
     },
     "bronze coffin": {
       "name": "bronze coffin",
-      "item_id": 25459,
+      "item_ids": [
+        25459
+      ],
       "clog_dependencies": [
         25442
       ]
     },
     "steel coffin": {
       "name": "steel coffin",
-      "item_id": 25461,
+      "item_ids": [
+        25461
+      ],
       "clog_dependencies": [
         25445
       ]
     },
     "black coffin": {
       "name": "black coffin",
-      "item_id": 25463,
+      "item_ids": [
+        25463
+      ],
       "clog_dependencies": [
         25448
       ]
     },
     "silver coffin": {
       "name": "silver coffin",
-      "item_id": 25465,
+      "item_ids": [
+        25465
+      ],
       "clog_dependencies": [
         25451
       ]
     },
     "gold coffin": {
       "name": "gold coffin",
-      "item_id": 25467,
+      "item_ids": [
+        25467
+      ],
       "clog_dependencies": [
         25454
       ]
     },
     "golden prospector helmet": {
       "name": "golden prospector helmet",
-      "item_id": 25549,
+      "item_ids": [
+        25549
+      ],
       "clog_dependencies": [
         25547,
         12013
@@ -12498,7 +12858,9 @@
     },
     "golden prospector jacket": {
       "name": "golden prospector jacket",
-      "item_id": 25551,
+      "item_ids": [
+        25551
+      ],
       "clog_dependencies": [
         25547,
         12014
@@ -12506,7 +12868,9 @@
     },
     "golden prospector legs": {
       "name": "golden prospector legs",
-      "item_id": 25553,
+      "item_ids": [
+        25553
+      ],
       "clog_dependencies": [
         25547,
         12015
@@ -12514,7 +12878,9 @@
     },
     "golden prospector boots": {
       "name": "golden prospector boots",
-      "item_id": 25555,
+      "item_ids": [
+        25555
+      ],
       "clog_dependencies": [
         12016,
         25547
@@ -12522,7 +12888,9 @@
     },
     "dark flippers": {
       "name": "dark flippers",
-      "item_id": 25557,
+      "item_ids": [
+        25557
+      ],
       "clog_dependencies": [
         6666,
         21275
@@ -12530,7 +12898,9 @@
     },
     "celestial signet": {
       "name": "celestial signet",
-      "item_id": 25545,
+      "item_ids": [
+        25545
+      ],
       "clog_dependencies": [
         25539,
         23943
@@ -12538,14 +12908,18 @@
     },
     "stuffed big harpoonfish": {
       "name": "stuffed big harpoonfish",
-      "item_id": 25561,
+      "item_ids": [
+        25561
+      ],
       "clog_dependencies": [
         25559
       ]
     },
     "fish sack barrel": {
       "name": "fish sack barrel",
-      "item_id": 25585,
+      "item_ids": [
+        25585
+      ],
       "clog_dependencies": [
         22838,
         25582
@@ -12553,7 +12927,9 @@
     },
     "holy sanguinesti staff": {
       "name": "holy sanguinesti staff",
-      "item_id": 25731,
+      "item_ids": [
+        25731
+      ],
       "clog_dependencies": [
         22481,
         25742
@@ -12561,7 +12937,9 @@
     },
     "holy ghrazi rapier": {
       "name": "holy ghrazi rapier",
-      "item_id": 25734,
+      "item_ids": [
+        25734
+      ],
       "clog_dependencies": [
         22324,
         25742
@@ -12569,7 +12947,9 @@
     },
     "holy scythe of vitur": {
       "name": "holy scythe of vitur",
-      "item_id": 25736,
+      "item_ids": [
+        25736
+      ],
       "clog_dependencies": [
         25742,
         22486
@@ -12577,7 +12957,9 @@
     },
     "sanguine scythe of vitur": {
       "name": "sanguine scythe of vitur",
-      "item_id": 25739,
+      "item_ids": [
+        25739
+      ],
       "clog_dependencies": [
         25744,
         22486
@@ -12585,14 +12967,18 @@
     },
     "bow of faerdhinen": {
       "name": "bow of faerdhinen",
-      "item_id": 25865,
+      "item_ids": [
+        25865
+      ],
       "clog_dependencies": [
         25859
       ]
     },
     "dragon hunter crossbow (b)": {
       "name": "dragon hunter crossbow (b)",
-      "item_id": 25918,
+      "item_ids": [
+        25918
+      ],
       "clog_dependencies": [
         21012,
         7980
@@ -12600,7 +12986,9 @@
     },
     "dragon hunter crossbow (t)": {
       "name": "dragon hunter crossbow (t)",
-      "item_id": 25916,
+      "item_ids": [
+        25916
+      ],
       "clog_dependencies": [
         21907,
         21012
@@ -12608,7 +12996,9 @@
     },
     "elidinis' ward (f)": {
       "name": "elidinis' ward (f)",
-      "item_id": 27251,
+      "item_ids": [
+        27251
+      ],
       "clog_dependencies": [
         25985,
         12827
@@ -12616,161 +13006,184 @@
     },
     "keris partisan of breaching": {
       "name": "keris partisan of breaching",
-      "item_id": 25981,
+      "item_ids": [
+        25981
+      ],
       "clog_dependencies": [
         27283
       ]
     },
     "ancient godsword": {
       "name": "ancient godsword",
-      "item_id": 26233,
+      "item_ids": [
+        26233,
+        27184
+      ],
       "clog_dependencies": [
         26370,
         11818,
         11820,
         11822
-      ],
-      "item_ids": [
-        26233,
-        27184
       ]
     },
     "torva full helm": {
       "name": "torva full helm",
-      "item_id": 26382,
-      "clog_dependencies": [
-        26376,
-        11832
-      ],
       "item_ids": [
         26382,
         30302
+      ],
+      "clog_dependencies": [
+        26376,
+        11832
       ]
     },
     "torva platebody": {
       "name": "torva platebody",
-      "item_id": 26384,
-      "clog_dependencies": [
-        11832,
-        26378
-      ],
       "item_ids": [
         26384,
         30303
+      ],
+      "clog_dependencies": [
+        11832,
+        26378
       ]
     },
     "torva platelegs": {
       "name": "torva platelegs",
-      "item_id": 26386,
-      "clog_dependencies": [
-        11832,
-        26380
-      ],
       "item_ids": [
         26386,
         30304
+      ],
+      "clog_dependencies": [
+        11832,
+        26380
       ]
     },
     "ancient brew(3)": {
       "name": "ancient brew(3)",
-      "item_id": 26342,
+      "item_ids": [
+        26342
+      ],
       "clog_dependencies": [
         26231
       ]
     },
     "zaryte crossbow": {
       "name": "zaryte crossbow",
-      "item_id": 26374,
+      "item_ids": [
+        26374,
+        27186
+      ],
       "clog_dependencies": [
         11785,
         26372,
         26231
-      ],
-      "item_ids": [
-        26374,
-        27186
       ]
     },
     "nihil dust": {
       "name": "nihil dust",
-      "item_id": 26368,
+      "item_ids": [
+        26368
+      ],
       "clog_dependencies": [
         26231
       ]
     },
     "bandosian components": {
       "name": "bandosian components",
-      "item_id": 26394,
+      "item_ids": [
+        26394
+      ],
       "clog_dependencies": [
         11832
       ]
     },
     "void knight top (or)": {
       "name": "void knight top (or)",
-      "item_id": 26463,
+      "item_ids": [
+        26463
+      ],
       "clog_dependencies": [
         8839
       ]
     },
     "void knight robe (or)": {
       "name": "void knight robe (or)",
-      "item_id": 26465,
+      "item_ids": [
+        26465
+      ],
       "clog_dependencies": [
         8840
       ]
     },
     "void knight gloves (or)": {
       "name": "void knight gloves (or)",
-      "item_id": 26467,
+      "item_ids": [
+        26467
+      ],
       "clog_dependencies": [
         8842
       ]
     },
     "elite void top (or)": {
       "name": "elite void top (or)",
-      "item_id": 26469,
+      "item_ids": [
+        26469
+      ],
       "clog_dependencies": [
         13072
       ]
     },
     "elite void robe (or)": {
       "name": "elite void robe (or)",
-      "item_id": 26471,
+      "item_ids": [
+        26471
+      ],
       "clog_dependencies": [
         13073
       ]
     },
     "void mage helm (or)": {
       "name": "void mage helm (or)",
-      "item_id": 26473,
+      "item_ids": [
+        26473
+      ],
       "clog_dependencies": [
         11663
       ]
     },
     "void ranger helm (or)": {
       "name": "void ranger helm (or)",
-      "item_id": 26475,
+      "item_ids": [
+        26475
+      ],
       "clog_dependencies": [
         11664
       ]
     },
     "void melee helm (or)": {
       "name": "void melee helm (or)",
-      "item_id": 26477,
+      "item_ids": [
+        26477
+      ],
       "clog_dependencies": [
         11665
       ]
     },
     "abyssal whip (or)": {
       "name": "abyssal whip (or)",
-      "item_id": 26482,
+      "item_ids": [
+        26482
+      ],
       "clog_dependencies": [
         4151
       ]
     },
     "abyssal tentacle (or)": {
       "name": "abyssal tentacle (or)",
-      "item_id": 26484,
+      "item_ids": [
+        26484
+      ],
       "clog_dependencies": [
         12004,
         4151
@@ -12778,19 +13191,20 @@
     },
     "colossal pouch": {
       "name": "colossal pouch",
-      "item_id": 26784,
-      "clog_dependencies": [
-        26813
-      ],
       "item_ids": [
         26784,
         26786,
         26906
+      ],
+      "clog_dependencies": [
+        26813
       ]
     },
     "heavy ballista (or)": {
       "name": "heavy ballista (or)",
-      "item_id": 26712,
+      "item_ids": [
+        26712
+      ],
       "clog_dependencies": [
         19592,
         19601,
@@ -12800,14 +13214,18 @@
     },
     "catalytic tiara": {
       "name": "catalytic tiara",
-      "item_id": 26801,
+      "item_ids": [
+        26801
+      ],
       "clog_dependencies": [
         26798
       ]
     },
     "hat of the eye (red)": {
       "name": "hat of the eye (red)",
-      "item_id": 26858,
+      "item_ids": [
+        26858
+      ],
       "clog_dependencies": [
         26850,
         26811
@@ -12815,7 +13233,9 @@
     },
     "hat of the eye (green)": {
       "name": "hat of the eye (green)",
-      "item_id": 26864,
+      "item_ids": [
+        26864
+      ],
       "clog_dependencies": [
         26850,
         26807
@@ -12823,7 +13243,9 @@
     },
     "hat of the eye (blue)": {
       "name": "hat of the eye (blue)",
-      "item_id": 26870,
+      "item_ids": [
+        26870
+      ],
       "clog_dependencies": [
         26809,
         26850
@@ -12831,7 +13253,9 @@
     },
     "robe top of the eye (red)": {
       "name": "robe top of the eye (red)",
-      "item_id": 26860,
+      "item_ids": [
+        26860
+      ],
       "clog_dependencies": [
         26811,
         26852
@@ -12839,7 +13263,9 @@
     },
     "robe top of the eye (green)": {
       "name": "robe top of the eye (green)",
-      "item_id": 26866,
+      "item_ids": [
+        26866
+      ],
       "clog_dependencies": [
         26852,
         26807
@@ -12847,7 +13273,9 @@
     },
     "robe top of the eye (blue)": {
       "name": "robe top of the eye (blue)",
-      "item_id": 26872,
+      "item_ids": [
+        26872
+      ],
       "clog_dependencies": [
         26809,
         26852
@@ -12855,7 +13283,9 @@
     },
     "robe bottoms of the eye (red)": {
       "name": "robe bottoms of the eye (red)",
-      "item_id": 26862,
+      "item_ids": [
+        26862
+      ],
       "clog_dependencies": [
         26811,
         26854
@@ -12863,7 +13293,9 @@
     },
     "robe bottoms of the eye (green)": {
       "name": "robe bottoms of the eye (green)",
-      "item_id": 26868,
+      "item_ids": [
+        26868
+      ],
       "clog_dependencies": [
         26854,
         26807
@@ -12871,7 +13303,9 @@
     },
     "robe bottoms of the eye (blue)": {
       "name": "robe bottoms of the eye (blue)",
-      "item_id": 26874,
+      "item_ids": [
+        26874
+      ],
       "clog_dependencies": [
         26809,
         26854
@@ -12879,49 +13313,63 @@
     },
     "smiths gloves (i)": {
       "name": "smiths gloves (i)",
-      "item_id": 27031,
+      "item_ids": [
+        27031
+      ],
       "clog_dependencies": [
         27029
       ]
     },
     "elder chaos hood (or)": {
       "name": "elder chaos hood (or)",
-      "item_id": 27119,
+      "item_ids": [
+        27119
+      ],
       "clog_dependencies": [
         20595
       ]
     },
     "elder chaos robe (or)": {
       "name": "elder chaos robe (or)",
-      "item_id": 27117,
+      "item_ids": [
+        27117
+      ],
       "clog_dependencies": [
         20520
       ]
     },
     "elder chaos top (or)": {
       "name": "elder chaos top (or)",
-      "item_id": 27115,
+      "item_ids": [
+        27115
+      ],
       "clog_dependencies": [
         20517
       ]
     },
     "elder maul (or)": {
       "name": "elder maul (or)",
-      "item_id": 27100,
+      "item_ids": [
+        27100
+      ],
       "clog_dependencies": [
         21003
       ]
     },
     "armadylean plate": {
       "name": "armadylean plate",
-      "item_id": 27269,
+      "item_ids": [
+        27269
+      ],
       "clog_dependencies": [
         11826
       ]
     },
     "masori mask (f)": {
       "name": "masori mask (f)",
-      "item_id": 27235,
+      "item_ids": [
+        27235
+      ],
       "clog_dependencies": [
         27226,
         11826
@@ -12929,7 +13377,9 @@
     },
     "masori body (f)": {
       "name": "masori body (f)",
-      "item_id": 27238,
+      "item_ids": [
+        27238
+      ],
       "clog_dependencies": [
         11826,
         27229
@@ -12937,7 +13387,9 @@
     },
     "masori chaps (f)": {
       "name": "masori chaps (f)",
-      "item_id": 27241,
+      "item_ids": [
+        27241
+      ],
       "clog_dependencies": [
         27232,
         11826
@@ -12945,28 +13397,36 @@
     },
     "keris partisan of corruption": {
       "name": "keris partisan of corruption",
-      "item_id": 27287,
+      "item_ids": [
+        27287
+      ],
       "clog_dependencies": [
         27285
       ]
     },
     "keris partisan of the sun": {
       "name": "keris partisan of the sun",
-      "item_id": 27291,
+      "item_ids": [
+        27291
+      ],
       "clog_dependencies": [
         27289
       ]
     },
     "divine rune pouch": {
       "name": "divine rune pouch",
-      "item_id": 27281,
+      "item_ids": [
+        27281
+      ],
       "clog_dependencies": [
         27279
       ]
     },
     "elidinis' ward (or)": {
       "name": "elidinis' ward (or)",
-      "item_id": 27253,
+      "item_ids": [
+        27253
+      ],
       "clog_dependencies": [
         25985,
         12827,
@@ -12975,7 +13435,9 @@
     },
     "osmumten's fang (or)": {
       "name": "osmumten's fang (or)",
-      "item_id": 27246,
+      "item_ids": [
+        27246
+      ],
       "clog_dependencies": [
         27248,
         26219
@@ -12983,7 +13445,9 @@
     },
     "masori assembler": {
       "name": "masori assembler",
-      "item_id": 27374,
+      "item_ids": [
+        27374
+      ],
       "clog_dependencies": [
         21907,
         27372
@@ -12991,7 +13455,9 @@
     },
     "masori assembler max cape": {
       "name": "masori assembler max cape",
-      "item_id": 27363,
+      "item_ids": [
+        27363
+      ],
       "clog_dependencies": [
         21907,
         27372
@@ -12999,7 +13465,9 @@
     },
     "masori assembler max hood": {
       "name": "masori assembler max hood",
-      "item_id": 27366,
+      "item_ids": [
+        27366
+      ],
       "clog_dependencies": [
         21907,
         27372
@@ -13007,7 +13475,9 @@
     },
     "accursed sceptre (u)": {
       "name": "accursed sceptre (u)",
-      "item_id": 27662,
+      "item_ids": [
+        27662
+      ],
       "clog_dependencies": [
         22552,
         27673
@@ -13015,7 +13485,9 @@
     },
     "ursine chainmace (u)": {
       "name": "ursine chainmace (u)",
-      "item_id": 27657,
+      "item_ids": [
+        27657
+      ],
       "clog_dependencies": [
         27667,
         22542
@@ -13023,20 +13495,21 @@
     },
     "voidwaker": {
       "name": "voidwaker",
-      "item_id": 27690,
+      "item_ids": [
+        27690,
+        27869
+      ],
       "clog_dependencies": [
         27681,
         27684,
         27687
-      ],
-      "item_ids": [
-        27690,
-        27869
       ]
     },
     "webweaver bow (u)": {
       "name": "webweaver bow (u)",
-      "item_id": 27652,
+      "item_ids": [
+        27652
+      ],
       "clog_dependencies": [
         22547,
         27670
@@ -13044,7 +13517,9 @@
     },
     "ghommal's avernic defender 5": {
       "name": "ghommal's avernic defender 5",
-      "item_id": 27550,
+      "item_ids": [
+        27550
+      ],
       "clog_dependencies": [
         12954,
         22477
@@ -13052,7 +13527,9 @@
     },
     "ghommal's avernic defender 6": {
       "name": "ghommal's avernic defender 6",
-      "item_id": 27552,
+      "item_ids": [
+        27552
+      ],
       "clog_dependencies": [
         12954,
         22477
@@ -13060,21 +13537,27 @@
     },
     "ancient sceptre": {
       "name": "ancient sceptre",
-      "item_id": 27624,
+      "item_ids": [
+        27624
+      ],
       "clog_dependencies": [
         27627
       ]
     },
     "venator bow (uncharged)": {
       "name": "venator bow (uncharged)",
-      "item_id": 27612,
+      "item_ids": [
+        27612
+      ],
       "clog_dependencies": [
         27614
       ]
     },
     "saturated heart": {
       "name": "saturated heart",
-      "item_id": 27641,
+      "item_ids": [
+        27641
+      ],
       "clog_dependencies": [
         27616,
         20724
@@ -13082,21 +13565,27 @@
     },
     "forgotten brew(1)": {
       "name": "forgotten brew(1)",
-      "item_id": 27638,
+      "item_ids": [
+        27638
+      ],
       "clog_dependencies": [
         27616
       ]
     },
     "forgotten brew(2)": {
       "name": "forgotten brew(2)",
-      "item_id": 27635,
+      "item_ids": [
+        27635
+      ],
       "clog_dependencies": [
         27616
       ]
     },
     "forgotten brew(3)": {
       "name": "forgotten brew(3)",
-      "item_id": 27632,
+      "item_ids": [
+        27632
+      ],
       "clog_dependencies": [
         27616,
         26231
@@ -13104,49 +13593,63 @@
     },
     "forgotten brew(4)": {
       "name": "forgotten brew(4)",
-      "item_id": 27629,
+      "item_ids": [
+        27629
+      ],
       "clog_dependencies": [
         27616
       ]
     },
     "dark bow (bh)": {
       "name": "dark bow (bh)",
-      "item_id": 27853,
+      "item_ids": [
+        27853
+      ],
       "clog_dependencies": [
         11235
       ]
     },
     "abyssal dagger (bh)": {
       "name": "abyssal dagger (bh)",
-      "item_id": 27861,
+      "item_ids": [
+        27861
+      ],
       "clog_dependencies": [
         13265
       ]
     },
     "abyssal dagger (bh)(p)": {
       "name": "abyssal dagger (bh)(p)",
-      "item_id": 27863,
+      "item_ids": [
+        27863
+      ],
       "clog_dependencies": [
         13265
       ]
     },
     "abyssal dagger (bh)(p+)": {
       "name": "abyssal dagger (bh)(p+)",
-      "item_id": 27865,
+      "item_ids": [
+        27865
+      ],
       "clog_dependencies": [
         13265
       ]
     },
     "abyssal dagger (bh)(p++)": {
       "name": "abyssal dagger (bh)(p++)",
-      "item_id": 27867,
+      "item_ids": [
+        27867
+      ],
       "clog_dependencies": [
         13265
       ]
     },
     "soulreaper axe": {
       "name": "soulreaper axe",
-      "item_id": 28338,
+      "item_ids": [
+        28338
+      ],
       "clog_dependencies": [
         28321,
         28323,
@@ -13156,7 +13659,9 @@
     },
     "ultor ring": {
       "name": "ultor ring",
-      "item_id": 28307,
+      "item_ids": [
+        28307
+      ],
       "clog_dependencies": [
         6737,
         28276,
@@ -13165,7 +13670,9 @@
     },
     "magus ring": {
       "name": "magus ring",
-      "item_id": 28313,
+      "item_ids": [
+        28313
+      ],
       "clog_dependencies": [
         28281,
         6731,
@@ -13174,7 +13681,9 @@
     },
     "bellator ring": {
       "name": "bellator ring",
-      "item_id": 28316,
+      "item_ids": [
+        28316
+      ],
       "clog_dependencies": [
         28276,
         6735,
@@ -13183,7 +13692,9 @@
     },
     "venator ring": {
       "name": "venator ring",
-      "item_id": 28310,
+      "item_ids": [
+        28310
+      ],
       "clog_dependencies": [
         28283,
         28276,
@@ -13192,7 +13703,9 @@
     },
     "blood ancient sceptre": {
       "name": "blood ancient sceptre",
-      "item_id": 28260,
+      "item_ids": [
+        28260
+      ],
       "clog_dependencies": [
         27627,
         28268
@@ -13200,7 +13713,9 @@
     },
     "ice ancient sceptre": {
       "name": "ice ancient sceptre",
-      "item_id": 28262,
+      "item_ids": [
+        28262
+      ],
       "clog_dependencies": [
         27627,
         28270
@@ -13208,7 +13723,9 @@
     },
     "smoke ancient sceptre": {
       "name": "smoke ancient sceptre",
-      "item_id": 28264,
+      "item_ids": [
+        28264
+      ],
       "clog_dependencies": [
         28274,
         27627
@@ -13216,7 +13733,9 @@
     },
     "shadow ancient sceptre": {
       "name": "shadow ancient sceptre",
-      "item_id": 28266,
+      "item_ids": [
+        28266
+      ],
       "clog_dependencies": [
         28272,
         27627
@@ -13224,98 +13743,126 @@
     },
     "dragon 2h sword (cr)": {
       "name": "dragon 2h sword (cr)",
-      "item_id": 28051,
+      "item_ids": [
+        28051
+      ],
       "clog_dependencies": [
         7158
       ]
     },
     "dragon boots (cr)": {
       "name": "dragon boots (cr)",
-      "item_id": 28055,
+      "item_ids": [
+        28055
+      ],
       "clog_dependencies": [
         11840
       ]
     },
     "dragon chainbody (cr)": {
       "name": "dragon chainbody (cr)",
-      "item_id": 28065,
+      "item_ids": [
+        28065
+      ],
       "clog_dependencies": [
         3140
       ]
     },
     "dragon claws (cr)": {
       "name": "dragon claws (cr)",
-      "item_id": 28039,
+      "item_ids": [
+        28039
+      ],
       "clog_dependencies": [
         13652
       ]
     },
     "dragon crossbow (cr)": {
       "name": "dragon crossbow (cr)",
-      "item_id": 28053,
+      "item_ids": [
+        28053
+      ],
       "clog_dependencies": [
         21918
       ]
     },
     "dragon spear (cr)": {
       "name": "dragon spear (cr)",
-      "item_id": 28041,
+      "item_ids": [
+        28041
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "dragon spear (p)(cr)": {
       "name": "dragon spear (p)(cr)",
-      "item_id": 28043,
+      "item_ids": [
+        28043
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "dragon spear (p+)(cr)": {
       "name": "dragon spear (p+)(cr)",
-      "item_id": 28045,
+      "item_ids": [
+        28045
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "dragon spear (p++)(cr)": {
       "name": "dragon spear (p++)(cr)",
-      "item_id": 28047,
+      "item_ids": [
+        28047
+      ],
       "clog_dependencies": [
         1249
       ]
     },
     "dragon sq shield (cr)": {
       "name": "dragon sq shield (cr)",
-      "item_id": 28059,
+      "item_ids": [
+        28059
+      ],
       "clog_dependencies": [
         2366
       ]
     },
     "dragon sword (cr)": {
       "name": "dragon sword (cr)",
-      "item_id": 28029,
+      "item_ids": [
+        28029
+      ],
       "clog_dependencies": [
         21009
       ]
     },
     "dragon warhammer (cr)": {
       "name": "dragon warhammer (cr)",
-      "item_id": 28035,
+      "item_ids": [
+        28035
+      ],
       "clog_dependencies": [
         13576
       ]
     },
     "fighter torso (or)": {
       "name": "fighter torso (or)",
-      "item_id": 28067,
+      "item_ids": [
+        28067
+      ],
       "clog_dependencies": [
         10551
       ]
     },
     "forestry basket": {
       "name": "forestry basket",
-      "item_id": 28143,
+      "item_ids": [
+        28143
+      ],
       "clog_dependencies": [
         28146,
         28140
@@ -13323,70 +13870,90 @@
     },
     "sturdy harness": {
       "name": "sturdy harness",
-      "item_id": 28149,
+      "item_ids": [
+        28149
+      ],
       "clog_dependencies": [
         28146
       ]
     },
     "clothes pouch": {
       "name": "clothes pouch",
-      "item_id": 28163,
+      "item_ids": [
+        28163
+      ],
       "clog_dependencies": [
         28166
       ]
     },
     "bronze felling axe": {
       "name": "bronze felling axe",
-      "item_id": 28196,
+      "item_ids": [
+        28196
+      ],
       "clog_dependencies": [
         28177
       ]
     },
     "iron felling axe": {
       "name": "iron felling axe",
-      "item_id": 28199,
+      "item_ids": [
+        28199
+      ],
       "clog_dependencies": [
         28177
       ]
     },
     "steel felling axe": {
       "name": "steel felling axe",
-      "item_id": 28202,
+      "item_ids": [
+        28202
+      ],
       "clog_dependencies": [
         28177
       ]
     },
     "black felling axe": {
       "name": "black felling axe",
-      "item_id": 28205,
+      "item_ids": [
+        28205
+      ],
       "clog_dependencies": [
         28177
       ]
     },
     "mithril felling axe": {
       "name": "mithril felling axe",
-      "item_id": 28208,
+      "item_ids": [
+        28208
+      ],
       "clog_dependencies": [
         28177
       ]
     },
     "adamant felling axe": {
       "name": "adamant felling axe",
-      "item_id": 28211,
+      "item_ids": [
+        28211
+      ],
       "clog_dependencies": [
         28177
       ]
     },
     "rune felling axe": {
       "name": "rune felling axe",
-      "item_id": 28214,
+      "item_ids": [
+        28214
+      ],
       "clog_dependencies": [
         28177
       ]
     },
     "dragon felling axe": {
       "name": "dragon felling axe",
-      "item_id": 28217,
+      "item_ids": [
+        28217
+      ],
       "clog_dependencies": [
         28177,
         6739
@@ -13394,7 +13961,9 @@
     },
     "3rd age felling axe": {
       "name": "3rd age felling axe",
-      "item_id": 28226,
+      "item_ids": [
+        28226
+      ],
       "clog_dependencies": [
         28177,
         20011
@@ -13402,7 +13971,9 @@
     },
     "crystal felling axe": {
       "name": "crystal felling axe",
-      "item_id": 28220,
+      "item_ids": [
+        28220
+      ],
       "clog_dependencies": [
         28177,
         23953,
@@ -13411,7 +13982,9 @@
     },
     "sanguine torva full helm": {
       "name": "sanguine torva full helm",
-      "item_id": 28254,
+      "item_ids": [
+        28254
+      ],
       "clog_dependencies": [
         26376,
         11832
@@ -13419,7 +13992,9 @@
     },
     "sanguine torva platebody": {
       "name": "sanguine torva platebody",
-      "item_id": 28256,
+      "item_ids": [
+        28256
+      ],
       "clog_dependencies": [
         11832,
         26378
@@ -13427,7 +14002,9 @@
     },
     "sanguine torva platelegs": {
       "name": "sanguine torva platelegs",
-      "item_id": 28258,
+      "item_ids": [
+        28258
+      ],
       "clog_dependencies": [
         11832,
         26380
@@ -13435,7 +14012,9 @@
     },
     "ultor icon": {
       "name": "ultor icon",
-      "item_id": 28287,
+      "item_ids": [
+        28287
+      ],
       "clog_dependencies": [
         6737,
         28285
@@ -13443,7 +14022,9 @@
     },
     "venator icon": {
       "name": "venator icon",
-      "item_id": 28289,
+      "item_ids": [
+        28289
+      ],
       "clog_dependencies": [
         28283,
         6733
@@ -13451,7 +14032,9 @@
     },
     "magus icon": {
       "name": "magus icon",
-      "item_id": 28291,
+      "item_ids": [
+        28291
+      ],
       "clog_dependencies": [
         28281,
         6731
@@ -13459,7 +14042,9 @@
     },
     "bellator icon": {
       "name": "bellator icon",
-      "item_id": 28293,
+      "item_ids": [
+        28293
+      ],
       "clog_dependencies": [
         6735,
         28279
@@ -13467,81 +14052,100 @@
     },
     "berserker icon": {
       "name": "berserker icon",
-      "item_id": 28295,
+      "item_ids": [
+        28295
+      ],
       "clog_dependencies": [
         6737
       ]
     },
     "archer icon": {
       "name": "archer icon",
-      "item_id": 28298,
+      "item_ids": [
+        28298
+      ],
       "clog_dependencies": [
         6733
       ]
     },
     "warrior icon": {
       "name": "warrior icon",
-      "item_id": 28301,
+      "item_ids": [
+        28301
+      ],
       "clog_dependencies": [
         6735
       ]
     },
     "seers icon": {
       "name": "seers icon",
-      "item_id": 28304,
+      "item_ids": [
+        28304
+      ],
       "clog_dependencies": [
         6731
       ]
     },
     "blazing blowpipe (empty)": {
       "name": "blazing blowpipe (empty)",
-      "item_id": 28687,
+      "item_ids": [
+        28687
+      ],
       "clog_dependencies": [
         12922
       ]
     },
     "dinh's blazing bulwark": {
       "name": "dinh's blazing bulwark",
-      "item_id": 28682,
-      "clog_dependencies": [
-        21015
-      ],
       "item_ids": [
         28682,
         31132
+      ],
+      "clog_dependencies": [
+        21015
       ]
     },
     "bone mace": {
       "name": "bone mace",
-      "item_id": 28792,
+      "item_ids": [
+        28792
+      ],
       "clog_dependencies": [
         28798
       ]
     },
     "bone shortbow": {
       "name": "bone shortbow",
-      "item_id": 28794,
+      "item_ids": [
+        28794
+      ],
       "clog_dependencies": [
         28798
       ]
     },
     "bone staff": {
       "name": "bone staff",
-      "item_id": 28796,
+      "item_ids": [
+        28796
+      ],
       "clog_dependencies": [
         28798
       ]
     },
     "zombie axe": {
       "name": "zombie axe",
-      "item_id": 28810,
+      "item_ids": [
+        28810
+      ],
       "clog_dependencies": [
         28813
       ]
     },
     "echo boots": {
       "name": "echo boots",
-      "item_id": 28945,
+      "item_ids": [
+        28945
+      ],
       "clog_dependencies": [
         21730,
         11836,
@@ -13550,14 +14154,18 @@
     },
     "sunfire rune": {
       "name": "sunfire rune",
-      "item_id": 28929,
+      "item_ids": [
+        28929
+      ],
       "clog_dependencies": [
         28924
       ]
     },
     "searing page": {
       "name": "searing page",
-      "item_id": 28931,
+      "item_ids": [
+        28931
+      ],
       "clog_dependencies": [
         28924,
         20718
@@ -13565,7 +14173,9 @@
     },
     "emberlight": {
       "name": "emberlight",
-      "item_id": 29589,
+      "item_ids": [
+        29589
+      ],
       "clog_dependencies": [
         29580,
         19677
@@ -13573,7 +14183,9 @@
     },
     "dizana's max hood": {
       "name": "dizana's max hood",
-      "item_id": 28904,
+      "item_ids": [
+        28904
+      ],
       "clog_dependencies": [
         28947,
         28924
@@ -13581,21 +14193,27 @@
     },
     "jug of blessed sunfire wine": {
       "name": "jug of blessed sunfire wine",
-      "item_id": 29384,
+      "item_ids": [
+        29384
+      ],
       "clog_dependencies": [
         28924
       ]
     },
     "jug of sunfire wine": {
       "name": "jug of sunfire wine",
-      "item_id": 29382,
+      "item_ids": [
+        29382
+      ],
       "clog_dependencies": [
         28924
       ]
     },
     "blessed dizana's quiver": {
       "name": "blessed dizana's quiver",
-      "item_id": 28955,
+      "item_ids": [
+        28955
+      ],
       "clog_dependencies": [
         28947,
         28924
@@ -13603,7 +14221,9 @@
     },
     "dizana's max cape": {
       "name": "dizana's max cape",
-      "item_id": 28902,
+      "item_ids": [
+        28902
+      ],
       "clog_dependencies": [
         28947,
         28924
@@ -13611,28 +14231,36 @@
     },
     "burning claws": {
       "name": "burning claws",
-      "item_id": 29577,
+      "item_ids": [
+        29577
+      ],
       "clog_dependencies": [
         29574
       ]
     },
     "scorching bow": {
       "name": "scorching bow",
-      "item_id": 29591,
+      "item_ids": [
+        29591
+      ],
       "clog_dependencies": [
         29580
       ]
     },
     "purging staff": {
       "name": "purging staff",
-      "item_id": 29594,
+      "item_ids": [
+        29594
+      ],
       "clog_dependencies": [
         29580
       ]
     },
     "noxious halberd": {
       "name": "noxious halberd",
-      "item_id": 29796,
+      "item_ids": [
+        29796
+      ],
       "clog_dependencies": [
         29792,
         29794,
@@ -13641,7 +14269,9 @@
     },
     "amulet of rancour": {
       "name": "amulet of rancour",
-      "item_id": 29801,
+      "item_ids": [
+        29801
+      ],
       "clog_dependencies": [
         19529,
         6573,
@@ -13650,28 +14280,36 @@
     },
     "extended anti-venom+(1)": {
       "name": "extended anti-venom+(1)",
-      "item_id": 29833,
+      "item_ids": [
+        29833
+      ],
       "clog_dependencies": [
         29784
       ]
     },
     "extended anti-venom+(2)": {
       "name": "extended anti-venom+(2)",
-      "item_id": 29830,
+      "item_ids": [
+        29830
+      ],
       "clog_dependencies": [
         29784
       ]
     },
     "extended anti-venom+(3)": {
       "name": "extended anti-venom+(3)",
-      "item_id": 29827,
+      "item_ids": [
+        29827
+      ],
       "clog_dependencies": [
         29784
       ]
     },
     "extended anti-venom+(4)": {
       "name": "extended anti-venom+(4)",
-      "item_id": 29824,
+      "item_ids": [
+        29824
+      ],
       "clog_dependencies": [
         29784,
         12934
@@ -13679,7 +14317,9 @@
     },
     "armadyl godsword (deadman)": {
       "name": "armadyl godsword (deadman)",
-      "item_id": 29605,
+      "item_ids": [
+        29605
+      ],
       "clog_dependencies": [
         11822,
         11810,
@@ -13689,7 +14329,9 @@
     },
     "voidwaker (deadman)": {
       "name": "voidwaker (deadman)",
-      "item_id": 29607,
+      "item_ids": [
+        29607
+      ],
       "clog_dependencies": [
         27681,
         27684,
@@ -13698,14 +14340,18 @@
     },
     "dark bow (deadman)": {
       "name": "dark bow (deadman)",
-      "item_id": 29611,
+      "item_ids": [
+        29611
+      ],
       "clog_dependencies": [
         11235
       ]
     },
     "volatile nightmare staff (deadman)": {
       "name": "volatile nightmare staff (deadman)",
-      "item_id": 29609,
+      "item_ids": [
+        29609
+      ],
       "clog_dependencies": [
         24514,
         24422
@@ -13713,117 +14359,146 @@
     },
     "araxyte slayer helmet (i)": {
       "name": "araxyte slayer helmet (i)",
-      "item_id": 29818,
-      "clog_dependencies": [
-        29788
-      ],
       "item_ids": [
         29818,
         29820,
         29822
+      ],
+      "clog_dependencies": [
+        29788
       ]
     },
     "araxyte slayer helmet": {
       "name": "araxyte slayer helmet",
-      "item_id": 29816,
+      "item_ids": [
+        29816
+      ],
       "clog_dependencies": [
         29788
       ]
     },
     "hueycoatl hide body": {
       "name": "hueycoatl hide body",
-      "item_id": 30076,
+      "item_ids": [
+        30076
+      ],
       "clog_dependencies": [
         30085
       ]
     },
     "hueycoatl hide chaps": {
       "name": "hueycoatl hide chaps",
-      "item_id": 30079,
+      "item_ids": [
+        30079
+      ],
       "clog_dependencies": [
         30085
       ]
     },
     "hueycoatl hide coif": {
       "name": "hueycoatl hide coif",
-      "item_id": 30073,
+      "item_ids": [
+        30073
+      ],
       "clog_dependencies": [
         30085
       ]
     },
     "hueycoatl hide vambraces": {
       "name": "hueycoatl hide vambraces",
-      "item_id": 30082,
+      "item_ids": [
+        30082
+      ],
       "clog_dependencies": [
         30085
       ]
     },
     "zombie helmet": {
       "name": "zombie helmet",
-      "item_id": 30321,
+      "item_ids": [
+        30321
+      ],
       "clog_dependencies": [
         30324
       ]
     },
     "echo ahrim's hood": {
       "name": "echo ahrim's hood",
-      "item_id": 30445,
+      "item_ids": [
+        30445
+      ],
       "clog_dependencies": [
         4708
       ]
     },
     "echo ahrim's robeskirt": {
       "name": "echo ahrim's robeskirt",
-      "item_id": 30449,
+      "item_ids": [
+        30449
+      ],
       "clog_dependencies": [
         4714
       ]
     },
     "echo ahrim's robetop": {
       "name": "echo ahrim's robetop",
-      "item_id": 30447,
+      "item_ids": [
+        30447
+      ],
       "clog_dependencies": [
         4712
       ]
     },
     "echo venator bow": {
       "name": "echo venator bow",
-      "item_id": 30434,
+      "item_ids": [
+        30434
+      ],
       "clog_dependencies": [
         27614
       ]
     },
     "echo virtus mask": {
       "name": "echo virtus mask",
-      "item_id": 30437,
+      "item_ids": [
+        30437
+      ],
       "clog_dependencies": [
         26241
       ]
     },
     "echo virtus robe bottom": {
       "name": "echo virtus robe bottom",
-      "item_id": 30441,
+      "item_ids": [
+        30441
+      ],
       "clog_dependencies": [
         26245
       ]
     },
     "echo virtus robe top": {
       "name": "echo virtus robe top",
-      "item_id": 30439,
+      "item_ids": [
+        30439
+      ],
       "clog_dependencies": [
         26243
       ]
     },
     "echo ahrim's staff": {
       "name": "echo ahrim's staff",
-      "item_id": 30568,
+      "item_ids": [
+        30568
+      ],
       "clog_dependencies": [
         4710
       ]
     },
     "twinflame staff": {
       "name": "twinflame staff",
-      "item_id": 30634,
+      "item_ids": [
+        30634
+      ],
       "clog_dependencies": [
         30628,
         30631
@@ -13831,21 +14506,27 @@
     },
     "rosewood blowpipe (empty)": {
       "name": "rosewood blowpipe (empty)",
-      "item_id": 31585,
+      "item_ids": [
+        31585
+      ],
       "clog_dependencies": [
         31572
       ]
     },
     "stuffed huge halibut": {
       "name": "stuffed huge halibut",
-      "item_id": 31422,
+      "item_ids": [
+        31422
+      ],
       "clog_dependencies": [
         31420
       ]
     },
     "confliction gauntlets": {
       "name": "confliction gauntlets",
-      "item_id": 31106,
+      "item_ids": [
+        31106
+      ],
       "clog_dependencies": [
         31109,
         31111,
@@ -13855,126 +14536,162 @@
     },
     "radiant oathplate chest": {
       "name": "radiant oathplate chest",
-      "item_id": 30779,
+      "item_ids": [
+        30779
+      ],
       "clog_dependencies": [
         30753
       ]
     },
     "radiant oathplate helm": {
       "name": "radiant oathplate helm",
-      "item_id": 30777,
+      "item_ids": [
+        30777
+      ],
       "clog_dependencies": [
         30750
       ]
     },
     "radiant oathplate legs": {
       "name": "radiant oathplate legs",
-      "item_id": 30781,
+      "item_ids": [
+        30781
+      ],
       "clog_dependencies": [
         30756
       ]
     },
     "keris partisan of amascut": {
       "name": "keris partisan of amascut",
-      "item_id": 30891,
+      "item_ids": [
+        30891
+      ],
       "clog_dependencies": [
         30893
       ]
     },
     "camphor blowpipe (empty)": {
       "name": "camphor blowpipe (empty)",
-      "item_id": 31577,
+      "item_ids": [
+        31577
+      ],
       "clog_dependencies": [
         31572
       ]
     },
     "ironwood blowpipe (empty)": {
       "name": "ironwood blowpipe (empty)",
-      "item_id": 31581,
+      "item_ids": [
+        31581
+      ],
       "clog_dependencies": [
         31572
       ]
     },
     "stuffed purplefin": {
       "name": "stuffed purplefin",
-      "item_id": 31426,
+      "item_ids": [
+        31426
+      ],
       "clog_dependencies": [
         31424
       ]
     },
     "stuffed giant blue krill": {
       "name": "stuffed giant blue krill",
-      "item_id": 31410,
+      "item_ids": [
+        31410
+      ],
       "clog_dependencies": [
         31408
       ]
     },
     "stuffed golden haddock": {
       "name": "stuffed golden haddock",
-      "item_id": 31414,
+      "item_ids": [
+        31414
+      ],
       "clog_dependencies": [
         31412
       ]
     },
     "stuffed orangefin": {
       "name": "stuffed orangefin",
-      "item_id": 31418,
+      "item_ids": [
+        31418
+      ],
       "clog_dependencies": [
         31416
       ]
     },
     "stuffed swift marlin": {
       "name": "stuffed swift marlin",
-      "item_id": 31430,
+      "item_ids": [
+        31430
+      ],
       "clog_dependencies": [
         31428
       ]
     },
     "large dragon keel parts": {
       "name": "large dragon keel parts",
-      "item_id": 32038,
+      "item_ids": [
+        32038
+      ],
       "clog_dependencies": [
         31996
       ]
     },
     "rosewood repair kit": {
       "name": "rosewood repair kit",
-      "item_id": 31982,
+      "item_ids": [
+        31982
+      ],
       "clog_dependencies": [
         31406
       ]
     },
     "dragon keel parts": {
       "name": "dragon keel parts",
-      "item_id": 32017,
+      "item_ids": [
+        32017
+      ],
       "clog_dependencies": [
         31996
       ]
     },
     "atlatl dart tips": {
       "name": "atlatl dart tips",
-      "item_id": 30998,
+      "item_ids": [
+        30998
+      ],
       "clog_dependencies": [
         31086
       ]
     },
     "atlatl dart shaft": {
       "name": "atlatl dart shaft",
-      "item_id": 31004,
+      "item_ids": [
+        31004
+      ],
       "clog_dependencies": [
         31032
       ]
     },
     "headless atlatl dart": {
       "name": "headless atlatl dart",
-      "item_id": 31010,
+      "item_ids": [
+        31010
+      ],
       "clog_dependencies": [
         31032
       ]
     },
     "greenman carving": {
       "name": "greenman carving",
-      "item_id": 31024,
+      "item_ids": [
+        31024
+      ],
       "clog_dependencies": [
         31032,
         31034
@@ -13982,7 +14699,9 @@
     },
     "greenman statue": {
       "name": "greenman statue",
-      "item_id": 31027,
+      "item_ids": [
+        31027
+      ],
       "clog_dependencies": [
         31032,
         31034
@@ -13990,49 +14709,63 @@
     },
     "greenman mask (normal)": {
       "name": "greenman mask (normal)",
-      "item_id": 31037,
+      "item_ids": [
+        31037
+      ],
       "clog_dependencies": [
         31034
       ]
     },
     "greenman mask (oak)": {
       "name": "greenman mask (oak)",
-      "item_id": 31038,
+      "item_ids": [
+        31038
+      ],
       "clog_dependencies": [
         31034
       ]
     },
     "greenman mask (willow)": {
       "name": "greenman mask (willow)",
-      "item_id": 31039,
+      "item_ids": [
+        31039
+      ],
       "clog_dependencies": [
         31034
       ]
     },
     "greenman mask (maple)": {
       "name": "greenman mask (maple)",
-      "item_id": 31040,
+      "item_ids": [
+        31040
+      ],
       "clog_dependencies": [
         31034
       ]
     },
     "greenman mask (yew)": {
       "name": "greenman mask (yew)",
-      "item_id": 31041,
+      "item_ids": [
+        31041
+      ],
       "clog_dependencies": [
         31034
       ]
     },
     "greenman mask (magic)": {
       "name": "greenman mask (magic)",
-      "item_id": 31042,
+      "item_ids": [
+        31042
+      ],
       "clog_dependencies": [
         31034
       ]
     },
     "avernic treads (max)": {
       "name": "avernic treads (max)",
-      "item_id": 31097,
+      "item_ids": [
+        31097
+      ],
       "clog_dependencies": [
         11840,
         31111,
@@ -14046,7 +14779,9 @@
     },
     "avernic treads (pr)": {
       "name": "avernic treads (pr)",
-      "item_id": 31091,
+      "item_ids": [
+        31091
+      ],
       "clog_dependencies": [
         31088,
         11840,
@@ -14056,7 +14791,9 @@
     },
     "avernic treads (pe)": {
       "name": "avernic treads (pe)",
-      "item_id": 31092,
+      "item_ids": [
+        31092
+      ],
       "clog_dependencies": [
         31088,
         2577,
@@ -14066,7 +14803,9 @@
     },
     "avernic treads (et)": {
       "name": "avernic treads (et)",
-      "item_id": 31093,
+      "item_ids": [
+        31093
+      ],
       "clog_dependencies": [
         31088,
         31111,
@@ -14076,7 +14815,9 @@
     },
     "avernic treads (pr)(pe)": {
       "name": "avernic treads (pr)(pe)",
-      "item_id": 31094,
+      "item_ids": [
+        31094
+      ],
       "clog_dependencies": [
         31088,
         11840,
@@ -14088,7 +14829,9 @@
     },
     "avernic treads (pr)(et)": {
       "name": "avernic treads (pr)(et)",
-      "item_id": 31095,
+      "item_ids": [
+        31095
+      ],
       "clog_dependencies": [
         31088,
         11840,
@@ -14100,7 +14843,9 @@
     },
     "avernic treads (pe)(et)": {
       "name": "avernic treads (pe)(et)",
-      "item_id": 31096,
+      "item_ids": [
+        31096
+      ],
       "clog_dependencies": [
         31088,
         2577,
@@ -14112,45 +14857,51 @@
     },
     "belle's folly": {
       "name": "belle's folly",
-      "item_id": 31248,
+      "item_ids": [
+        31248
+      ],
       "clog_dependencies": [
         31245
       ]
     },
     "aquanite hopper": {
       "name": "aquanite hopper",
-      "item_id": 32879,
+      "item_ids": [
+        32879
+      ],
       "clog_dependencies": [
         32876
       ]
     },
     "narwhal horn knife": {
       "name": "narwhal horn knife",
-      "item_id": 31957,
+      "item_ids": [
+        31957
+      ],
       "clog_dependencies": [
         31954
       ]
     },
     "decorative sword (l)": {
       "name": "decorative sword (l)",
-      "item_id": 24157,
+      "item_ids": [
+        24157
+      ],
       "clog_dependencies": [
         4508
       ]
     },
     "decorative sword (broken)": {
       "name": "decorative sword (broken)",
-      "item_id": 20483,
+      "item_ids": [
+        20483
+      ],
       "clog_dependencies": [
         4508
       ]
     },
     "decorative armour (l)": {
       "name": "decorative armour (l)",
-      "item_id": 24158,
-      "clog_dependencies": [
-        11901
-      ],
       "item_ids": [
         24158,
         24159,
@@ -14161,14 +14912,13 @@
         24166,
         24167,
         24168
+      ],
+      "clog_dependencies": [
+        11901
       ]
     },
     "decorative armour (broken)": {
       "name": "decorative armour (broken)",
-      "item_id": 20485,
-      "clog_dependencies": [
-        11901
-      ],
       "item_ids": [
         20485,
         20487,
@@ -14179,638 +14929,807 @@
         20501,
         20503,
         20505
+      ],
+      "clog_dependencies": [
+        11901
       ]
     },
     "decorative helm (l)": {
       "name": "decorative helm (l)",
-      "item_id": 24160,
+      "item_ids": [
+        24160
+      ],
       "clog_dependencies": [
         4511
       ]
     },
     "decorative helm (broken)": {
       "name": "decorative helm (broken)",
-      "item_id": 20489,
+      "item_ids": [
+        20489
+      ],
       "clog_dependencies": [
         4511
       ]
     },
     "decorative shield (l)": {
       "name": "decorative shield (l)",
-      "item_id": 24161,
+      "item_ids": [
+        24161
+      ],
       "clog_dependencies": [
         4512
       ]
     },
     "decorative shield (broken)": {
       "name": "decorative shield (broken)",
-      "item_id": 20491,
+      "item_ids": [
+        20491
+      ],
       "clog_dependencies": [
         4512
       ]
     },
     "fire cape (l)": {
       "name": "fire cape (l)",
-      "item_id": 24223,
+      "item_ids": [
+        24223
+      ],
       "clog_dependencies": [
         6570
       ]
     },
     "fire cape (broken)": {
       "name": "fire cape (broken)",
-      "item_id": 20445,
+      "item_ids": [
+        20445
+      ],
       "clog_dependencies": [
         6570
       ]
     },
     "void knight top (l)": {
       "name": "void knight top (l)",
-      "item_id": 24177,
+      "item_ids": [
+        24177
+      ],
       "clog_dependencies": [
         8839
       ]
     },
     "void knight top (broken)": {
       "name": "void knight top (broken)",
-      "item_id": 20465,
+      "item_ids": [
+        20465
+      ],
       "clog_dependencies": [
         8839
       ]
     },
     "void knight robe (l)": {
       "name": "void knight robe (l)",
-      "item_id": 24179,
+      "item_ids": [
+        24179
+      ],
       "clog_dependencies": [
         8840
       ]
     },
     "void knight robe (broken)": {
       "name": "void knight robe (broken)",
-      "item_id": 20469,
+      "item_ids": [
+        20469
+      ],
       "clog_dependencies": [
         8840
       ]
     },
     "void knight mace (l)": {
       "name": "void knight mace (l)",
-      "item_id": 24181,
+      "item_ids": [
+        24181
+      ],
       "clog_dependencies": [
         8841
       ]
     },
     "void knight mace (broken)": {
       "name": "void knight mace (broken)",
-      "item_id": 20473,
+      "item_ids": [
+        20473
+      ],
       "clog_dependencies": [
         8841
       ]
     },
     "void knight gloves (l)": {
       "name": "void knight gloves (l)",
-      "item_id": 24182,
+      "item_ids": [
+        24182
+      ],
       "clog_dependencies": [
         8842
       ]
     },
     "void knight gloves (broken)": {
       "name": "void knight gloves (broken)",
-      "item_id": 20475,
+      "item_ids": [
+        20475
+      ],
       "clog_dependencies": [
         8842
       ]
     },
     "bronze defender (l)": {
       "name": "bronze defender (l)",
-      "item_id": 24136,
+      "item_ids": [
+        24136
+      ],
       "clog_dependencies": [
         8844
       ]
     },
     "bronze defender (broken)": {
       "name": "bronze defender (broken)",
-      "item_id": 20449,
+      "item_ids": [
+        20449
+      ],
       "clog_dependencies": [
         8844
       ]
     },
     "iron defender (l)": {
       "name": "iron defender (l)",
-      "item_id": 24137,
+      "item_ids": [
+        24137
+      ],
       "clog_dependencies": [
         8845
       ]
     },
     "iron defender (broken)": {
       "name": "iron defender (broken)",
-      "item_id": 20451,
+      "item_ids": [
+        20451
+      ],
       "clog_dependencies": [
         8845
       ]
     },
     "steel defender (l)": {
       "name": "steel defender (l)",
-      "item_id": 24138,
+      "item_ids": [
+        24138
+      ],
       "clog_dependencies": [
         8846
       ]
     },
     "steel defender (broken)": {
       "name": "steel defender (broken)",
-      "item_id": 20453,
+      "item_ids": [
+        20453
+      ],
       "clog_dependencies": [
         8846
       ]
     },
     "black defender (l)": {
       "name": "black defender (l)",
-      "item_id": 24139,
+      "item_ids": [
+        24139
+      ],
       "clog_dependencies": [
         8847
       ]
     },
     "black defender (broken)": {
       "name": "black defender (broken)",
-      "item_id": 20455,
+      "item_ids": [
+        20455
+      ],
       "clog_dependencies": [
         8847
       ]
     },
     "mithril defender (l)": {
       "name": "mithril defender (l)",
-      "item_id": 24140,
+      "item_ids": [
+        24140
+      ],
       "clog_dependencies": [
         8848
       ]
     },
     "mithril defender (broken)": {
       "name": "mithril defender (broken)",
-      "item_id": 20457,
+      "item_ids": [
+        20457
+      ],
       "clog_dependencies": [
         8848
       ]
     },
     "adamant defender (l)": {
       "name": "adamant defender (l)",
-      "item_id": 24141,
+      "item_ids": [
+        24141
+      ],
       "clog_dependencies": [
         8849
       ]
     },
     "adamant defender (broken)": {
       "name": "adamant defender (broken)",
-      "item_id": 20459,
+      "item_ids": [
+        20459
+      ],
       "clog_dependencies": [
         8849
       ]
     },
     "rune defender (l)": {
       "name": "rune defender (l)",
-      "item_id": 24142,
+      "item_ids": [
+        24142
+      ],
       "clog_dependencies": [
         8850
       ]
     },
     "rune defender (broken)": {
       "name": "rune defender (broken)",
-      "item_id": 20461,
+      "item_ids": [
+        20461
+      ],
       "clog_dependencies": [
         8850
       ]
     },
     "healer hat (l)": {
       "name": "healer hat (l)",
-      "item_id": 24172,
+      "item_ids": [
+        24172
+      ],
       "clog_dependencies": [
         10547
       ]
     },
     "healer hat (broken)": {
       "name": "healer hat (broken)",
-      "item_id": 20511,
+      "item_ids": [
+        20511
+      ],
       "clog_dependencies": [
         10547
       ]
     },
     "fighter hat (l)": {
       "name": "fighter hat (l)",
-      "item_id": 24173,
+      "item_ids": [
+        24173
+      ],
       "clog_dependencies": [
         10548
       ]
     },
     "fighter hat (broken)": {
       "name": "fighter hat (broken)",
-      "item_id": 20507,
+      "item_ids": [
+        20507
+      ],
       "clog_dependencies": [
         10548
       ]
     },
     "runner hat (l)": {
       "name": "runner hat (l)",
-      "item_id": 24533,
+      "item_ids": [
+        24533
+      ],
       "clog_dependencies": [
         10549
       ]
     },
     "runner hat (broken)": {
       "name": "runner hat (broken)",
-      "item_id": 24531,
+      "item_ids": [
+        24531
+      ],
       "clog_dependencies": [
         10549
       ]
     },
     "ranger hat (l)": {
       "name": "ranger hat (l)",
-      "item_id": 24174,
+      "item_ids": [
+        24174
+      ],
       "clog_dependencies": [
         10550
       ]
     },
     "ranger hat (broken)": {
       "name": "ranger hat (broken)",
-      "item_id": 20509,
+      "item_ids": [
+        20509
+      ],
       "clog_dependencies": [
         10550
       ]
     },
     "fighter torso (l)": {
       "name": "fighter torso (l)",
-      "item_id": 24175,
+      "item_ids": [
+        24175
+      ],
       "clog_dependencies": [
         10551
       ]
     },
     "fighter torso (broken)": {
       "name": "fighter torso (broken)",
-      "item_id": 20513,
+      "item_ids": [
+        20513
+      ],
       "clog_dependencies": [
         10551
       ]
     },
     "penance skirt (l)": {
       "name": "penance skirt (l)",
-      "item_id": 24176,
+      "item_ids": [
+        24176
+      ],
       "clog_dependencies": [
         10555
       ]
     },
     "penance skirt (broken)": {
       "name": "penance skirt (broken)",
-      "item_id": 20515,
+      "item_ids": [
+        20515
+      ],
       "clog_dependencies": [
         10555
       ]
     },
     "void mage helm (l)": {
       "name": "void mage helm (l)",
-      "item_id": 24183,
+      "item_ids": [
+        24183
+      ],
       "clog_dependencies": [
         11663
       ]
     },
     "void mage helm (broken)": {
       "name": "void mage helm (broken)",
-      "item_id": 20477,
+      "item_ids": [
+        20477
+      ],
       "clog_dependencies": [
         11663
       ]
     },
     "void ranger helm (l)": {
       "name": "void ranger helm (l)",
-      "item_id": 24184,
+      "item_ids": [
+        24184
+      ],
       "clog_dependencies": [
         11664
       ]
     },
     "void ranger helm (broken)": {
       "name": "void ranger helm (broken)",
-      "item_id": 20479,
+      "item_ids": [
+        20479
+      ],
       "clog_dependencies": [
         11664
       ]
     },
     "void melee helm (l)": {
       "name": "void melee helm (l)",
-      "item_id": 24185,
+      "item_ids": [
+        24185
+      ],
       "clog_dependencies": [
         11665
       ]
     },
     "void melee helm (broken)": {
       "name": "void melee helm (broken)",
-      "item_id": 20481,
+      "item_ids": [
+        20481
+      ],
       "clog_dependencies": [
         11665
       ]
     },
     "saradomin halo (l)": {
       "name": "saradomin halo (l)",
-      "item_id": 24169,
+      "item_ids": [
+        24169
+      ],
       "clog_dependencies": [
         12637
       ]
     },
     "saradomin halo (broken)": {
       "name": "saradomin halo (broken)",
-      "item_id": 20537,
+      "item_ids": [
+        20537
+      ],
       "clog_dependencies": [
         12637
       ]
     },
     "zamorak halo (l)": {
       "name": "zamorak halo (l)",
-      "item_id": 24170,
+      "item_ids": [
+        24170
+      ],
       "clog_dependencies": [
         12638
       ]
     },
     "zamorak halo (broken)": {
       "name": "zamorak halo (broken)",
-      "item_id": 20539,
+      "item_ids": [
+        20539
+      ],
       "clog_dependencies": [
         12638
       ]
     },
     "guthix halo (l)": {
       "name": "guthix halo (l)",
-      "item_id": 24171,
+      "item_ids": [
+        24171
+      ],
       "clog_dependencies": [
         12639
       ]
     },
     "guthix halo (broken)": {
       "name": "guthix halo (broken)",
-      "item_id": 20541,
+      "item_ids": [
+        20541
+      ],
       "clog_dependencies": [
         12639
       ]
     },
     "dragon defender (l)": {
       "name": "dragon defender (l)",
-      "item_id": 24143,
+      "item_ids": [
+        24143
+      ],
       "clog_dependencies": [
         12954
       ]
     },
     "dragon defender (broken)": {
       "name": "dragon defender (broken)",
-      "item_id": 20463,
+      "item_ids": [
+        20463
+      ],
       "clog_dependencies": [
         12954
       ]
     },
     "elite void top (l)": {
       "name": "elite void top (l)",
-      "item_id": 24178,
+      "item_ids": [
+        24178
+      ],
       "clog_dependencies": [
         13072
       ]
     },
     "elite void top (broken)": {
       "name": "elite void top (broken)",
-      "item_id": 20467,
+      "item_ids": [
+        20467
+      ],
       "clog_dependencies": [
         13072
       ]
     },
     "elite void robe (l)": {
       "name": "elite void robe (l)",
-      "item_id": 24180,
+      "item_ids": [
+        24180
+      ],
       "clog_dependencies": [
         13073
       ]
     },
     "elite void robe (broken)": {
       "name": "elite void robe (broken)",
-      "item_id": 20471,
+      "item_ids": [
+        20471
+      ],
       "clog_dependencies": [
         13073
       ]
     },
     "tome of fire": {
       "name": "tome of fire",
-      "item_id": 20714,
-      "clog_dependencies": [
-        20716
-      ],
       "item_ids": [
         20714,
         27358
+      ],
+      "clog_dependencies": [
+        20716
       ]
     },
     "infernal cape (l)": {
       "name": "infernal cape (l)",
-      "item_id": 24224,
+      "item_ids": [
+        24224
+      ],
       "clog_dependencies": [
         21295
       ]
     },
     "infernal cape (broken)": {
       "name": "infernal cape (broken)",
-      "item_id": 21287,
+      "item_ids": [
+        21287
+      ],
       "clog_dependencies": [
         21295
       ]
     },
     "master scroll book": {
       "name": "master scroll book",
-      "item_id": 21389,
+      "item_ids": [
+        21389
+      ],
       "clog_dependencies": [
         21387
       ]
     },
     "bracelet of ethereum": {
       "name": "bracelet of ethereum",
-      "item_id": 21816,
+      "item_ids": [
+        21816
+      ],
       "clog_dependencies": [
         21817
       ]
     },
     "sanguinesti staff": {
       "name": "sanguinesti staff",
-      "item_id": 22323,
+      "item_ids": [
+        22323
+      ],
       "clog_dependencies": [
         22481
       ]
     },
     "scythe of vitur": {
       "name": "scythe of vitur",
-      "item_id": 22325,
-      "clog_dependencies": [
-        22486
-      ],
       "item_ids": [
         22325,
         22664
+      ],
+      "clog_dependencies": [
+        22486
       ]
     },
     "viggora's chainmace": {
       "name": "viggora's chainmace",
-      "item_id": 22545,
+      "item_ids": [
+        22545
+      ],
       "clog_dependencies": [
         22542
       ]
     },
     "craw's bow": {
       "name": "craw's bow",
-      "item_id": 22550,
+      "item_ids": [
+        22550
+      ],
       "clog_dependencies": [
         22547
       ]
     },
     "thammaron's sceptre": {
       "name": "thammaron's sceptre",
-      "item_id": 22555,
+      "item_ids": [
+        22555
+      ],
       "clog_dependencies": [
         22552
       ]
     },
     "armadyl halo (l)": {
       "name": "armadyl halo (l)",
-      "item_id": 24194,
+      "item_ids": [
+        24194
+      ],
       "clog_dependencies": [
         24192
       ]
     },
     "armadyl halo (broken)": {
       "name": "armadyl halo (broken)",
-      "item_id": 24147,
+      "item_ids": [
+        24147
+      ],
       "clog_dependencies": [
         24192
       ]
     },
     "bandos halo (l)": {
       "name": "bandos halo (l)",
-      "item_id": 24197,
+      "item_ids": [
+        24197
+      ],
       "clog_dependencies": [
         24195
       ]
     },
     "bandos halo (broken)": {
       "name": "bandos halo (broken)",
-      "item_id": 24149,
+      "item_ids": [
+        24149
+      ],
       "clog_dependencies": [
         24195
       ]
     },
     "seren halo (l)": {
       "name": "seren halo (l)",
-      "item_id": 24200,
+      "item_ids": [
+        24200
+      ],
       "clog_dependencies": [
         24198
       ]
     },
     "seren halo (broken)": {
       "name": "seren halo (broken)",
-      "item_id": 24151,
+      "item_ids": [
+        24151
+      ],
       "clog_dependencies": [
         24198
       ]
     },
     "ancient halo (l)": {
       "name": "ancient halo (l)",
-      "item_id": 24203,
+      "item_ids": [
+        24203
+      ],
       "clog_dependencies": [
         24201
       ]
     },
     "ancient halo (broken)": {
       "name": "ancient halo (broken)",
-      "item_id": 24153,
+      "item_ids": [
+        24153
+      ],
       "clog_dependencies": [
         24201
       ]
     },
     "brassica halo (l)": {
       "name": "brassica halo (l)",
-      "item_id": 24206,
+      "item_ids": [
+        24206
+      ],
       "clog_dependencies": [
         24204
       ]
     },
     "brassica halo (broken)": {
       "name": "brassica halo (broken)",
-      "item_id": 24155,
+      "item_ids": [
+        24155
+      ],
       "clog_dependencies": [
         24204
       ]
     },
     "ring of endurance": {
       "name": "ring of endurance",
-      "item_id": 24736,
+      "item_ids": [
+        24736
+      ],
       "clog_dependencies": [
         24844
       ]
     },
     "decorative boots (l)": {
       "name": "decorative boots (l)",
-      "item_id": 25173,
+      "item_ids": [
+        25173
+      ],
       "clog_dependencies": [
         25171
       ]
     },
     "decorative boots (broken)": {
       "name": "decorative boots (broken)",
-      "item_id": 25155,
+      "item_ids": [
+        25155
+      ],
       "clog_dependencies": [
         25171
       ]
     },
     "decorative full helm (l)": {
       "name": "decorative full helm (l)",
-      "item_id": 25176,
+      "item_ids": [
+        25176
+      ],
       "clog_dependencies": [
         25174
       ]
     },
     "decorative full helm (broken)": {
       "name": "decorative full helm (broken)",
-      "item_id": 25157,
+      "item_ids": [
+        25157
+      ],
       "clog_dependencies": [
         25174
       ]
     },
     "celestial ring": {
       "name": "celestial ring",
-      "item_id": 25541,
+      "item_ids": [
+        25541
+      ],
       "clog_dependencies": [
         25539
       ]
     },
     "tome of water": {
       "name": "tome of water",
-      "item_id": 25574,
+      "item_ids": [
+        25574
+      ],
       "clog_dependencies": [
         25576
       ]
     },
     "barronite mace (l)": {
       "name": "barronite mace (l)",
-      "item_id": 25643,
+      "item_ids": [
+        25643
+      ],
       "clog_dependencies": [
         25641
       ]
     },
     "barronite mace (broken)": {
       "name": "barronite mace (broken)",
-      "item_id": 25625,
+      "item_ids": [
+        25625
+      ],
       "clog_dependencies": [
         25641
       ]
     },
     "imcando hammer (broken)": {
       "name": "imcando hammer (broken)",
-      "item_id": 25633,
+      "item_ids": [
+        25633
+      ],
       "clog_dependencies": [
         25644
       ]
     },
     "pharaoh's sceptre": {
       "name": "pharaoh's sceptre",
-      "item_id": 9044,
-      "clog_dependencies": [
-        26945
-      ],
       "item_ids": [
         9044,
         9046,
@@ -14823,200 +15742,259 @@
         13078,
         26948,
         26950
+      ],
+      "clog_dependencies": [
+        26945
       ]
     },
     "tumeken's shadow": {
       "name": "tumeken's shadow",
-      "item_id": 27275,
+      "item_ids": [
+        27275
+      ],
       "clog_dependencies": [
         27277
       ]
     },
     "warped sceptre": {
       "name": "warped sceptre",
-      "item_id": 28585,
+      "item_ids": [
+        28585
+      ],
       "clog_dependencies": [
         28583
       ]
     },
     "tonalztics of ralos": {
       "name": "tonalztics of ralos",
-      "item_id": 28922,
+      "item_ids": [
+        28922
+      ],
       "clog_dependencies": [
         28919
       ]
     },
     "dizana's quiver": {
       "name": "dizana's quiver",
-      "item_id": 28951,
+      "item_ids": [
+        28951
+      ],
       "clog_dependencies": [
         28947
       ]
     },
     "dizana's quiver (uncharged) (l)": {
       "name": "dizana's quiver (uncharged) (l)",
-      "item_id": 28949,
+      "item_ids": [
+        28949
+      ],
       "clog_dependencies": [
         28947
       ]
     },
     "eclipse moon chestplate (broken)": {
       "name": "eclipse moon chestplate (broken)",
-      "item_id": 29049,
+      "item_ids": [
+        29049
+      ],
       "clog_dependencies": [
         29004
       ]
     },
     "eclipse moon tassets (broken)": {
       "name": "eclipse moon tassets (broken)",
-      "item_id": 29052,
+      "item_ids": [
+        29052
+      ],
       "clog_dependencies": [
         29007
       ]
     },
     "eclipse moon helm (broken)": {
       "name": "eclipse moon helm (broken)",
-      "item_id": 29055,
+      "item_ids": [
+        29055
+      ],
       "clog_dependencies": [
         29010
       ]
     },
     "blue moon chestplate (broken)": {
       "name": "blue moon chestplate (broken)",
-      "item_id": 29058,
+      "item_ids": [
+        29058
+      ],
       "clog_dependencies": [
         29013
       ]
     },
     "blue moon tassets (broken)": {
       "name": "blue moon tassets (broken)",
-      "item_id": 29061,
+      "item_ids": [
+        29061
+      ],
       "clog_dependencies": [
         29016
       ]
     },
     "blue moon helm (broken)": {
       "name": "blue moon helm (broken)",
-      "item_id": 29064,
+      "item_ids": [
+        29064
+      ],
       "clog_dependencies": [
         29019
       ]
     },
     "blood moon chestplate (broken)": {
       "name": "blood moon chestplate (broken)",
-      "item_id": 29067,
+      "item_ids": [
+        29067
+      ],
       "clog_dependencies": [
         29022
       ]
     },
     "blood moon tassets (broken)": {
       "name": "blood moon tassets (broken)",
-      "item_id": 29070,
+      "item_ids": [
+        29070
+      ],
       "clog_dependencies": [
         29025
       ]
     },
     "blood moon helm (broken)": {
       "name": "blood moon helm (broken)",
-      "item_id": 29073,
+      "item_ids": [
+        29073
+      ],
       "clog_dependencies": [
         29028
       ]
     },
     "tome of earth": {
       "name": "tome of earth",
-      "item_id": 30064,
+      "item_ids": [
+        30064
+      ],
       "clog_dependencies": [
         30066
       ]
     },
     "giantsoul amulet": {
       "name": "giantsoul amulet",
-      "item_id": 30638,
+      "item_ids": [
+        30638
+      ],
       "clog_dependencies": [
         30637
       ]
     },
     "horn of plenty": {
       "name": "horn of plenty",
-      "item_id": 31241,
+      "item_ids": [
+        31241
+      ],
       "clog_dependencies": [
         31243
       ]
     },
     "toxic blowpipe": {
       "name": "toxic blowpipe",
-      "item_id": 12926,
+      "item_ids": [
+        12926
+      ],
       "clog_dependencies": [
         12922
       ]
     },
     "serpentine helm": {
       "name": "serpentine helm",
-      "item_id": 12931,
+      "item_ids": [
+        12931
+      ],
       "clog_dependencies": [
         12927
       ]
     },
     "fire max cape (l)": {
       "name": "fire max cape (l)",
-      "item_id": 24134,
+      "item_ids": [
+        24134
+      ],
       "clog_dependencies": [
         6570
       ]
     },
     "fire max cape (broken)": {
       "name": "fire max cape (broken)",
-      "item_id": 20447,
+      "item_ids": [
+        20447
+      ],
       "clog_dependencies": [
         6570
       ]
     },
     "infernal max cape (l)": {
       "name": "infernal max cape (l)",
-      "item_id": 24133,
+      "item_ids": [
+        24133
+      ],
       "clog_dependencies": [
         21295
       ]
     },
     "infernal max cape (broken)": {
       "name": "infernal max cape (broken)",
-      "item_id": 21289,
+      "item_ids": [
+        21289
+      ],
       "clog_dependencies": [
         21295
       ]
     },
     "ava's assembler (l)": {
       "name": "ava's assembler (l)",
-      "item_id": 24222,
+      "item_ids": [
+        24222
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "ava's assembler (broken)": {
       "name": "ava's assembler (broken)",
-      "item_id": 21914,
+      "item_ids": [
+        21914
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "assembler max cape (l)": {
       "name": "assembler max cape (l)",
-      "item_id": 24135,
+      "item_ids": [
+        24135
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "assembler max cape (broken)": {
       "name": "assembler max cape (broken)",
-      "item_id": 21916,
+      "item_ids": [
+        21916
+      ],
       "clog_dependencies": [
         21907
       ]
     },
     "avernic defender (l)": {
       "name": "avernic defender (l)",
-      "item_id": 24186,
+      "item_ids": [
+        24186
+      ],
       "clog_dependencies": [
         12954,
         22477
@@ -15024,7 +16002,9 @@
     },
     "avernic defender (broken)": {
       "name": "avernic defender (broken)",
-      "item_id": 22441,
+      "item_ids": [
+        22441
+      ],
       "clog_dependencies": [
         12954,
         22477
@@ -15032,21 +16012,27 @@
     },
     "bryophyta's staff": {
       "name": "bryophyta's staff",
-      "item_id": 22370,
+      "item_ids": [
+        22370
+      ],
       "clog_dependencies": [
         22372
       ]
     },
     "divine rune pouch (l)": {
       "name": "divine rune pouch (l)",
-      "item_id": 27509,
+      "item_ids": [
+        27509
+      ],
       "clog_dependencies": [
         27279
       ]
     },
     "masori assembler (l)": {
       "name": "masori assembler (l)",
-      "item_id": 27376,
+      "item_ids": [
+        27376
+      ],
       "clog_dependencies": [
         21907,
         27372
@@ -15054,7 +16040,9 @@
     },
     "masori assembler (broken)": {
       "name": "masori assembler (broken)",
-      "item_id": 27359,
+      "item_ids": [
+        27359
+      ],
       "clog_dependencies": [
         21907,
         27372
@@ -15062,7 +16050,9 @@
     },
     "masori assembler max cape (l)": {
       "name": "masori assembler max cape (l)",
-      "item_id": 27365,
+      "item_ids": [
+        27365
+      ],
       "clog_dependencies": [
         21907,
         27372
@@ -15070,7 +16060,9 @@
     },
     "masori assembler max cape (broken)": {
       "name": "masori assembler max cape (broken)",
-      "item_id": 27361,
+      "item_ids": [
+        27361
+      ],
       "clog_dependencies": [
         21907,
         27372
@@ -15078,19 +16070,20 @@
     },
     "accursed sceptre": {
       "name": "accursed sceptre",
-      "item_id": 27665,
-      "clog_dependencies": [
-        22552,
-        27673
-      ],
       "item_ids": [
         27665,
         27679
+      ],
+      "clog_dependencies": [
+        22552,
+        27673
       ]
     },
     "ursine chainmace": {
       "name": "ursine chainmace",
-      "item_id": 27660,
+      "item_ids": [
+        27660
+      ],
       "clog_dependencies": [
         27667,
         22542
@@ -15098,7 +16091,9 @@
     },
     "webweaver bow": {
       "name": "webweaver bow",
-      "item_id": 27655,
+      "item_ids": [
+        27655
+      ],
       "clog_dependencies": [
         22547,
         27670
@@ -15106,7 +16101,9 @@
     },
     "ghommal's avernic defender 5 (l)": {
       "name": "ghommal's avernic defender 5 (l)",
-      "item_id": 27551,
+      "item_ids": [
+        27551
+      ],
       "clog_dependencies": [
         12954,
         22477
@@ -15114,7 +16111,9 @@
     },
     "ghommal's avernic defender 6 (l)": {
       "name": "ghommal's avernic defender 6 (l)",
-      "item_id": 27553,
+      "item_ids": [
+        27553
+      ],
       "clog_dependencies": [
         12954,
         22477
@@ -15122,25 +16121,28 @@
     },
     "ancient sceptre (l)": {
       "name": "ancient sceptre (l)",
-      "item_id": 27626,
+      "item_ids": [
+        27626
+      ],
       "clog_dependencies": [
         27627
       ]
     },
     "venator bow": {
       "name": "venator bow",
-      "item_id": 27610,
-      "clog_dependencies": [
-        27614
-      ],
       "item_ids": [
         27610,
         31133
+      ],
+      "clog_dependencies": [
+        27614
       ]
     },
     "blood ancient sceptre (l)": {
       "name": "blood ancient sceptre (l)",
-      "item_id": 28473,
+      "item_ids": [
+        28473
+      ],
       "clog_dependencies": [
         27627,
         28268
@@ -15148,7 +16150,9 @@
     },
     "blood ancient sceptre (broken)": {
       "name": "blood ancient sceptre (broken)",
-      "item_id": 28238,
+      "item_ids": [
+        28238
+      ],
       "clog_dependencies": [
         27627,
         28268
@@ -15156,7 +16160,9 @@
     },
     "ice ancient sceptre (l)": {
       "name": "ice ancient sceptre (l)",
-      "item_id": 28474,
+      "item_ids": [
+        28474
+      ],
       "clog_dependencies": [
         27627,
         28270
@@ -15164,7 +16170,9 @@
     },
     "ice ancient sceptre (broken)": {
       "name": "ice ancient sceptre (broken)",
-      "item_id": 28242,
+      "item_ids": [
+        28242
+      ],
       "clog_dependencies": [
         27627,
         28270
@@ -15172,7 +16180,9 @@
     },
     "smoke ancient sceptre (l)": {
       "name": "smoke ancient sceptre (l)",
-      "item_id": 28475,
+      "item_ids": [
+        28475
+      ],
       "clog_dependencies": [
         28274,
         27627
@@ -15180,7 +16190,9 @@
     },
     "smoke ancient sceptre (broken)": {
       "name": "smoke ancient sceptre (broken)",
-      "item_id": 28240,
+      "item_ids": [
+        28240
+      ],
       "clog_dependencies": [
         28274,
         27627
@@ -15188,7 +16200,9 @@
     },
     "shadow ancient sceptre (l)": {
       "name": "shadow ancient sceptre (l)",
-      "item_id": 28476,
+      "item_ids": [
+        28476
+      ],
       "clog_dependencies": [
         28272,
         27627
@@ -15196,7 +16210,9 @@
     },
     "shadow ancient sceptre (broken)": {
       "name": "shadow ancient sceptre (broken)",
-      "item_id": 28244,
+      "item_ids": [
+        28244
+      ],
       "clog_dependencies": [
         28272,
         27627
@@ -15204,14 +16220,18 @@
     },
     "blazing blowpipe": {
       "name": "blazing blowpipe",
-      "item_id": 28688,
+      "item_ids": [
+        28688
+      ],
       "clog_dependencies": [
         12922
       ]
     },
     "blessed dizana's quiver (l)": {
       "name": "blessed dizana's quiver (l)",
-      "item_id": 28957,
+      "item_ids": [
+        28957
+      ],
       "clog_dependencies": [
         28947,
         28924
@@ -15219,7 +16239,9 @@
     },
     "blessed dizana's quiver (broken)": {
       "name": "blessed dizana's quiver (broken)",
-      "item_id": 28828,
+      "item_ids": [
+        28828
+      ],
       "clog_dependencies": [
         28947,
         28924
@@ -15227,7 +16249,9 @@
     },
     "dizana's max cape (l)": {
       "name": "dizana's max cape (l)",
-      "item_id": 28906,
+      "item_ids": [
+        28906
+      ],
       "clog_dependencies": [
         28947,
         28924
@@ -15235,7 +16259,9 @@
     },
     "dizana's max cape (broken)": {
       "name": "dizana's max cape (broken)",
-      "item_id": 28830,
+      "item_ids": [
+        28830
+      ],
       "clog_dependencies": [
         28947,
         28924
@@ -15243,7 +16269,9 @@
     },
     "amulet of rancour (s)": {
       "name": "amulet of rancour (s)",
-      "item_id": 29804,
+      "item_ids": [
+        29804
+      ],
       "clog_dependencies": [
         19529,
         6573,
@@ -15252,35 +16280,45 @@
     },
     "rosewood blowpipe": {
       "name": "rosewood blowpipe",
-      "item_id": 31583,
+      "item_ids": [
+        31583
+      ],
       "clog_dependencies": [
         31572
       ]
     },
     "camphor blowpipe": {
       "name": "camphor blowpipe",
-      "item_id": 31575,
+      "item_ids": [
+        31575
+      ],
       "clog_dependencies": [
         31572
       ]
     },
     "ironwood blowpipe": {
       "name": "ironwood blowpipe",
-      "item_id": 31579,
+      "item_ids": [
+        31579
+      ],
       "clog_dependencies": [
         31572
       ]
     },
     "dizana's quiver (l)": {
       "name": "dizana's quiver (l)",
-      "item_id": 28953,
+      "item_ids": [
+        28953
+      ],
       "clog_dependencies": [
         28947
       ]
     },
     "dizana's quiver (broken)": {
       "name": "dizana's quiver (broken)",
-      "item_id": 28826,
+      "item_ids": [
+        28826
+      ],
       "clog_dependencies": [
         28947
       ]

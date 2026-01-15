@@ -18,6 +18,7 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -605,6 +606,17 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onChatMessage(ChatMessage event)
     {
+        // Handle debug commands (:: commands are processed locally, not broadcast)
+        if (event.getType() == ChatMessageType.PUBLICCHAT)
+        {
+            String message = Text.removeTags(event.getMessage()).toLowerCase().trim();
+            if (message.startsWith("::clogman"))
+            {
+                handleCommand(message);
+                return;
+            }
+        }
+
         if (event.getType() != ChatMessageType.GAMEMESSAGE)
         {
             return;
@@ -629,6 +641,109 @@ public class ClogmanPlugin extends Plugin
                 log.warn("Could not find item ID for unlocked item: {}", itemName);
             }
         }
+    }
+
+    /**
+     * Handle debug/admin commands
+     */
+    private void handleCommand(String message)
+    {
+        String[] parts = message.split(" ");
+        String command = parts[0];
+
+        switch (command)
+        {
+            case "::clogmanreset":
+                handleResetCommand();
+                break;
+
+            case "::clogmanunlock":
+                if (parts.length >= 2)
+                {
+                    handleUnlockCommand(parts[1]);
+                }
+                else
+                {
+                    sendCommandMessage("Usage: ::clogmanunlock <item_id>");
+                }
+                break;
+
+            case "::clogmanstatus":
+                handleStatusCommand();
+                break;
+
+            case "::clogmanhelp":
+                sendCommandMessage("Commands: ::clogmanreset, ::clogmanunlock <id>, ::clogmanstatus");
+                break;
+
+            default:
+                sendCommandMessage("Unknown command. Try ::clogmanhelp");
+                break;
+        }
+    }
+
+    private void handleResetCommand()
+    {
+        int count = unlockedClogItems.size();
+        unlockedClogItems.clear();
+        availableItems.clear();
+        saveUnlockedItems();
+        recalculateAvailableItems();
+        sendCommandMessage("Reset complete. Cleared " + count + " unlocked items.");
+    }
+
+    private void handleUnlockCommand(String idStr)
+    {
+        try
+        {
+            int itemId = Integer.parseInt(idStr);
+
+            if (!collectionLogItems.containsKey(itemId))
+            {
+                sendCommandMessage("Item ID " + itemId + " is not a collection log item.");
+                return;
+            }
+
+            if (unlockedClogItems.contains(itemId))
+            {
+                sendCommandMessage("Item " + collectionLogItems.get(itemId).name + " is already unlocked.");
+                return;
+            }
+
+            // Unlock the item (this triggers notification)
+            unlockItem(itemId);
+            sendCommandMessage("Manually unlocked: " + collectionLogItems.get(itemId).name + " (ID: " + itemId + ")");
+        }
+        catch (NumberFormatException e)
+        {
+            sendCommandMessage("Invalid item ID: " + idStr);
+        }
+    }
+
+    private void handleStatusCommand()
+    {
+        int clogUnlocked = unlockedClogItems.size();
+        int totalClog = collectionLogItems.size();
+        int availableCount = availableItems.size();
+
+        sendCommandMessage("Clogman Status:");
+        sendCommandMessage("  Unlocked: " + clogUnlocked + "/" + totalClog + " collection log items");
+        sendCommandMessage("  Available: " + availableCount + " total items (including derived)");
+    }
+
+    private void sendCommandMessage(String text)
+    {
+        String message = new ChatMessageBuilder()
+            .append(ChatColorType.HIGHLIGHT)
+            .append("[Clogman] ")
+            .append(ChatColorType.NORMAL)
+            .append(text)
+            .build();
+
+        chatMessageManager.queue(QueuedMessage.builder()
+            .type(ChatMessageType.CONSOLE)
+            .runeLiteFormattedMessage(message)
+            .build());
     }
 
     /**
@@ -740,28 +855,17 @@ public class ClogmanPlugin extends Plugin
     public static class DerivedItem
     {
         public String name;
-        @SerializedName("item_id")
-        public Integer itemId;  // Primary ID (for backwards compatibility)
         @SerializedName("item_ids")
-        public List<Integer> itemIds;  // All valid IDs (for items with variants)
+        public List<Integer> itemIds;  // All valid item IDs for this derived item
         @SerializedName("clog_dependencies")
         public List<Integer> clogDependencies;
 
         /**
          * Get all valid item IDs for this derived item.
-         * Returns item_ids if present, otherwise falls back to item_id.
          */
         public List<Integer> getAllItemIds()
         {
-            if (itemIds != null && !itemIds.isEmpty())
-            {
-                return itemIds;
-            }
-            else if (itemId != null)
-            {
-                return java.util.Collections.singletonList(itemId);
-            }
-            return java.util.Collections.emptyList();
+            return itemIds != null ? itemIds : java.util.Collections.emptyList();
         }
     }
 }
