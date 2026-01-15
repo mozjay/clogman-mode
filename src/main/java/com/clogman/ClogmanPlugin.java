@@ -22,11 +22,16 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.game.chatbox.ChatboxItemSearch;
+import net.runelite.client.ui.ClientToolbar;
+import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
+import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.Text;
 
 import javax.inject.Inject;
+import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,10 +74,19 @@ public class ClogmanPlugin extends Plugin
     private OverlayManager overlayManager;
 
     @Inject
+    private ClientToolbar clientToolbar;
+
+    @Inject
+    private ChatboxItemSearch chatboxItemSearch;
+
+    @Inject
     private Gson gson;
 
     @Inject
     private ClogmanOverlay overlay;
+
+    private ClogmanPanel panel;
+    private NavigationButton navButton;
 
     // Collection log items loaded from JSON (id -> ClogItem)
     @Getter
@@ -111,10 +125,37 @@ public class ClogmanPlugin extends Plugin
         loadRestrictionData();
         overlayManager.add(overlay);
 
+        // Create and register the side panel
+        panel = new ClogmanPanel(this, itemManager, client, clientThread, chatboxItemSearch);
+
+        BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/clogman_icon.png");
+        if (icon == null)
+        {
+            // Fallback: create a simple colored square if icon not found
+            icon = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+            for (int x = 0; x < 16; x++)
+            {
+                for (int y = 0; y < 16; y++)
+                {
+                    icon.setRGB(x, y, 0xFF4CAF50); // Green color
+                }
+            }
+        }
+
+        navButton = NavigationButton.builder()
+            .tooltip("Clogman Mode")
+            .icon(icon)
+            .priority(6)
+            .panel(panel)
+            .build();
+
+        clientToolbar.addNavigation(navButton);
+
         if (client.getGameState() == GameState.LOGGED_IN)
         {
             loadUnlockedItems();
             recalculateAvailableItems();
+            panel.refresh();
         }
     }
 
@@ -122,8 +163,11 @@ public class ClogmanPlugin extends Plugin
     protected void shutDown() throws Exception
     {
         overlayManager.remove(overlay);
+        clientToolbar.removeNavigation(navButton);
         unlockedClogItems.clear();
         availableItems.clear();
+        panel = null;
+        navButton = null;
     }
 
     @Provides
@@ -235,6 +279,11 @@ public class ClogmanPlugin extends Plugin
         if (unlockedClogItems.isEmpty())
         {
             sendReminderMessage();
+        }
+
+        if (panel != null)
+        {
+            panel.refresh();
         }
 
         return true; // Stop retrying
@@ -386,7 +435,39 @@ public class ClogmanPlugin extends Plugin
             {
                 sendUnlockMessage(item.name);
             }
+
+            if (panel != null)
+            {
+                panel.refresh();
+            }
         }
+    }
+
+    /**
+     * Removes an unlock from the collection (for panel use)
+     */
+    public void removeUnlock(int itemId)
+    {
+        if (unlockedClogItems.remove(itemId))
+        {
+            ClogItem item = collectionLogItems.get(itemId);
+            log.info("Removed unlock: {} (ID: {})", item != null ? item.name : "Unknown", itemId);
+            saveUnlockedItems();
+            recalculateAvailableItems();
+        }
+    }
+
+    /**
+     * Resets all unlocks (for panel use)
+     */
+    public void resetAllUnlocks()
+    {
+        int count = unlockedClogItems.size();
+        unlockedClogItems.clear();
+        availableItems.clear();
+        saveUnlockedItems();
+        recalculateAvailableItems();
+        log.info("Reset all unlocks. Cleared {} items.", count);
     }
 
     private void sendUnlockMessage(String itemName)
@@ -640,17 +721,6 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onChatMessage(ChatMessage event)
     {
-        // Handle debug commands (:: commands are processed locally, not broadcast)
-        if (event.getType() == ChatMessageType.PUBLICCHAT)
-        {
-            String message = Text.removeTags(event.getMessage()).toLowerCase().trim();
-            if (message.startsWith("::clogman"))
-            {
-                handleCommand(message);
-                return;
-            }
-        }
-
         if (event.getType() != ChatMessageType.GAMEMESSAGE)
         {
             return;
@@ -675,109 +745,6 @@ public class ClogmanPlugin extends Plugin
                 log.warn("Could not find item ID for unlocked item: {}", itemName);
             }
         }
-    }
-
-    /**
-     * Handle debug/admin commands
-     */
-    private void handleCommand(String message)
-    {
-        String[] parts = message.split(" ");
-        String command = parts[0];
-
-        switch (command)
-        {
-            case "::clogmanreset":
-                handleResetCommand();
-                break;
-
-            case "::clogmanunlock":
-                if (parts.length >= 2)
-                {
-                    handleUnlockCommand(parts[1]);
-                }
-                else
-                {
-                    sendCommandMessage("Usage: ::clogmanunlock <item_id>");
-                }
-                break;
-
-            case "::clogmanstatus":
-                handleStatusCommand();
-                break;
-
-            case "::clogmanhelp":
-                sendCommandMessage("Commands: ::clogmanreset, ::clogmanunlock <id>, ::clogmanstatus");
-                break;
-
-            default:
-                sendCommandMessage("Unknown command. Try ::clogmanhelp");
-                break;
-        }
-    }
-
-    private void handleResetCommand()
-    {
-        int count = unlockedClogItems.size();
-        unlockedClogItems.clear();
-        availableItems.clear();
-        saveUnlockedItems();
-        recalculateAvailableItems();
-        sendCommandMessage("Reset complete. Cleared " + count + " unlocked items.");
-    }
-
-    private void handleUnlockCommand(String idStr)
-    {
-        try
-        {
-            int itemId = Integer.parseInt(idStr);
-
-            if (!collectionLogItems.containsKey(itemId))
-            {
-                sendCommandMessage("Item ID " + itemId + " is not a collection log item.");
-                return;
-            }
-
-            if (unlockedClogItems.contains(itemId))
-            {
-                sendCommandMessage("Item " + collectionLogItems.get(itemId).name + " is already unlocked.");
-                return;
-            }
-
-            // Unlock the item (this triggers notification)
-            unlockItem(itemId);
-            sendCommandMessage("Manually unlocked: " + collectionLogItems.get(itemId).name + " (ID: " + itemId + ")");
-        }
-        catch (NumberFormatException e)
-        {
-            sendCommandMessage("Invalid item ID: " + idStr);
-        }
-    }
-
-    private void handleStatusCommand()
-    {
-        int clogUnlocked = unlockedClogItems.size();
-        int totalClog = collectionLogItems.size();
-        int availableCount = availableItems.size();
-
-        sendCommandMessage("Clogman Status:");
-        sendCommandMessage("  Unlocked: " + clogUnlocked + "/" + totalClog + " collection log items");
-        sendCommandMessage("  Available: " + availableCount + " total items (including derived)");
-    }
-
-    private void sendCommandMessage(String text)
-    {
-        String message = new ChatMessageBuilder()
-            .append(ChatColorType.HIGHLIGHT)
-            .append("[Clogman] ")
-            .append(ChatColorType.NORMAL)
-            .append(text)
-            .build();
-
-        chatMessageManager.queue(QueuedMessage.builder()
-            .type(ChatMessageType.CONSOLE)
-            .runeLiteFormattedMessage(message)
-            .build());
     }
 
     /**
@@ -836,6 +803,11 @@ public class ClogmanPlugin extends Plugin
             saveUnlockedItems();
             recalculateAvailableItems();
             sendSyncMessage(newUnlocks);
+
+            if (panel != null)
+            {
+                panel.refresh();
+            }
         }
 
         hasScannedCollectionLog = true;
