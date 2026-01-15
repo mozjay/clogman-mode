@@ -14,17 +14,34 @@ Items crafted from collection log items are also restricted until you unlock the
 - **Amulet of torture** requires **Zenyte shard** (collection log item)
 - **Toxic blowpipe** requires **Tanzanite fang** (collection log item)
 
-The plugin includes ~700 derived items with their collection log dependencies pre-calculated.
+The plugin includes ~627 derived items with their collection log dependencies pre-calculated.
+
+### Effective Unlocking
+Some collection log items can be crafted from other collection log items. The plugin handles this intelligently:
+
+- **Onyx** can be crafted from **Uncut onyx**
+- If you have Uncut onyx in your collection log, all Onyx-derived items (Amulet of fury, Berserker necklace, etc.) become available
+- This works transitively: Zenyte shard + Uncut onyx unlocks all zenyte jewelry
+
+Your sidebar unlock count still reflects your actual collection log progress.
 
 ### Restriction Logic
 An item is only restricted if **all** recipes to create it require collection log items. If there's any recipe that doesn't need a clog item, the item won't be restricted.
 
 ## Features
 
+### Side Panel
+The plugin adds a side panel to manage your unlocks:
+- View all unlocked collection log items
+- Manually add/remove unlocks
+- Reset all unlocks
+- Shows unlock progress (X / 1692)
+
 ### Restrictions (Configurable)
 - **Grand Exchange** - Locked items won't appear in GE search results
 - **Item Usage** - Can't wear/wield/use/eat/drink locked items
 - **Bank Withdraw** - Can't withdraw locked items from bank
+- **Clue Items** - Optionally disable restrictions for Treasure Trail rewards
 
 ### Visual
 - **Item Dimming** - Locked items appear dimmed in inventory and bank
@@ -32,7 +49,8 @@ An item is only restricted if **all** recipes to create it require collection lo
 
 ### Notifications
 - **Chat Messages** - Get notified when you unlock an item
-- **Screenshots** - Optionally take a screenshot on unlock (disabled by default)
+- **Newly Available Items** - See which derived items become available after an unlock
+- **Required Clogs** - When blocked from using an item, shows which collection log items you need
 
 ## Syncing Your Collection Log
 
@@ -50,32 +68,34 @@ New unlocks are detected automatically via the "New item added to your collectio
 
 Access settings via RuneLite's configuration panel:
 
+### Restrictions
 | Setting | Description | Default |
 |---------|-------------|---------|
 | Restrict Grand Exchange | Hide locked items from GE search | On |
 | Restrict Item Usage | Block using/wearing locked items | On |
 | Restrict Bank Withdraw | Block withdrawing locked items | On |
-| Show Unlock Popup | Display popup on unlock | On |
+| Restrict Clue Items | Restrict Treasure Trail rewards | On |
+
+### Notifications
+| Setting | Description | Default |
+|---------|-------------|---------|
 | Chat Message on Unlock | Send chat message on unlock | On |
-| Screenshot on Unlock | Take screenshot on unlock | Off |
-| Inventory Dim Opacity | Opacity for locked items in inventory | 70 |
-| Bank Dim Opacity | Opacity for locked items in bank | 70 |
+| Show Newly Available Items | Show derived items unlocked | On |
+
+### Visual
+| Setting | Description | Default |
+|---------|-------------|---------|
+| Inventory Dim Opacity | Opacity for locked items in inventory (0-255) | 70 |
+| Bank Dim Opacity | Opacity for locked items in bank (0-255) | 70 |
 
 ## Data
 
 The plugin includes a pre-generated JSON file (`clog_restrictions.json`) containing:
 - **1,692** collection log items
-- **697** derived items with their dependencies
+- **627** derived items with their dependencies
+- **27** clog items craftable from other clog items
 
-This data was generated from the OSRS Wiki using the companion Python script in the `osrs_clog_dependencies` folder.
-
-## Building
-
-```bash
-./gradlew build
-```
-
-The JAR will be created at `build/libs/clogman-mode-1.0.0.jar`
+This data was generated from the OSRS Wiki.
 
 ## Credits
 
