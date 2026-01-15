@@ -68,6 +68,18 @@ public interface ClogmanConfig extends Config
         return true;
     }
 
+    @ConfigItem(
+        keyName = "restrictClueItems",
+        name = "Restrict Clue Items",
+        description = "Restrict items from Treasure Trail rewards in the Collection Log",
+        section = restrictionsSection,
+        position = 3
+    )
+    default boolean restrictClueItems()
+    {
+        return true;
+    }
+
     // === NOTIFICATIONS SECTION ===
 
     @ConfigItem(

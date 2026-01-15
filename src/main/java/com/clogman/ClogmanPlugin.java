@@ -248,6 +248,25 @@ public class ClogmanPlugin extends Plugin
         }
     }
 
+    @Subscribe
+    public void onConfigChanged(ConfigChanged event)
+    {
+        if (!event.getGroup().equals(CONFIG_GROUP))
+        {
+            return;
+        }
+
+        // Recalculate available items when clue restriction setting changes
+        if (event.getKey().equals("restrictClueItems"))
+        {
+            recalculateAvailableItems();
+            if (panel != null)
+            {
+                panel.refresh();
+            }
+        }
+    }
+
     /**
      * Attempts to load unlocked items. Returns true if successful (to stop retrying).
      * RuneLite's invokeLater will keep retrying while this returns false.
@@ -378,6 +397,12 @@ public class ClogmanPlugin extends Plugin
         if (clogItem == null)
         {
             return false;
+        }
+
+        // If clue restrictions are disabled, all clue items are effectively unlocked
+        if (!config.restrictClueItems() && isClueItem(clogItem))
+        {
+            return true;
         }
 
         // Cycle detection - prevent infinite recursion
@@ -650,6 +675,25 @@ public class ClogmanPlugin extends Plugin
     public boolean isItemLocked(int itemId)
     {
         return !isItemAvailable(itemId);
+    }
+
+    /**
+     * Checks if a clog item is from the Treasure Trails (Clues) section
+     */
+    private boolean isClueItem(ClogItem item)
+    {
+        if (item == null || item.tabs == null)
+        {
+            return false;
+        }
+        for (String tab : item.tabs)
+        {
+            if (tab.contains("Treasure Trail"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // === MENU ENTRY FILTERING FOR USAGE RESTRICTION ===
