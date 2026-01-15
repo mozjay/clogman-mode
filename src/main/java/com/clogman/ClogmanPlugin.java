@@ -27,7 +27,6 @@ import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
-import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.Text;
 
 import javax.inject.Inject;
@@ -128,17 +127,13 @@ public class ClogmanPlugin extends Plugin
         // Create and register the side panel
         panel = new ClogmanPanel(this, itemManager, client, clientThread, chatboxItemSearch);
 
-        BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/clogman_icon.png");
-        if (icon == null)
+        // Create a simple colored square icon for the sidebar
+        BufferedImage icon = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        for (int x = 0; x < 16; x++)
         {
-            // Fallback: create a simple colored square if icon not found
-            icon = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-            for (int x = 0; x < 16; x++)
+            for (int y = 0; y < 16; y++)
             {
-                for (int y = 0; y < 16; y++)
-                {
-                    icon.setRGB(x, y, 0xFF4CAF50); // Green color
-                }
+                icon.setRGB(x, y, 0xFF4CAF50); // Green color
             }
         }
 
