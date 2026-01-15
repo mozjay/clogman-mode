@@ -490,7 +490,7 @@ public class ClogmanPlugin extends Plugin
             {
                 sb.append(", ");
             }
-            sb.append(items.get(i));
+            sb.append(capitalize(items.get(i)));
         }
 
         // Add "and X more" if there are more items
@@ -502,7 +502,7 @@ public class ClogmanPlugin extends Plugin
 
         String message = new ChatMessageBuilder()
             .append(ChatColorType.NORMAL)
-            .append("Now available: ")
+            .append("New items unlocked: ")
             .append(ChatColorType.HIGHLIGHT)
             .append(sb.toString())
             .build();
@@ -511,6 +511,18 @@ public class ClogmanPlugin extends Plugin
             .type(ChatMessageType.CONSOLE)
             .runeLiteFormattedMessage(message)
             .build());
+    }
+
+    /**
+     * Capitalize the first letter of a string
+     */
+    private String capitalize(String input)
+    {
+        if (input == null || input.isEmpty())
+        {
+            return input;
+        }
+        return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 
     /**
@@ -757,9 +769,10 @@ public class ClogmanPlugin extends Plugin
         List<String> requiredItems = getRequiredClogItems(itemId);
         if (!requiredItems.isEmpty())
         {
+            String label = requiredItems.size() == 1 ? "Clog required: " : "Clogs required: ";
             String reqMessage = new ChatMessageBuilder()
                 .append(ChatColorType.NORMAL)
-                .append("Collection log required: ")
+                .append(label)
                 .append(ChatColorType.HIGHLIGHT)
                 .append(String.join(", ", requiredItems))
                 .build();
