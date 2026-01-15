@@ -1,9 +1,9 @@
 {
   "version": "1.1",
-  "generated": "2026-01-14 21:55:41",
+  "generated": "2026-01-15 00:28:42",
   "stats": {
     "total_clog_items": 1692,
-    "total_derived_items": 697,
+    "total_derived_items": 703,
     "items_with_clog_free_recipes": 3170
   },
   "collectionLogItems": {
@@ -13196,7 +13196,7 @@
     },
     "accursed sceptre (u)": {
       "name": "accursed sceptre (u)",
-      "item_id": 0,
+      "item_id": 27662,
       "clog_dependencies": [
         22552,
         27673
@@ -13204,7 +13204,7 @@
     },
     "ursine chainmace (u)": {
       "name": "ursine chainmace (u)",
-      "item_id": 0,
+      "item_id": 27657,
       "clog_dependencies": [
         27667,
         22542
@@ -13212,7 +13212,7 @@
     },
     "voidwaker": {
       "name": "voidwaker",
-      "item_id": 27869,
+      "item_id": 27690,
       "clog_dependencies": [
         27681,
         27684,
@@ -13221,7 +13221,7 @@
     },
     "webweaver bow (u)": {
       "name": "webweaver bow (u)",
-      "item_id": 0,
+      "item_id": 27652,
       "clog_dependencies": [
         22547,
         27670
@@ -13373,7 +13373,7 @@
     },
     "soulreaper axe": {
       "name": "soulreaper axe",
-      "item_id": 0,
+      "item_id": 28338,
       "clog_dependencies": [
         28321,
         28323,
@@ -13383,7 +13383,7 @@
     },
     "ultor ring": {
       "name": "ultor ring",
-      "item_id": 0,
+      "item_id": 28307,
       "clog_dependencies": [
         6737,
         28276,
@@ -13392,7 +13392,7 @@
     },
     "magus ring": {
       "name": "magus ring",
-      "item_id": 0,
+      "item_id": 28313,
       "clog_dependencies": [
         28281,
         6731,
@@ -13401,7 +13401,7 @@
     },
     "bellator ring": {
       "name": "bellator ring",
-      "item_id": 0,
+      "item_id": 28316,
       "clog_dependencies": [
         28276,
         6735,
@@ -14531,6 +14531,51 @@
       "item_id": null,
       "clog_dependencies": [
         31406
+      ]
+    },
+    "webweaver bow": {
+      "name": "webweaver bow",
+      "item_id": 27655,
+      "clog_dependencies": [
+        22547,
+        27670
+      ]
+    },
+    "accursed sceptre": {
+      "name": "accursed sceptre",
+      "item_id": 27679,
+      "clog_dependencies": [
+        22552,
+        27673
+      ]
+    },
+    "ursine chainmace": {
+      "name": "ursine chainmace",
+      "item_id": 27661,
+      "clog_dependencies": [
+        27667,
+        22542
+      ]
+    },
+    "craw's bow": {
+      "name": "craw's bow",
+      "item_id": 22550,
+      "clog_dependencies": [
+        22547
+      ]
+    },
+    "thammaron's sceptre": {
+      "name": "thammaron's sceptre",
+      "item_id": 22555,
+      "clog_dependencies": [
+        22552
+      ]
+    },
+    "viggora's chainmace": {
+      "name": "viggora's chainmace",
+      "item_id": 22545,
+      "clog_dependencies": [
+        22542
       ]
     },
     "decorative sword (l)": {
