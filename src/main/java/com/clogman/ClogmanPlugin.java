@@ -183,15 +183,8 @@ public class ClogmanPlugin extends Plugin
     {
         if (event.getGameState() == GameState.LOGGED_IN)
         {
-            clientThread.invokeLater(() -> {
-                loadUnlockedItems();
-                recalculateAvailableItems();
-                // Send reminder to open collection log if no items synced yet
-                if (unlockedClogItems.isEmpty())
-                {
-                    sendReminderMessage();
-                }
-            });
+            // Use invokeLater with retry - player object may not be ready immediately
+            clientThread.invokeLater(this::tryLoadUnlockedItems);
         }
         else if (event.getGameState() == GameState.LOGIN_SCREEN)
         {
@@ -199,6 +192,31 @@ public class ClogmanPlugin extends Plugin
             availableItems.clear();
             hasScannedCollectionLog = false;
         }
+    }
+
+    /**
+     * Attempts to load unlocked items. Returns true if successful (to stop retrying).
+     * RuneLite's invokeLater will keep retrying while this returns false.
+     */
+    private boolean tryLoadUnlockedItems()
+    {
+        // Check if player is ready
+        if (client.getLocalPlayer() == null || client.getLocalPlayer().getName() == null)
+        {
+            // Player not ready yet - return false to retry
+            return false;
+        }
+
+        loadUnlockedItems();
+        recalculateAvailableItems();
+
+        // Send reminder to open collection log if no items synced yet
+        if (unlockedClogItems.isEmpty())
+        {
+            sendReminderMessage();
+        }
+
+        return true; // Stop retrying
     }
 
     private void sendReminderMessage()
