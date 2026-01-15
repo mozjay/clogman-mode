@@ -654,11 +654,7 @@ public class ClogmanPlugin extends Plugin
             log.info("Scanned collection log page, found {} new unlocks (total: {})", newUnlocks, unlockedClogItems.size());
             saveUnlockedItems();
             recalculateAvailableItems();
-
-            if (!hasScannedCollectionLog)
-            {
-                sendSyncMessage(newUnlocks);
-            }
+            sendSyncMessage(newUnlocks);
         }
 
         hasScannedCollectionLog = true;
