@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.widgets.ComponentID;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatColorType;
@@ -17,19 +18,19 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.Text;
 
 import javax.inject.Inject;
+import java.awt.Color;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Slf4j
 @PluginDescriptor(
@@ -41,6 +42,9 @@ public class ClogmanPlugin extends Plugin
 {
     private static final String CONFIG_GROUP = "clogman";
     private static final String UNLOCKED_ITEMS_KEY = "unlockedItems";
+
+    // Script ID for collection log draw (fires when changing tabs/pages)
+    private static final int COLLECTION_LOG_DRAW_LIST_SCRIPT = 2731;
 
     @Inject
     private Client client;
@@ -68,9 +72,6 @@ public class ClogmanPlugin extends Plugin
 
     @Inject
     private ClogmanOverlay overlay;
-
-    @Inject
-    private ScheduledExecutorService executor;
 
     // Collection log items loaded from JSON (id -> ClogItem)
     @Getter
@@ -183,13 +184,34 @@ public class ClogmanPlugin extends Plugin
             clientThread.invokeLater(() -> {
                 loadUnlockedItems();
                 recalculateAvailableItems();
+                // Send reminder to open collection log if no items synced yet
+                if (unlockedClogItems.isEmpty())
+                {
+                    sendReminderMessage();
+                }
             });
         }
         else if (event.getGameState() == GameState.LOGIN_SCREEN)
         {
             unlockedClogItems.clear();
             availableItems.clear();
+            hasScannedCollectionLog = false;
         }
+    }
+
+    private void sendReminderMessage()
+    {
+        String message = new ChatMessageBuilder()
+            .append(ChatColorType.HIGHLIGHT)
+            .append("Clogman Mode: ")
+            .append(ChatColorType.NORMAL)
+            .append("Open your Collection Log and browse tabs to sync your unlocks!")
+            .build();
+
+        chatMessageManager.queue(QueuedMessage.builder()
+            .type(ChatMessageType.CONSOLE)
+            .runeLiteFormattedMessage(message)
+            .build());
     }
 
     private void loadUnlockedItems()
@@ -353,43 +375,78 @@ public class ClogmanPlugin extends Plugin
             return;
         }
 
-        // Filter out actions on locked items
         MenuEntry entry = event.getMenuEntry();
-        int itemId = entry.getIdentifier();
+        int itemId = getItemIdFromMenuEntry(entry);
 
-        // Check if this is an item-related action
-        MenuAction type = entry.getType();
-        if (isItemAction(type))
+        if (itemId > 0 && isItemLocked(itemId))
         {
-            // Get item ID from the widget if possible
-            Widget widget = entry.getWidget();
-            if (widget != null)
+            String option = Text.removeTags(entry.getOption()).toLowerCase();
+            if (isRestrictedAction(option))
             {
-                itemId = widget.getItemId();
+                // Gray out the option and deprioritize it
+                entry.setOption(ColorUtil.prependColorTag(entry.getOption(), Color.GRAY));
+                entry.setDeprioritized(true);
             }
+        }
+    }
 
-            if (itemId > 0 && isItemLocked(itemId))
+    @Subscribe
+    public void onMenuOptionClicked(MenuOptionClicked event)
+    {
+        // Block usage of locked items
+        if (config.restrictItemUsage())
+        {
+            String option = Text.removeTags(event.getMenuOption()).toLowerCase();
+            if (isRestrictedAction(option))
             {
-                String option = Text.removeTags(entry.getOption()).toLowerCase();
-                // Block usage actions on locked items
-                if (isRestrictedAction(option))
+                int itemId = event.getItemId();
+                if (itemId > 0 && isItemLocked(itemId))
                 {
-                    entry.setDeprioritized(true);
+                    event.consume();
+                    sendLockedMessage("use", itemId);
+                    return;
+                }
+            }
+        }
+
+        // Block bank withdrawal of locked items
+        if (config.restrictBankWithdraw())
+        {
+            String option = Text.removeTags(event.getMenuOption()).toLowerCase();
+            if (option.startsWith("withdraw"))
+            {
+                int itemId = event.getItemId();
+                if (itemId > 0 && isItemLocked(itemId))
+                {
+                    event.consume();
+                    sendLockedMessage("withdraw", itemId);
                 }
             }
         }
     }
 
-    private boolean isItemAction(MenuAction type)
+    private int getItemIdFromMenuEntry(MenuEntry entry)
     {
-        return type == MenuAction.CC_OP ||
-               type == MenuAction.CC_OP_LOW_PRIORITY ||
-               type == MenuAction.ITEM_USE ||
-               type == MenuAction.ITEM_FIRST_OPTION ||
-               type == MenuAction.ITEM_SECOND_OPTION ||
-               type == MenuAction.ITEM_THIRD_OPTION ||
-               type == MenuAction.ITEM_FOURTH_OPTION ||
-               type == MenuAction.ITEM_FIFTH_OPTION;
+        int itemId = entry.getIdentifier();
+
+        // Try to get item ID from widget
+        Widget widget = entry.getWidget();
+        if (widget != null)
+        {
+            int widgetItemId = widget.getItemId();
+            if (widgetItemId > 0)
+            {
+                itemId = widgetItemId;
+            }
+        }
+
+        // Also check itemId field directly
+        if (itemId <= 0)
+        {
+            itemId = entry.getItemId();
+        }
+
+        return itemId;
     }
 
     private boolean isRestrictedAction(String option)
@@ -401,7 +458,12 @@ public class ClogmanPlugin extends Plugin
                option.equals("drink") ||
                option.equals("use") ||
                option.equals("read") ||
-               option.equals("open");
+               option.equals("open") ||
+               option.equals("check") ||
+               option.equals("rub") ||
+               option.equals("break") ||
+               option.equals("activate") ||
+               option.equals("commune");
     }
 
     // === GRAND EXCHANGE RESTRICTION ===
@@ -431,7 +493,7 @@ public class ClogmanPlugin extends Plugin
             return;
         }
 
-        // GE search results come in pairs: item icon and item name
+        // GE search results come in groups of 3: background, item sprite, item name
         for (int i = 0; i < children.length; i += 3)
         {
             if (i + 2 >= children.length)
@@ -446,32 +508,10 @@ public class ClogmanPlugin extends Plugin
                 if (itemId > 0 && isItemLocked(itemId))
                 {
                     // Hide locked items from search results
-                    children[i].setHidden(true);     // Icon background
+                    children[i].setHidden(true);     // Background
                     children[i + 1].setHidden(true); // Item sprite
                     children[i + 2].setHidden(true); // Item name
                 }
-            }
-        }
-    }
-
-    // === BANK WITHDRAW RESTRICTION ===
-
-    @Subscribe
-    public void onMenuOptionClicked(MenuOptionClicked event)
-    {
-        if (!config.restrictBankWithdraw())
-        {
-            return;
-        }
-
-        String option = Text.removeTags(event.getMenuOption()).toLowerCase();
-        if (option.startsWith("withdraw"))
-        {
-            int itemId = event.getItemId();
-            if (itemId > 0 && isItemLocked(itemId))
-            {
-                event.consume();
-                sendLockedMessage("withdraw", itemId);
             }
         }
     }
@@ -498,17 +538,13 @@ public class ClogmanPlugin extends Plugin
 
     // === COLLECTION LOG DETECTION ===
 
-    // Collection log widget group ID
-    private static final int COLLECTION_LOG_GROUP_ID = 621;
-    // Widget IDs within collection log
-    private static final int COLLECTION_LOG_ITEM_CONTAINER = 621 << 16 | 35;
-
     @Subscribe
     public void onWidgetLoaded(WidgetLoaded event)
     {
-        if (event.getGroupId() == COLLECTION_LOG_GROUP_ID)
+        if (event.getGroupId() == InterfaceID.COLLECTION_LOG)
         {
             collectionLogOpen = true;
+            log.debug("Collection log opened");
             // Scan collection log when it's opened
             clientThread.invokeLater(this::scanCollectionLog);
         }
@@ -517,17 +553,18 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onWidgetClosed(WidgetClosed event)
     {
-        if (event.getGroupId() == COLLECTION_LOG_GROUP_ID)
+        if (event.getGroupId() == InterfaceID.COLLECTION_LOG)
         {
             collectionLogOpen = false;
+            log.debug("Collection log closed");
         }
     }
 
     @Subscribe
     public void onScriptPostFired(ScriptPostFired event)
     {
-        // Script 2730 is fired when collection log entries are updated (changing tabs/pages)
-        if (event.getScriptId() == 2730 && collectionLogOpen)
+        // Script 2731 is fired when collection log list is drawn (changing tabs/pages)
+        if (event.getScriptId() == COLLECTION_LOG_DRAW_LIST_SCRIPT && collectionLogOpen)
         {
             clientThread.invokeLater(this::scanCollectionLog);
         }
@@ -568,19 +605,24 @@ public class ClogmanPlugin extends Plugin
      */
     private void scanCollectionLog()
     {
-        Widget itemContainer = client.getWidget(COLLECTION_LOG_ITEM_CONTAINER);
+        // Use ComponentID.COLLECTION_LOG_ENTRY_ITEMS (40697893 = 621 << 16 | 37)
+        Widget itemContainer = client.getWidget(ComponentID.COLLECTION_LOG_ENTRY_ITEMS);
         if (itemContainer == null)
         {
+            log.debug("Collection log item container widget not found");
             return;
         }
 
         Widget[] items = itemContainer.getDynamicChildren();
-        if (items == null)
+        if (items == null || items.length == 0)
         {
+            log.debug("No items found in collection log widget");
             return;
         }
 
         int newUnlocks = 0;
+        int scannedItems = 0;
+
         for (Widget item : items)
         {
             int itemId = item.getItemId();
@@ -589,6 +631,8 @@ public class ClogmanPlugin extends Plugin
                 continue;
             }
 
+            scannedItems++;
+
             // Items with opacity 0 are obtained, greyed out items have higher opacity
             boolean isObtained = item.getOpacity() == 0;
 
@@ -596,14 +640,18 @@ public class ClogmanPlugin extends Plugin
             {
                 if (unlockedClogItems.add(itemId))
                 {
+                    ClogItem clogItem = collectionLogItems.get(itemId);
+                    log.debug("Found obtained item: {} (ID: {})", clogItem.name, itemId);
                     newUnlocks++;
                 }
             }
         }
 
+        log.debug("Scanned {} items, found {} new unlocks", scannedItems, newUnlocks);
+
         if (newUnlocks > 0)
         {
-            log.info("Scanned collection log page, found {} new unlocks", newUnlocks);
+            log.info("Scanned collection log page, found {} new unlocks (total: {})", newUnlocks, unlockedClogItems.size());
             saveUnlockedItems();
             recalculateAvailableItems();
 
