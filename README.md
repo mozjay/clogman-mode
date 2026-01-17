@@ -10,9 +10,9 @@ Any item that appears in the Collection Log is restricted until you obtain it. O
 ### Derived Items
 Items crafted from collection log items are also restricted until you unlock their dependencies. For example:
 
-- **Dragon sq shield** requires **Shield left half** (collection log item)
-- **Amulet of torture** requires **Zenyte shard** (collection log item)
-- **Toxic blowpipe** requires **Tanzanite fang** (collection log item)
+- **Tormented bracelet** requires: Zenyte shard, Onyx
+- **Soulreaper axe** requires: Leviathan's lure, Siren's staff, Executioner's axe head, Eye of the duke
+- **Confliction gauntlets** requires: Zenyte shard, Onyx, Mokhaiotl cloth, Demon tear
 
 The plugin includes ~627 derived items with their collection log dependencies pre-calculated.
 
@@ -95,7 +95,7 @@ The plugin includes a pre-generated JSON file (`clog_restrictions.json`) contain
 - **627** derived items with their dependencies
 - **27** clog items craftable from other clog items
 
-This data was generated from the OSRS Wiki.
+This data was generated from the OSRS Wiki using [osrs-clog-dependencies](https://github.com/mozjay/osrs-clog-dependencies).
 
 ## Credits
 
