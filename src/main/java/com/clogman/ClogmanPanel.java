@@ -155,7 +155,12 @@ public class ClogmanPanel extends PluginPanel
         {
             ClogmanPlugin.ClogItem clogItem = clogItems.get(itemId);
             String name = clogItem != null ? clogItem.name : "Unknown (ID: " + itemId + ")";
-            allEntries.add(new UnlockEntry(itemId, name));
+
+            // Pre-load and cache icon
+            BufferedImage img = itemManager.getImage(itemId);
+            ImageIcon icon = img != null ? new ImageIcon(img) : null;
+
+            allEntries.add(new UnlockEntry(itemId, name, icon));
         }
 
         // Sort alphabetically
@@ -329,16 +334,8 @@ public class ClogmanPanel extends PluginPanel
         {
             nameLabel.setText(value.name);
 
-            // Load item icon asynchronously
-            BufferedImage icon = itemManager.getImage(value.itemId);
-            if (icon != null)
-            {
-                iconLabel.setIcon(new ImageIcon(icon));
-            }
-            else
-            {
-                iconLabel.setIcon(null);
-            }
+            // Use pre-cached icon (loaded once in updateFromPlugin)
+            iconLabel.setIcon(value.icon);
 
             if (isSelected)
             {
@@ -354,17 +351,19 @@ public class ClogmanPanel extends PluginPanel
     }
 
     /**
-     * Data class for unlock entries
+     * Data class for unlock entries with cached icon
      */
     private static class UnlockEntry
     {
         final int itemId;
         final String name;
+        final ImageIcon icon;
 
-        UnlockEntry(int itemId, String name)
+        UnlockEntry(int itemId, String name, ImageIcon icon)
         {
             this.itemId = itemId;
             this.name = name;
+            this.icon = icon;
         }
     }
 }
