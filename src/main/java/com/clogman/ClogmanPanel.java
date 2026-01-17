@@ -114,7 +114,7 @@ public class ClogmanPanel extends PluginPanel
         buttonPanel.add(clearButton, gbc);
 
         // Help text
-        JLabel helpLabel = new JLabel("<html><small>Browse your Collection Log in-game to sync unlocks automatically.</small></html>");
+        JLabel helpLabel = new JLabel("<html>Browse your Collection Log in-game to sync unlocks automatically.</html>");
         helpLabel.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
         helpLabel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
