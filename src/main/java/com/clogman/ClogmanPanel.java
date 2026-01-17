@@ -8,9 +8,13 @@ import net.runelite.client.game.chatbox.ChatboxItemSearch;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
 
+import net.runelite.client.ui.components.IconTextField;
+
 import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -29,6 +33,10 @@ public class ClogmanPanel extends PluginPanel
     private final JList<UnlockEntry> unlockList;
     private final DefaultListModel<UnlockEntry> listModel;
     private final JLabel statsLabel;
+    private final IconTextField searchField;
+
+    // All entries (unfiltered) - source of truth for display
+    private List<UnlockEntry> allEntries = new ArrayList<>();
 
     public ClogmanPanel(
         ClogmanPlugin plugin,
@@ -50,7 +58,23 @@ public class ClogmanPanel extends PluginPanel
         // Stats label at top
         statsLabel = new JLabel("Unlocked: 0 / 0");
         statsLabel.setForeground(Color.WHITE);
-        statsLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
+        statsLabel.setBorder(new EmptyBorder(0, 0, 5, 0));
+
+        // Search field
+        searchField = new IconTextField();
+        searchField.setIcon(IconTextField.Icon.SEARCH);
+        searchField.setPreferredSize(new Dimension(0, 30));
+        searchField.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        searchField.setHoverBackgroundColor(ColorScheme.DARK_GRAY_HOVER_COLOR);
+        searchField.getDocument().addDocumentListener(new DocumentListener()
+        {
+            @Override
+            public void insertUpdate(DocumentEvent e) { filterList(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { filterList(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { filterList(); }
+        });
 
         // List of unlocked items
         listModel = new DefaultListModel<>();
@@ -95,9 +119,14 @@ public class ClogmanPanel extends PluginPanel
         helpLabel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
         // Layout
+        JPanel headerPanel = new JPanel(new BorderLayout(0, 5));
+        headerPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        headerPanel.add(statsLabel, BorderLayout.NORTH);
+        headerPanel.add(searchField, BorderLayout.SOUTH);
+
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        topPanel.add(statsLabel, BorderLayout.NORTH);
+        topPanel.add(headerPanel, BorderLayout.NORTH);
         topPanel.add(scrollPane, BorderLayout.CENTER);
 
         add(topPanel, BorderLayout.CENTER);
@@ -119,30 +148,40 @@ public class ClogmanPanel extends PluginPanel
 
     private void updateFromPlugin()
     {
-        listModel.clear();
-
         Map<Integer, ClogmanPlugin.ClogItem> clogItems = plugin.getCollectionLogItems();
-        List<UnlockEntry> entries = new ArrayList<>();
+        allEntries = new ArrayList<>();
 
         for (Integer itemId : plugin.getUnlockedClogItems())
         {
             ClogmanPlugin.ClogItem clogItem = clogItems.get(itemId);
             String name = clogItem != null ? clogItem.name : "Unknown (ID: " + itemId + ")";
-            entries.add(new UnlockEntry(itemId, name));
+            allEntries.add(new UnlockEntry(itemId, name));
         }
 
         // Sort alphabetically
-        entries.sort(Comparator.comparing(e -> e.name.toLowerCase()));
-
-        for (UnlockEntry entry : entries)
-        {
-            listModel.addElement(entry);
-        }
+        allEntries.sort(Comparator.comparing(e -> e.name.toLowerCase()));
 
         // Update stats
         int unlocked = plugin.getUnlockedCount();
         int total = plugin.getTotalClogItems();
         statsLabel.setText("Unlocked: " + unlocked + " / " + total);
+
+        // Apply current filter
+        filterList();
+    }
+
+    private void filterList()
+    {
+        String search = searchField.getText().toLowerCase().trim();
+        listModel.clear();
+
+        for (UnlockEntry entry : allEntries)
+        {
+            if (search.isEmpty() || entry.name.toLowerCase().contains(search))
+            {
+                listModel.addElement(entry);
+            }
+        }
     }
 
     private void onAdd()
