@@ -758,26 +758,27 @@ public class ClogmanPlugin extends Plugin
 
     private int getItemIdFromMenuEntry(MenuEntry entry)
     {
-        int itemId = entry.getIdentifier();
+        // Check the direct item ID field first (works for most item interactions)
+        int itemId = entry.getItemId();
+        if (itemId > 0)
+        {
+            return itemId;
+        }
 
-        // Try to get item ID from widget
+        // Try to get item ID from widget (for inventory/bank/equipment items)
         Widget widget = entry.getWidget();
         if (widget != null)
         {
             int widgetItemId = widget.getItemId();
             if (widgetItemId > 0)
             {
-                itemId = widgetItemId;
+                return widgetItemId;
             }
         }
 
-        // Also check itemId field directly
-        if (itemId <= 0)
-        {
-            itemId = entry.getItemId();
-        }
-
-        return itemId;
+        // Return -1 if no valid item ID found
+        // Don't fall back to getIdentifier() as it could be an object/NPC ID
+        return -1;
     }
 
     private boolean isRestrictedAction(String option)
