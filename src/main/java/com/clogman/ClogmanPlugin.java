@@ -52,6 +52,12 @@ public class ClogmanPlugin extends Plugin
     // Script ID for collection log draw (fires when changing tabs/pages)
     private static final int COLLECTION_LOG_DRAW_LIST_SCRIPT = 2731;
 
+    // Actions that should be restricted for locked items (O(1) lookup)
+    private static final Set<String> RESTRICTED_ACTIONS = Set.of(
+        "wear", "wield", "equip", "eat", "drink", "use",
+        "read", "open", "check", "rub", "break", "activate", "commune"
+    );
+
     @Inject
     private Client client;
 
@@ -783,19 +789,7 @@ public class ClogmanPlugin extends Plugin
 
     private boolean isRestrictedAction(String option)
     {
-        return option.equals("wear") ||
-               option.equals("wield") ||
-               option.equals("equip") ||
-               option.equals("eat") ||
-               option.equals("drink") ||
-               option.equals("use") ||
-               option.equals("read") ||
-               option.equals("open") ||
-               option.equals("check") ||
-               option.equals("rub") ||
-               option.equals("break") ||
-               option.equals("activate") ||
-               option.equals("commune");
+        return RESTRICTED_ACTIONS.contains(option);
     }
 
     // === GRAND EXCHANGE RESTRICTION ===
