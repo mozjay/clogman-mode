@@ -118,9 +118,6 @@ public class ClogmanPlugin extends Plugin
     // Derived items by ID for quick lookups
     private Map<Integer, DerivedItem> derivedItemsById = new HashMap<>();
 
-    // Track if we've done initial sync from collection log
-    private boolean hasScannedCollectionLog = false;
-
     // Track collection log interface state
     private boolean collectionLogOpen = false;
 
@@ -249,7 +246,6 @@ public class ClogmanPlugin extends Plugin
         {
             unlockedClogItems.clear();
             availableItems.clear();
-            hasScannedCollectionLog = false;
         }
     }
 
@@ -1045,8 +1041,6 @@ public class ClogmanPlugin extends Plugin
                 panel.refresh();
             }
         }
-
-        hasScannedCollectionLog = true;
     }
 
     private void sendSyncMessage(int count)
