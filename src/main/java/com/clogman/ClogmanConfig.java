@@ -118,7 +118,7 @@ public interface ClogmanConfig extends Config
     @Range(min = 0, max = 255)
     default int inventoryOpacity()
     {
-        return 70;
+        return 100;
     }
 
     @ConfigItem(
@@ -131,6 +131,6 @@ public interface ClogmanConfig extends Config
     @Range(min = 0, max = 255)
     default int bankOpacity()
     {
-        return 70;
+        return 100;
     }
 }

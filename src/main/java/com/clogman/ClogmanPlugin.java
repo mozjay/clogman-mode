@@ -52,6 +52,12 @@ public class ClogmanPlugin extends Plugin
     // Script ID for collection log draw (fires when changing tabs/pages)
     private static final int COLLECTION_LOG_DRAW_LIST_SCRIPT = 2731;
 
+    // Actions that should be restricted for locked items (O(1) lookup)
+    private static final Set<String> RESTRICTED_ACTIONS = Set.of(
+        "wear", "wield", "equip", "eat", "drink", "use",
+        "read", "open", "check", "rub", "break", "activate", "commune"
+    );
+
     @Inject
     private Client client;
 
@@ -97,7 +103,6 @@ public class ClogmanPlugin extends Plugin
     private Map<String, DerivedItem> derivedItems = new HashMap<>();
 
     // Set of unlocked collection log item IDs for the current player
-    @Getter
     private Set<Integer> unlockedClogItems = new HashSet<>();
 
     // Cache of items that are currently available (unlocked or dependencies met)
@@ -112,9 +117,6 @@ public class ClogmanPlugin extends Plugin
 
     // Derived items by ID for quick lookups
     private Map<Integer, DerivedItem> derivedItemsById = new HashMap<>();
-
-    // Track if we've done initial sync from collection log
-    private boolean hasScannedCollectionLog = false;
 
     // Track collection log interface state
     private boolean collectionLogOpen = false;
@@ -175,54 +177,56 @@ public class ClogmanPlugin extends Plugin
                 return;
             }
 
-            InputStreamReader reader = new InputStreamReader(is);
-            Type type = new TypeToken<RestrictionData>(){}.getType();
-            RestrictionData data = gson.fromJson(reader, type);
-
-            if (data != null)
+            try (InputStreamReader reader = new InputStreamReader(is))
             {
-                if (data.collectionLogItems != null)
+                Type type = new TypeToken<RestrictionData>(){}.getType();
+                RestrictionData data = gson.fromJson(reader, type);
+
+                if (data != null)
                 {
-                    collectionLogItems = data.collectionLogItems;
-                    // Build name to ID mapping and all-IDs to primary mapping
-                    int totalClogIdMappings = 0;
-                    for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
+                    if (data.collectionLogItems != null)
                     {
-                        Integer primaryId = entry.getKey();
-                        ClogItem clogItem = entry.getValue();
-
-                        itemNameToId.put(clogItem.name.toLowerCase(), primaryId);
-
-                        // Map all variant IDs to this primary ID
-                        for (Integer variantId : clogItem.getAllIds())
+                        collectionLogItems = data.collectionLogItems;
+                        // Build name to ID mapping and all-IDs to primary mapping
+                        int totalClogIdMappings = 0;
+                        for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
                         {
-                            clogIdToPrimaryId.put(variantId, primaryId);
-                            totalClogIdMappings++;
+                            Integer primaryId = entry.getKey();
+                            ClogItem clogItem = entry.getValue();
+
+                            itemNameToId.put(clogItem.name.toLowerCase(), primaryId);
+
+                            // Map all variant IDs to this primary ID
+                            for (Integer variantId : clogItem.getAllIds())
+                            {
+                                clogIdToPrimaryId.put(variantId, primaryId);
+                                totalClogIdMappings++;
+                            }
+                            // Also ensure primary ID is mapped
+                            if (!clogIdToPrimaryId.containsKey(primaryId))
+                            {
+                                clogIdToPrimaryId.put(primaryId, primaryId);
+                                totalClogIdMappings++;
+                            }
                         }
-                        // Also ensure primary ID is mapped
-                        if (!clogIdToPrimaryId.containsKey(primaryId))
-                        {
-                            clogIdToPrimaryId.put(primaryId, primaryId);
-                            totalClogIdMappings++;
-                        }
+                        log.info("Loaded {} collection log items ({} ID mappings)", collectionLogItems.size(), totalClogIdMappings);
                     }
-                    log.info("Loaded {} collection log items ({} ID mappings)", collectionLogItems.size(), totalClogIdMappings);
-                }
 
-                if (data.derivedItems != null)
-                {
-                    derivedItems = data.derivedItems;
-                    // Build ID to derived item mapping (including all variant IDs)
-                    int totalIdMappings = 0;
-                    for (DerivedItem derived : derivedItems.values())
+                    if (data.derivedItems != null)
                     {
-                        for (Integer id : derived.getAllItemIds())
+                        derivedItems = data.derivedItems;
+                        // Build ID to derived item mapping (including all variant IDs)
+                        int totalIdMappings = 0;
+                        for (DerivedItem derived : derivedItems.values())
                         {
-                            derivedItemsById.put(id, derived);
-                            totalIdMappings++;
+                            for (Integer id : derived.getAllItemIds())
+                            {
+                                derivedItemsById.put(id, derived);
+                                totalIdMappings++;
+                            }
                         }
+                        log.info("Loaded {} derived items ({} ID mappings)", derivedItems.size(), totalIdMappings);
                     }
-                    log.info("Loaded {} derived items ({} ID mappings)", derivedItems.size(), totalIdMappings);
                 }
             }
         }
@@ -244,7 +248,6 @@ public class ClogmanPlugin extends Plugin
         {
             unlockedClogItems.clear();
             availableItems.clear();
-            hasScannedCollectionLog = false;
         }
     }
 
@@ -783,19 +786,7 @@ public class ClogmanPlugin extends Plugin
 
     private boolean isRestrictedAction(String option)
     {
-        return option.equals("wear") ||
-               option.equals("wield") ||
-               option.equals("equip") ||
-               option.equals("eat") ||
-               option.equals("drink") ||
-               option.equals("use") ||
-               option.equals("read") ||
-               option.equals("open") ||
-               option.equals("check") ||
-               option.equals("rub") ||
-               option.equals("break") ||
-               option.equals("activate") ||
-               option.equals("commune");
+        return RESTRICTED_ACTIONS.contains(option);
     }
 
     // === GRAND EXCHANGE RESTRICTION ===
@@ -850,7 +841,8 @@ public class ClogmanPlugin extends Plugin
 
     private void sendLockedMessage(String action, int itemId)
     {
-        String itemName = itemManager.getItemComposition(itemId).getName();
+        ItemComposition itemComp = itemManager.getItemComposition(itemId);
+        String itemName = itemComp != null ? itemComp.getName() : "Unknown item";
         String message = new ChatMessageBuilder()
             .append(ChatColorType.HIGHLIGHT)
             .append("Clogman: ")
@@ -1051,8 +1043,6 @@ public class ClogmanPlugin extends Plugin
                 panel.refresh();
             }
         }
-
-        hasScannedCollectionLog = true;
     }
 
     private void sendSyncMessage(int count)
@@ -1076,6 +1066,16 @@ public class ClogmanPlugin extends Plugin
     public int getUnlockedCount()
     {
         return unlockedClogItems.size();
+    }
+
+    /**
+     * Returns a copy of the unlocked collection log item IDs.
+     * Returns a defensive copy to prevent ConcurrentModificationException
+     * when iterating from EDT while client thread modifies the set.
+     */
+    public Set<Integer> getUnlockedClogItems()
+    {
+        return new HashSet<>(unlockedClogItems);
     }
 
     /**
