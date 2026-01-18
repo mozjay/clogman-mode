@@ -177,9 +177,10 @@ public class ClogmanPlugin extends Plugin
                 return;
             }
 
-            InputStreamReader reader = new InputStreamReader(is);
-            Type type = new TypeToken<RestrictionData>(){}.getType();
-            RestrictionData data = gson.fromJson(reader, type);
+            try (InputStreamReader reader = new InputStreamReader(is))
+            {
+                Type type = new TypeToken<RestrictionData>(){}.getType();
+                RestrictionData data = gson.fromJson(reader, type);
 
             if (data != null)
             {
@@ -226,6 +227,7 @@ public class ClogmanPlugin extends Plugin
                     }
                     log.info("Loaded {} derived items ({} ID mappings)", derivedItems.size(), totalIdMappings);
                 }
+            }
             }
         }
         catch (Exception e)
