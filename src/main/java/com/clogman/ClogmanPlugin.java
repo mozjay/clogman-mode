@@ -48,6 +48,8 @@ public class ClogmanPlugin extends Plugin
 {
     private static final String CONFIG_GROUP = "clogman";
     private static final String UNLOCKED_ITEMS_KEY = "unlockedItems";
+    private static final String MANUALLY_ADDED_KEY = "manuallyAdded";
+    private static final String MANUALLY_REMOVED_KEY = "manuallyRemoved";
 
     // Script ID for collection log draw (fires when changing tabs/pages)
     private static final int COLLECTION_LOG_DRAW_LIST_SCRIPT = 2731;
@@ -105,6 +107,14 @@ public class ClogmanPlugin extends Plugin
     // Set of unlocked collection log item IDs for the current player
     private Set<Integer> unlockedClogItems = new HashSet<>();
 
+    // Track manually added unlocks (user added via panel, not from clog scan)
+    @Getter
+    private Set<Integer> manuallyAdded = new HashSet<>();
+
+    // Track manually removed/locked items (user locked via panel despite being in clog)
+    @Getter
+    private Set<Integer> manuallyRemoved = new HashSet<>();
+
     // Cache of items that are currently available (unlocked or dependencies met)
     @Getter
     private Set<Integer> availableItems = new HashSet<>();
@@ -156,6 +166,8 @@ public class ClogmanPlugin extends Plugin
         overlayManager.remove(overlay);
         clientToolbar.removeNavigation(navButton);
         unlockedClogItems.clear();
+        manuallyAdded.clear();
+        manuallyRemoved.clear();
         availableItems.clear();
         panel = null;
         navButton = null;
@@ -247,6 +259,8 @@ public class ClogmanPlugin extends Plugin
         else if (event.getGameState() == GameState.LOGIN_SCREEN)
         {
             unlockedClogItems.clear();
+            manuallyAdded.clear();
+            manuallyRemoved.clear();
             availableItems.clear();
         }
     }
@@ -318,6 +332,9 @@ public class ClogmanPlugin extends Plugin
     private void loadUnlockedItems()
     {
         unlockedClogItems.clear();
+        manuallyAdded.clear();
+        manuallyRemoved.clear();
+
         String playerName = getPlayerConfigKey();
         if (playerName == null)
         {
@@ -325,20 +342,19 @@ public class ClogmanPlugin extends Plugin
             return;
         }
 
-        String configKey = playerName + "." + UNLOCKED_ITEMS_KEY;
-        String savedData = configManager.getConfiguration(CONFIG_GROUP, configKey);
-        log.debug("Loading config from key: {}.{}", CONFIG_GROUP, configKey);
+        // Load unlocked items
+        String unlockedKey = playerName + "." + UNLOCKED_ITEMS_KEY;
+        String savedUnlocked = configManager.getConfiguration(CONFIG_GROUP, unlockedKey);
 
-        if (savedData != null && !savedData.isEmpty())
+        if (savedUnlocked != null && !savedUnlocked.isEmpty())
         {
             try
             {
                 Type type = new TypeToken<Set<Integer>>(){}.getType();
-                Set<Integer> loaded = gson.fromJson(savedData, type);
+                Set<Integer> loaded = gson.fromJson(savedUnlocked, type);
                 if (loaded != null)
                 {
                     unlockedClogItems.addAll(loaded);
-                    log.info("Loaded {} unlocked items for player {} from saved config", unlockedClogItems.size(), playerName);
                 }
             }
             catch (Exception e)
@@ -346,10 +362,51 @@ public class ClogmanPlugin extends Plugin
                 log.error("Failed to load unlocked items", e);
             }
         }
-        else
+
+        // Load manually added items
+        String manualAddKey = playerName + "." + MANUALLY_ADDED_KEY;
+        String savedManualAdd = configManager.getConfiguration(CONFIG_GROUP, manualAddKey);
+
+        if (savedManualAdd != null && !savedManualAdd.isEmpty())
         {
-            log.info("No saved unlocked items found for player {} (first run or data cleared)", playerName);
+            try
+            {
+                Type type = new TypeToken<Set<Integer>>(){}.getType();
+                Set<Integer> loaded = gson.fromJson(savedManualAdd, type);
+                if (loaded != null)
+                {
+                    manuallyAdded.addAll(loaded);
+                }
+            }
+            catch (Exception e)
+            {
+                log.error("Failed to load manually added items", e);
+            }
         }
+
+        // Load manually removed items
+        String manualRemoveKey = playerName + "." + MANUALLY_REMOVED_KEY;
+        String savedManualRemove = configManager.getConfiguration(CONFIG_GROUP, manualRemoveKey);
+
+        if (savedManualRemove != null && !savedManualRemove.isEmpty())
+        {
+            try
+            {
+                Type type = new TypeToken<Set<Integer>>(){}.getType();
+                Set<Integer> loaded = gson.fromJson(savedManualRemove, type);
+                if (loaded != null)
+                {
+                    manuallyRemoved.addAll(loaded);
+                }
+            }
+            catch (Exception e)
+            {
+                log.error("Failed to load manually removed items", e);
+            }
+        }
+
+        log.info("Loaded {} unlocked items ({} manual, {} locked) for player {}",
+            unlockedClogItems.size(), manuallyAdded.size(), manuallyRemoved.size(), playerName);
     }
 
     private void saveUnlockedItems()
@@ -361,10 +418,23 @@ public class ClogmanPlugin extends Plugin
             return;
         }
 
-        String configKey = playerName + "." + UNLOCKED_ITEMS_KEY;
-        String json = gson.toJson(unlockedClogItems);
-        configManager.setConfiguration(CONFIG_GROUP, configKey, json);
-        log.debug("Saved {} unlocked items to config key: {}.{}", unlockedClogItems.size(), CONFIG_GROUP, configKey);
+        // Save unlocked items
+        String unlockedKey = playerName + "." + UNLOCKED_ITEMS_KEY;
+        String unlockedJson = gson.toJson(unlockedClogItems);
+        configManager.setConfiguration(CONFIG_GROUP, unlockedKey, unlockedJson);
+
+        // Save manually added items
+        String manualAddKey = playerName + "." + MANUALLY_ADDED_KEY;
+        String manualAddJson = gson.toJson(manuallyAdded);
+        configManager.setConfiguration(CONFIG_GROUP, manualAddKey, manualAddJson);
+
+        // Save manually removed items
+        String manualRemoveKey = playerName + "." + MANUALLY_REMOVED_KEY;
+        String manualRemoveJson = gson.toJson(manuallyRemoved);
+        configManager.setConfiguration(CONFIG_GROUP, manualRemoveKey, manualRemoveJson);
+
+        log.debug("Saved {} unlocked items ({} manual, {} locked) for {}",
+            unlockedClogItems.size(), manuallyAdded.size(), manuallyRemoved.size(), playerName);
     }
 
     private String getPlayerConfigKey()
@@ -502,6 +572,15 @@ public class ClogmanPlugin extends Plugin
             ClogItem item = collectionLogItems.get(itemId);
             log.info("Unlocked collection log item: {} (ID: {})", item.name, itemId);
 
+            // Remove from manually removed if it was there
+            boolean wasManuallyLocked = manuallyRemoved.remove(itemId);
+
+            // Track as manual addition only if it wasn't previously manually locked
+            if (!wasManuallyLocked)
+            {
+                manuallyAdded.add(itemId);
+            }
+
             // Capture items available before recalculation
             Set<Integer> previouslyAvailable = new HashSet<>(availableItems);
 
@@ -612,6 +691,7 @@ public class ClogmanPlugin extends Plugin
 
     /**
      * Removes an unlock from the collection (for panel use)
+     * This is for manual additions only - use lockItem() for locking real clog unlocks
      */
     public void removeUnlock(int itemId)
     {
@@ -619,8 +699,38 @@ public class ClogmanPlugin extends Plugin
         {
             ClogItem item = collectionLogItems.get(itemId);
             log.info("Removed unlock: {} (ID: {})", item != null ? item.name : "Unknown", itemId);
+
+            // Remove from manual sets
+            manuallyAdded.remove(itemId);
+            manuallyRemoved.remove(itemId);
+
             saveUnlockedItems();
             recalculateAvailableItems();
+        }
+    }
+
+    /**
+     * Locks an item (moves from unlocked to manually locked)
+     * Used when user wants to lock an item they actually have in their clog
+     */
+    public void lockItem(int itemId)
+    {
+        if (unlockedClogItems.remove(itemId))
+        {
+            ClogItem item = collectionLogItems.get(itemId);
+            log.info("Locked item: {} (ID: {})", item != null ? item.name : "Unknown", itemId);
+
+            // Add to manually removed (user wants it locked despite being in clog)
+            manuallyRemoved.add(itemId);
+            manuallyAdded.remove(itemId);  // Can't be both
+
+            saveUnlockedItems();
+            recalculateAvailableItems();
+
+            if (panel != null)
+            {
+                panel.refresh();
+            }
         }
     }
 
@@ -631,10 +741,42 @@ public class ClogmanPlugin extends Plugin
     {
         int count = unlockedClogItems.size();
         unlockedClogItems.clear();
+        manuallyAdded.clear();
+        manuallyRemoved.clear();
         availableItems.clear();
         saveUnlockedItems();
         recalculateAvailableItems();
         log.info("Reset all unlocks. Cleared {} items.", count);
+    }
+
+    /**
+     * Resets only manual changes (re-adds locked items, removes manual additions)
+     */
+    public void resetManualChanges()
+    {
+        int addedCount = manuallyAdded.size();
+        int removedCount = manuallyRemoved.size();
+
+        // Re-add manually locked items (they're back in the unlocked list)
+        unlockedClogItems.addAll(manuallyRemoved);
+
+        // Remove manual additions (they weren't real)
+        unlockedClogItems.removeAll(manuallyAdded);
+
+        // Clear manual tracking
+        manuallyAdded.clear();
+        manuallyRemoved.clear();
+
+        saveUnlockedItems();
+        recalculateAvailableItems();
+
+        log.info("Reset manual changes. Re-added {} locked items, removed {} manual additions.",
+            removedCount, addedCount);
+
+        if (panel != null)
+        {
+            panel.refresh();
+        }
     }
 
     private void sendUnlockMessage(String itemName)
@@ -1020,11 +1162,18 @@ public class ClogmanPlugin extends Plugin
 
             if (isObtained && collectionLogItems.containsKey(itemId))
             {
-                if (unlockedClogItems.add(itemId))
+                // Respect manual removals - don't auto-add if user has locked this item
+                if (!manuallyRemoved.contains(itemId))
                 {
-                    ClogItem clogItem = collectionLogItems.get(itemId);
-                    log.debug("Found obtained item: {} (ID: {})", clogItem.name, itemId);
-                    newUnlocks++;
+                    if (unlockedClogItems.add(itemId))
+                    {
+                        ClogItem clogItem = collectionLogItems.get(itemId);
+                        log.debug("Found obtained item: {} (ID: {})", clogItem.name, itemId);
+                        newUnlocks++;
+                    }
+
+                    // If this was manually added before, it's now a real unlock
+                    manuallyAdded.remove(itemId);
                 }
             }
         }
