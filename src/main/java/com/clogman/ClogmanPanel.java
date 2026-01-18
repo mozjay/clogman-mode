@@ -316,7 +316,7 @@ public class ClogmanPanel extends PluginPanel
                         Integer clogId = findClogItemId(itemId);
                         if (clogId != null)
                         {
-                            plugin.unlockItem(clogId);
+                            plugin.unlockItem(clogId, true);
                             refresh();
                         }
                         else
@@ -401,7 +401,7 @@ public class ClogmanPanel extends PluginPanel
             for (UnlockEntry entry : selected)
             {
                 // Re-add to unlocked items
-                plugin.unlockItem(entry.itemId);
+                plugin.unlockItem(entry.itemId, true);
             }
             refresh();
         }

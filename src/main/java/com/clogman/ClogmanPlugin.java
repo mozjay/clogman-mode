@@ -663,7 +663,7 @@ public class ClogmanPlugin extends Plugin
     /**
      * Unlocks a collection log item
      */
-    public void unlockItem(int itemId)
+    public void unlockItem(int itemId, boolean isManual)
     {
         if (!collectionLogItems.containsKey(itemId))
         {
@@ -678,8 +678,8 @@ public class ClogmanPlugin extends Plugin
             // Remove from manually removed if it was there
             boolean wasManuallyLocked = manuallyRemoved.remove(itemId);
 
-            // Track as manual addition only if it wasn't previously manually locked
-            if (!wasManuallyLocked)
+            // Only track as manual addition if this is actually a manual unlock
+            if (isManual && !wasManuallyLocked)
             {
                 manuallyAdded.add(itemId);
             }
@@ -793,26 +793,6 @@ public class ClogmanPlugin extends Plugin
     }
 
     /**
-     * Removes an unlock from the collection (for panel use)
-     * This is for manual additions only - use lockItem() for locking real clog unlocks
-     */
-    public void removeUnlock(int itemId)
-    {
-        if (unlockedClogItems.remove(itemId))
-        {
-            ClogItem item = collectionLogItems.get(itemId);
-            log.info("Removed unlock: {} (ID: {})", item != null ? item.name : "Unknown", itemId);
-
-            // Remove from manual sets
-            manuallyAdded.remove(itemId);
-            manuallyRemoved.remove(itemId);
-
-            saveUnlockedItems();
-            recalculateAvailableItems();
-        }
-    }
-
-    /**
      * Locks an item (moves from unlocked to manually locked)
      * Used when user wants to lock an item they actually have in their clog
      */
@@ -852,10 +832,14 @@ public class ClogmanPlugin extends Plugin
         unlockedClogItems.clear();
         manuallyAdded.clear();
         manuallyRemoved.clear();
-        availableItems.clear();
         saveUnlockedItems();
         recalculateAvailableItems();
         log.info("Reset all unlocks. Cleared {} items.", count);
+
+        if (panel != null)
+        {
+            panel.refresh();
+        }
     }
 
     /**
@@ -1221,7 +1205,7 @@ public class ClogmanPlugin extends Plugin
                 Integer itemId = itemNameToId.get(itemName.toLowerCase());
                 if (itemId != null)
                 {
-                    unlockItem(itemId);
+                    unlockItem(itemId, false);
                 }
                 else
                 {
