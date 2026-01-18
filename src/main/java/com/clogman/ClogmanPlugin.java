@@ -182,52 +182,52 @@ public class ClogmanPlugin extends Plugin
                 Type type = new TypeToken<RestrictionData>(){}.getType();
                 RestrictionData data = gson.fromJson(reader, type);
 
-            if (data != null)
-            {
-                if (data.collectionLogItems != null)
+                if (data != null)
                 {
-                    collectionLogItems = data.collectionLogItems;
-                    // Build name to ID mapping and all-IDs to primary mapping
-                    int totalClogIdMappings = 0;
-                    for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
+                    if (data.collectionLogItems != null)
                     {
-                        Integer primaryId = entry.getKey();
-                        ClogItem clogItem = entry.getValue();
-
-                        itemNameToId.put(clogItem.name.toLowerCase(), primaryId);
-
-                        // Map all variant IDs to this primary ID
-                        for (Integer variantId : clogItem.getAllIds())
+                        collectionLogItems = data.collectionLogItems;
+                        // Build name to ID mapping and all-IDs to primary mapping
+                        int totalClogIdMappings = 0;
+                        for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
                         {
-                            clogIdToPrimaryId.put(variantId, primaryId);
-                            totalClogIdMappings++;
+                            Integer primaryId = entry.getKey();
+                            ClogItem clogItem = entry.getValue();
+
+                            itemNameToId.put(clogItem.name.toLowerCase(), primaryId);
+
+                            // Map all variant IDs to this primary ID
+                            for (Integer variantId : clogItem.getAllIds())
+                            {
+                                clogIdToPrimaryId.put(variantId, primaryId);
+                                totalClogIdMappings++;
+                            }
+                            // Also ensure primary ID is mapped
+                            if (!clogIdToPrimaryId.containsKey(primaryId))
+                            {
+                                clogIdToPrimaryId.put(primaryId, primaryId);
+                                totalClogIdMappings++;
+                            }
                         }
-                        // Also ensure primary ID is mapped
-                        if (!clogIdToPrimaryId.containsKey(primaryId))
-                        {
-                            clogIdToPrimaryId.put(primaryId, primaryId);
-                            totalClogIdMappings++;
-                        }
+                        log.info("Loaded {} collection log items ({} ID mappings)", collectionLogItems.size(), totalClogIdMappings);
                     }
-                    log.info("Loaded {} collection log items ({} ID mappings)", collectionLogItems.size(), totalClogIdMappings);
-                }
 
-                if (data.derivedItems != null)
-                {
-                    derivedItems = data.derivedItems;
-                    // Build ID to derived item mapping (including all variant IDs)
-                    int totalIdMappings = 0;
-                    for (DerivedItem derived : derivedItems.values())
+                    if (data.derivedItems != null)
                     {
-                        for (Integer id : derived.getAllItemIds())
+                        derivedItems = data.derivedItems;
+                        // Build ID to derived item mapping (including all variant IDs)
+                        int totalIdMappings = 0;
+                        for (DerivedItem derived : derivedItems.values())
                         {
-                            derivedItemsById.put(id, derived);
-                            totalIdMappings++;
+                            for (Integer id : derived.getAllItemIds())
+                            {
+                                derivedItemsById.put(id, derived);
+                                totalIdMappings++;
+                            }
                         }
+                        log.info("Loaded {} derived items ({} ID mappings)", derivedItems.size(), totalIdMappings);
                     }
-                    log.info("Loaded {} derived items ({} ID mappings)", derivedItems.size(), totalIdMappings);
                 }
-            }
             }
         }
         catch (Exception e)
