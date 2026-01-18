@@ -720,9 +720,15 @@ public class ClogmanPlugin extends Plugin
             ClogItem item = collectionLogItems.get(itemId);
             log.info("Locked item: {} (ID: {})", item != null ? item.name : "Unknown", itemId);
 
-            // Add to manually removed (user wants it locked despite being in clog)
-            manuallyRemoved.add(itemId);
-            manuallyAdded.remove(itemId);  // Can't be both
+            // Check if this was a manual unlock (not from clog)
+            boolean wasManuallyAdded = manuallyAdded.remove(itemId);
+
+            // Only add to manually removed if it wasn't a manual unlock
+            // (i.e., it's from the actual collection log)
+            if (!wasManuallyAdded)
+            {
+                manuallyRemoved.add(itemId);
+            }
 
             saveUnlockedItems();
             recalculateAvailableItems();

@@ -124,7 +124,7 @@ public class ClogmanPanel extends PluginPanel
         gbc.gridy = 0;
         unlockButtonPanel.add(addButton, gbc);
 
-        JButton lockButton = new JButton("Lock Selected");
+        JButton lockButton = new JButton("Remove Unlock");
         lockButton.addActionListener(e -> onLock());
         gbc.gridy = 1;
         unlockButtonPanel.add(lockButton, gbc);
@@ -369,8 +369,8 @@ public class ClogmanPanel extends PluginPanel
         }
 
         int confirm = JOptionPane.showConfirmDialog(this,
-            "Lock " + selected.size() + " item(s)?\nThey will remain locked even if found in your collection log.",
-            "Confirm Lock",
+            "Remove unlock for " + selected.size() + " item(s)?",
+            "Confirm Remove",
             JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION)
