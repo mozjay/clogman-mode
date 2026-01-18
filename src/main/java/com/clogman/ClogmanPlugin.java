@@ -844,7 +844,8 @@ public class ClogmanPlugin extends Plugin
 
     private void sendLockedMessage(String action, int itemId)
     {
-        String itemName = itemManager.getItemComposition(itemId).getName();
+        ItemComposition itemComp = itemManager.getItemComposition(itemId);
+        String itemName = itemComp != null ? itemComp.getName() : "Unknown item";
         String message = new ChatMessageBuilder()
             .append(ChatColorType.HIGHLIGHT)
             .append("Clogman: ")
