@@ -32,11 +32,15 @@ public class ClogmanPanel extends PluginPanel
 
     private final JList<UnlockEntry> unlockList;
     private final DefaultListModel<UnlockEntry> listModel;
+    private final JList<UnlockEntry> lockedList;
+    private final DefaultListModel<UnlockEntry> lockedListModel;
     private final JLabel statsLabel;
     private final IconTextField searchField;
+    private final JCheckBox manualOnlyCheckbox;
 
     // All entries (unfiltered) - source of truth for display
     private List<UnlockEntry> allEntries = new ArrayList<>();
+    private List<UnlockEntry> allLockedEntries = new ArrayList<>();
 
     public ClogmanPanel(
         ClogmanPlugin plugin,
@@ -69,12 +73,18 @@ public class ClogmanPanel extends PluginPanel
         searchField.getDocument().addDocumentListener(new DocumentListener()
         {
             @Override
-            public void insertUpdate(DocumentEvent e) { filterList(); }
+            public void insertUpdate(DocumentEvent e) { filterLists(); }
             @Override
-            public void removeUpdate(DocumentEvent e) { filterList(); }
+            public void removeUpdate(DocumentEvent e) { filterLists(); }
             @Override
-            public void changedUpdate(DocumentEvent e) { filterList(); }
+            public void changedUpdate(DocumentEvent e) { filterLists(); }
         });
+
+        // Manual-only filter checkbox
+        manualOnlyCheckbox = new JCheckBox("Show only manual unlocks");
+        manualOnlyCheckbox.setForeground(Color.WHITE);
+        manualOnlyCheckbox.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        manualOnlyCheckbox.addActionListener(e -> filterLists());
 
         // List of unlocked items
         listModel = new DefaultListModel<>();
@@ -83,14 +93,25 @@ public class ClogmanPanel extends PluginPanel
         unlockList.setBackground(ColorScheme.DARKER_GRAY_COLOR);
         unlockList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        JScrollPane scrollPane = new JScrollPane(unlockList);
-        scrollPane.setPreferredSize(new Dimension(0, 300));
-        scrollPane.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
+        JScrollPane unlockScrollPane = new JScrollPane(unlockList);
+        unlockScrollPane.setPreferredSize(new Dimension(0, 250));
+        unlockScrollPane.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
 
-        // Button panel
-        JPanel buttonPanel = new JPanel(new GridBagLayout());
-        buttonPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        buttonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+        // List of manually locked items
+        lockedListModel = new DefaultListModel<>();
+        lockedList = new JList<>(lockedListModel);
+        lockedList.setCellRenderer(new UnlockRenderer());
+        lockedList.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        lockedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        JScrollPane lockedScrollPane = new JScrollPane(lockedList);
+        lockedScrollPane.setPreferredSize(new Dimension(0, 120));
+        lockedScrollPane.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
+
+        // Unlock list buttons
+        JPanel unlockButtonPanel = new JPanel(new GridBagLayout());
+        unlockButtonPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        unlockButtonPanel.setBorder(new EmptyBorder(5, 0, 5, 0));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -101,17 +122,42 @@ public class ClogmanPanel extends PluginPanel
         JButton addButton = new JButton("Add Unlock");
         addButton.addActionListener(e -> onAdd());
         gbc.gridy = 0;
-        buttonPanel.add(addButton, gbc);
+        unlockButtonPanel.add(addButton, gbc);
 
-        JButton removeButton = new JButton("Remove Selected");
-        removeButton.addActionListener(e -> onRemove());
+        JButton lockButton = new JButton("Remove Unlock");
+        lockButton.addActionListener(e -> onLock());
         gbc.gridy = 1;
-        buttonPanel.add(removeButton, gbc);
+        unlockButtonPanel.add(lockButton, gbc);
+
+        // Locked items label
+        JLabel lockedLabel = new JLabel("Manually Locked Items");
+        lockedLabel.setForeground(Color.WHITE);
+        lockedLabel.setBorder(new EmptyBorder(10, 0, 5, 0));
+
+        // Locked list buttons
+        JPanel lockedButtonPanel = new JPanel(new GridBagLayout());
+        lockedButtonPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        lockedButtonPanel.setBorder(new EmptyBorder(5, 0, 5, 0));
+
+        JButton unlockButton = new JButton("Unlock Selected");
+        unlockButton.addActionListener(e -> onUnlock());
+        gbc.gridy = 0;
+        lockedButtonPanel.add(unlockButton, gbc);
+
+        // Reset buttons
+        JPanel resetButtonPanel = new JPanel(new GridBagLayout());
+        resetButtonPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        resetButtonPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+
+        JButton resetManualButton = new JButton("Reset Manual Changes");
+        resetManualButton.addActionListener(e -> onResetManual());
+        gbc.gridy = 0;
+        resetButtonPanel.add(resetManualButton, gbc);
 
         JButton clearButton = new JButton("Reset All Unlocks");
         clearButton.addActionListener(e -> onClearAll());
-        gbc.gridy = 2;
-        buttonPanel.add(clearButton, gbc);
+        gbc.gridy = 1;
+        resetButtonPanel.add(clearButton, gbc);
 
         // Help text
         JLabel helpLabel = new JLabel("<html>Browse your Collection Log in-game to sync unlocks automatically.</html>");
@@ -122,18 +168,35 @@ public class ClogmanPanel extends PluginPanel
         JPanel headerPanel = new JPanel(new BorderLayout(0, 5));
         headerPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
         headerPanel.add(statsLabel, BorderLayout.NORTH);
-        headerPanel.add(searchField, BorderLayout.SOUTH);
+        headerPanel.add(searchField, BorderLayout.CENTER);
+        headerPanel.add(manualOnlyCheckbox, BorderLayout.SOUTH);
 
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        topPanel.add(headerPanel, BorderLayout.NORTH);
-        topPanel.add(scrollPane, BorderLayout.CENTER);
+        // Unlock section
+        JPanel unlockSection = new JPanel(new BorderLayout());
+        unlockSection.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        unlockSection.add(unlockScrollPane, BorderLayout.CENTER);
+        unlockSection.add(unlockButtonPanel, BorderLayout.SOUTH);
 
-        add(topPanel, BorderLayout.CENTER);
+        // Locked section
+        JPanel lockedSection = new JPanel(new BorderLayout());
+        lockedSection.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        lockedSection.add(lockedLabel, BorderLayout.NORTH);
+        lockedSection.add(lockedScrollPane, BorderLayout.CENTER);
+        lockedSection.add(lockedButtonPanel, BorderLayout.SOUTH);
 
+        // Center panel with both lists
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        centerPanel.add(headerPanel, BorderLayout.NORTH);
+        centerPanel.add(unlockSection, BorderLayout.CENTER);
+        centerPanel.add(lockedSection, BorderLayout.SOUTH);
+
+        add(centerPanel, BorderLayout.CENTER);
+
+        // Bottom panel with reset buttons and help
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        bottomPanel.add(buttonPanel, BorderLayout.NORTH);
+        bottomPanel.add(resetButtonPanel, BorderLayout.NORTH);
         bottomPanel.add(helpLabel, BorderLayout.SOUTH);
         add(bottomPanel, BorderLayout.SOUTH);
     }
@@ -150,7 +213,9 @@ public class ClogmanPanel extends PluginPanel
     {
         Map<Integer, ClogmanPlugin.ClogItem> clogItems = plugin.getCollectionLogItems();
         allEntries = new ArrayList<>();
+        allLockedEntries = new ArrayList<>();
 
+        // Build unlocked items list
         for (Integer itemId : plugin.getUnlockedClogItems())
         {
             ClogmanPlugin.ClogItem clogItem = clogItems.get(itemId);
@@ -163,8 +228,22 @@ public class ClogmanPanel extends PluginPanel
             allEntries.add(new UnlockEntry(itemId, name, icon));
         }
 
+        // Build locked items list
+        for (Integer itemId : plugin.getManuallyRemoved())
+        {
+            ClogmanPlugin.ClogItem clogItem = clogItems.get(itemId);
+            String name = clogItem != null ? clogItem.name : "Unknown (ID: " + itemId + ")";
+
+            // Pre-load and cache icon
+            BufferedImage img = itemManager.getImage(itemId);
+            ImageIcon icon = img != null ? new ImageIcon(img) : null;
+
+            allLockedEntries.add(new UnlockEntry(itemId, name, icon));
+        }
+
         // Sort alphabetically
         allEntries.sort(Comparator.comparing(e -> e.name.toLowerCase()));
+        allLockedEntries.sort(Comparator.comparing(e -> e.name.toLowerCase()));
 
         // Update stats
         int unlocked = plugin.getUnlockedCount();
@@ -172,19 +251,41 @@ public class ClogmanPanel extends PluginPanel
         statsLabel.setText("Unlocked: " + unlocked + " / " + total);
 
         // Apply current filter
-        filterList();
+        filterLists();
     }
 
-    private void filterList()
+    private void filterLists()
     {
         String search = searchField.getText().toLowerCase().trim();
-        listModel.clear();
+        boolean manualOnly = manualOnlyCheckbox.isSelected();
 
+        // Filter unlock list
+        listModel.clear();
         for (UnlockEntry entry : allEntries)
         {
+            // Check search filter
+            if (!search.isEmpty() && !entry.name.toLowerCase().contains(search))
+            {
+                continue;
+            }
+
+            // Check manual-only filter
+            if (manualOnly && !plugin.getManuallyAdded().contains(entry.itemId))
+            {
+                continue;
+            }
+
+            listModel.addElement(entry);
+        }
+
+        // Filter locked list
+        lockedListModel.clear();
+        for (UnlockEntry entry : allLockedEntries)
+        {
+            // Only apply search filter to locked list (manual-only doesn't apply here)
             if (search.isEmpty() || entry.name.toLowerCase().contains(search))
             {
-                listModel.addElement(entry);
+                lockedListModel.addElement(entry);
             }
         }
     }
@@ -215,7 +316,7 @@ public class ClogmanPanel extends PluginPanel
                         Integer clogId = findClogItemId(itemId);
                         if (clogId != null)
                         {
-                            plugin.unlockItem(clogId);
+                            plugin.unlockItem(clogId, true);
                             refresh();
                         }
                         else
@@ -259,7 +360,7 @@ public class ClogmanPanel extends PluginPanel
         return null;
     }
 
-    private void onRemove()
+    private void onLock()
     {
         List<UnlockEntry> selected = unlockList.getSelectedValuesList();
         if (selected.isEmpty())
@@ -268,16 +369,62 @@ public class ClogmanPanel extends PluginPanel
         }
 
         int confirm = JOptionPane.showConfirmDialog(this,
-            "Remove " + selected.size() + " unlock(s)?",
-            "Confirm Removal",
+            "Remove unlock for " + selected.size() + " item(s)?",
+            "Confirm Remove",
             JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION)
         {
             for (UnlockEntry entry : selected)
             {
-                plugin.removeUnlock(entry.itemId);
+                plugin.lockItem(entry.itemId);
             }
+            refresh();
+        }
+    }
+
+    private void onUnlock()
+    {
+        List<UnlockEntry> selected = lockedList.getSelectedValuesList();
+        if (selected.isEmpty())
+        {
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Unlock " + selected.size() + " item(s)?",
+            "Confirm Unlock",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION)
+        {
+            for (UnlockEntry entry : selected)
+            {
+                // Re-add to unlocked items
+                plugin.unlockItem(entry.itemId, true);
+            }
+            refresh();
+        }
+    }
+
+    private void onResetManual()
+    {
+        if (plugin.getManuallyAdded().isEmpty() && plugin.getManuallyRemoved().isEmpty())
+        {
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Reset all manual changes?\n" +
+            "- " + plugin.getManuallyAdded().size() + " manually added unlock(s) will be removed\n" +
+            "- " + plugin.getManuallyRemoved().size() + " manually locked item(s) will be unlocked",
+            "Confirm Reset Manual Changes",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION)
+        {
+            plugin.resetManualChanges();
             refresh();
         }
     }

@@ -45,6 +45,7 @@ The plugin adds a side panel to manage your unlocks:
 
 ### Visual
 - **Item Dimming** - Locked items appear dimmed in inventory and bank
+- **Chat Icon** - Display a Clogman icon before your name in chat (like Ironman mode)
 - Configurable opacity levels (0-255)
 
 ### Notifications
@@ -85,8 +86,9 @@ Access settings via RuneLite's configuration panel:
 ### Visual
 | Setting | Description | Default |
 |---------|-------------|---------|
-| Inventory Dim Opacity | Opacity for locked items in inventory (0-255) | 70 |
-| Bank Dim Opacity | Opacity for locked items in bank (0-255) | 70 |
+| Inventory Dim Opacity | Opacity for locked items in inventory (0-255) | 100 |
+| Bank Dim Opacity | Opacity for locked items in bank (0-255) | 100 |
+| Show Chat Icon | Display Clogman icon before your name in chat | On |
 
 ## Data
 
@@ -100,5 +102,5 @@ This data was generated from the OSRS Wiki using [osrs-clog-dependencies](https:
 ## Credits
 
 Inspired by:
-- [Another Bronzeman Mode](https://github.com/CodePanter/another-bronzeman-mode) - GE restriction approach
-- [New Game Plus](https://github.com/Jetter-Work/new-game-plus) - Item usage restriction approach
+- [Another Bronzeman Mode](https://github.com/CodePanter/another-bronzeman-mode)
+- [New Game Plus](https://github.com/Jetter-Work/new-game-plus)
