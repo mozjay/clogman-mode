@@ -103,7 +103,6 @@ public class ClogmanPlugin extends Plugin
     private Map<String, DerivedItem> derivedItems = new HashMap<>();
 
     // Set of unlocked collection log item IDs for the current player
-    @Getter
     private Set<Integer> unlockedClogItems = new HashSet<>();
 
     // Cache of items that are currently available (unlocked or dependencies met)
@@ -1071,6 +1070,16 @@ public class ClogmanPlugin extends Plugin
     public int getUnlockedCount()
     {
         return unlockedClogItems.size();
+    }
+
+    /**
+     * Returns a copy of the unlocked collection log item IDs.
+     * Returns a defensive copy to prevent ConcurrentModificationException
+     * when iterating from EDT while client thread modifies the set.
+     */
+    public Set<Integer> getUnlockedClogItems()
+    {
+        return new HashSet<>(unlockedClogItems);
     }
 
     /**
