@@ -133,4 +133,16 @@ public interface ClogmanConfig extends Config
     {
         return 100;
     }
+
+    @ConfigItem(
+        keyName = "showChatIcon",
+        name = "Show Chat Icon",
+        description = "Display the Clogman icon before your name in chat",
+        section = visualSection,
+        position = 2
+    )
+    default boolean showChatIcon()
+    {
+        return true;
+    }
 }

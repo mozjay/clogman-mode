@@ -131,6 +131,9 @@ public class ClogmanPlugin extends Plugin
     // Track collection log interface state
     private boolean collectionLogOpen = false;
 
+    // Chat icon offset in the modIcons array (-1 means not loaded yet)
+    private int chatIconOffset = -1;
+
     @Override
     protected void startUp() throws Exception
     {
@@ -171,6 +174,7 @@ public class ClogmanPlugin extends Plugin
         availableItems.clear();
         panel = null;
         navButton = null;
+        chatIconOffset = -1;
     }
 
     @Provides
@@ -248,11 +252,54 @@ public class ClogmanPlugin extends Plugin
         }
     }
 
+    /**
+     * Loads the clogman chat icon into the client's mod icons array.
+     * This allows using <img=X> tags in chat/widget text.
+     */
+    private void loadChatIcon()
+    {
+        final IndexedSprite[] modIcons = client.getModIcons();
+
+        // Already loaded or not ready
+        if (chatIconOffset != -1 || modIcons == null)
+        {
+            return;
+        }
+
+        BufferedImage image = ImageUtil.loadImageResource(getClass(), "/clogman-chat-icon.png");
+        if (image == null)
+        {
+            log.warn("Could not load clogman chat icon");
+            return;
+        }
+
+        IndexedSprite indexedSprite = ImageUtil.getImageIndexedSprite(image, client);
+        if (indexedSprite == null)
+        {
+            log.warn("Could not convert chat icon to IndexedSprite");
+            return;
+        }
+
+        chatIconOffset = modIcons.length;
+
+        final IndexedSprite[] newModIcons = Arrays.copyOf(modIcons, modIcons.length + 1);
+        newModIcons[newModIcons.length - 1] = indexedSprite;
+        client.setModIcons(newModIcons);
+
+        log.debug("Loaded clogman chat icon at offset {}", chatIconOffset);
+    }
+
     @Subscribe
     public void onGameStateChanged(GameStateChanged event)
     {
         if (event.getGameState() == GameState.LOGGED_IN)
         {
+            // Load chat icon when client is ready
+            clientThread.invokeLater(() -> {
+                loadChatIcon();
+                return true;
+            });
+
             // Use invokeLater with retry - player object may not be ready immediately
             clientThread.invokeLater(this::tryLoadUnlockedItems);
         }
@@ -282,6 +329,62 @@ public class ClogmanPlugin extends Plugin
                 panel.refresh();
             }
         }
+    }
+
+    @Subscribe
+    public void onScriptCallbackEvent(ScriptCallbackEvent event)
+    {
+        if (!config.showChatIcon())
+        {
+            return;
+        }
+
+        if (!event.getEventName().equals("setChatboxInput"))
+        {
+            return;
+        }
+
+        // Ensure icon is loaded
+        if (chatIconOffset == -1)
+        {
+            loadChatIcon();
+            if (chatIconOffset == -1)
+            {
+                return; // Still failed to load
+            }
+        }
+
+        Widget chatboxInput = client.getWidget(ComponentID.CHATBOX_INPUT);
+        if (chatboxInput == null)
+        {
+            return;
+        }
+
+        Player player = client.getLocalPlayer();
+        if (player == null || player.getName() == null)
+        {
+            return;
+        }
+
+        String text = chatboxInput.getText();
+        int colonIdx = text.indexOf(':');
+        if (colonIdx == -1)
+        {
+            return;
+        }
+
+        // Get the current name portion (may include channel prefix like "[CC]")
+        String namePortion = text.substring(0, colonIdx);
+
+        // Avoid adding icon if already present
+        if (namePortion.contains("<img=" + chatIconOffset + ">"))
+        {
+            return;
+        }
+
+        // Insert icon at the beginning of the name
+        String newText = "<img=" + chatIconOffset + ">" + namePortion + text.substring(colonIdx);
+        chatboxInput.setText(newText);
     }
 
     /**
@@ -1103,30 +1206,74 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onChatMessage(ChatMessage event)
     {
-        if (event.getType() != ChatMessageType.GAMEMESSAGE)
+        // Handle game messages for collection log unlocks
+        if (event.getType() == ChatMessageType.GAMEMESSAGE)
+        {
+            String message = event.getMessage();
+            // Check for collection log unlock message
+            if (message.contains("New item added to your collection log:"))
+            {
+                // Extract item name from message
+                int startIdx = message.indexOf(":") + 2;
+                String itemName = Text.removeTags(message.substring(startIdx)).trim();
+
+                // Find and unlock the item
+                Integer itemId = itemNameToId.get(itemName.toLowerCase());
+                if (itemId != null)
+                {
+                    unlockItem(itemId);
+                }
+                else
+                {
+                    log.warn("Could not find item ID for unlocked item: {}", itemName);
+                }
+            }
+            return;
+        }
+
+        // Handle chat messages to add icon to local player's messages
+        if (!config.showChatIcon() || chatIconOffset == -1)
         {
             return;
         }
 
-        String message = event.getMessage();
-        // Check for collection log unlock message
-        if (message.contains("New item added to your collection log:"))
+        // Only process player chat types
+        ChatMessageType type = event.getType();
+        if (type != ChatMessageType.PUBLICCHAT &&
+            type != ChatMessageType.MODCHAT &&
+            type != ChatMessageType.CLAN_CHAT &&
+            type != ChatMessageType.CLAN_GUEST_CHAT &&
+            type != ChatMessageType.FRIENDSCHAT &&
+            type != ChatMessageType.PRIVATECHAT &&
+            type != ChatMessageType.MODPRIVATECHAT)
         {
-            // Extract item name from message
-            int startIdx = message.indexOf(":") + 2;
-            String itemName = Text.removeTags(message.substring(startIdx)).trim();
-
-            // Find and unlock the item
-            Integer itemId = itemNameToId.get(itemName.toLowerCase());
-            if (itemId != null)
-            {
-                unlockItem(itemId);
-            }
-            else
-            {
-                log.warn("Could not find item ID for unlocked item: {}", itemName);
-            }
+            return;
         }
+
+        // Check if this message is from the local player
+        Player localPlayer = client.getLocalPlayer();
+        if (localPlayer == null || localPlayer.getName() == null)
+        {
+            return;
+        }
+
+        String messageName = Text.removeTags(event.getName());
+        if (!localPlayer.getName().equals(messageName))
+        {
+            return;
+        }
+
+        // Add icon to the message
+        String name = event.getName();
+        // Don't add icon if name already has tags (ironman icon, etc.)
+        if (!name.equals(Text.removeTags(name)))
+        {
+            return;
+        }
+
+        final MessageNode messageNode = event.getMessageNode();
+        messageNode.setName("<img=" + chatIconOffset + ">" + name);
+        client.refreshChat();
     }
 
     /**
