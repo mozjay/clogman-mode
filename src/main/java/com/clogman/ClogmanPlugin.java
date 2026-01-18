@@ -1145,6 +1145,7 @@ public class ClogmanPlugin extends Plugin
         }
 
         int newUnlocks = 0;
+        int migratedItems = 0;
         int scannedItems = 0;
 
         for (Widget item : items)
@@ -1176,16 +1177,41 @@ public class ClogmanPlugin extends Plugin
                     manuallyAdded.remove(itemId);
                 }
             }
+            else if (!isObtained && collectionLogItems.containsKey(itemId))
+            {
+                // Migration: If item is unlocked but not obtained, it must be a manual addition
+                // This handles upgrading from pre-manual-tracking versions
+                if (unlockedClogItems.contains(itemId) && !manuallyAdded.contains(itemId))
+                {
+                    manuallyAdded.add(itemId);
+                    ClogItem clogItem = collectionLogItems.get(itemId);
+                    log.debug("Migrated to manual unlock: {} (ID: {})", clogItem.name, itemId);
+                    migratedItems++;
+                }
+            }
         }
 
-        log.debug("Scanned {} items, found {} new unlocks", scannedItems, newUnlocks);
+        log.debug("Scanned {} items, found {} new unlocks, migrated {} items", scannedItems, newUnlocks, migratedItems);
 
-        if (newUnlocks > 0)
+        if (newUnlocks > 0 || migratedItems > 0)
         {
-            log.info("Scanned collection log page, found {} new unlocks (total: {})", newUnlocks, unlockedClogItems.size());
+            if (newUnlocks > 0)
+            {
+                log.info("Scanned collection log page, found {} new unlocks (total: {})", newUnlocks, unlockedClogItems.size());
+            }
+
+            if (migratedItems > 0)
+            {
+                log.info("Migrated {} unlocked items to manual unlocks", migratedItems);
+            }
+
             saveUnlockedItems();
             recalculateAvailableItems();
-            sendSyncMessage(newUnlocks);
+
+            if (newUnlocks > 0)
+            {
+                sendSyncMessage(newUnlocks);
+            }
 
             if (panel != null)
             {
