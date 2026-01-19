@@ -1257,7 +1257,6 @@ public class ClogmanPlugin extends Plugin
 
         final MessageNode messageNode = event.getMessageNode();
         messageNode.setName("<img=" + chatIconOffset + ">" + name);
-        client.refreshChat();
     }
 
     /**
