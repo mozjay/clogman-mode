@@ -134,6 +134,9 @@ public class ClogmanPlugin extends Plugin
     // Chat icon offset in the modIcons array (-1 means not loaded yet)
     private int chatIconOffset = -1;
 
+    // Track when player is actually logging in (not just scene loading)
+    private boolean loggingIn = false;
+
     @Override
     protected void startUp() throws Exception
     {
@@ -292,8 +295,15 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onGameStateChanged(GameStateChanged event)
     {
-        if (event.getGameState() == GameState.LOGGED_IN)
+        if (event.getGameState() == GameState.LOGGING_IN)
         {
+            loggingIn = true;
+        }
+
+        if (event.getGameState() == GameState.LOGGED_IN && loggingIn)
+        {
+            loggingIn = false;
+
             // Load chat icon when client is ready
             clientThread.invokeLater(() -> {
                 loadChatIcon();
@@ -309,6 +319,7 @@ public class ClogmanPlugin extends Plugin
             manuallyAdded.clear();
             manuallyRemoved.clear();
             availableItems.clear();
+            loggingIn = false;
         }
     }
 
