@@ -1292,7 +1292,7 @@ public class ClogmanPlugin extends Plugin
         }
 
         int newUnlocks = 0;
-        int migratedItems = 0;
+        int manualTrackingChanges = 0;
         int scannedItems = 0;
 
         for (Widget item : items)
@@ -1321,35 +1321,46 @@ public class ClogmanPlugin extends Plugin
                     }
 
                     // If this was manually added before, it's now a real unlock
-                    manuallyAdded.remove(itemId);
+                    if (manuallyAdded.remove(itemId))
+                    {
+                        manualTrackingChanges++;
+                    }
                 }
             }
             else if (!isObtained && collectionLogItems.containsKey(itemId))
             {
+                ClogItem clogItem = collectionLogItems.get(itemId);
+
+                // Skip migration for clue items when clue restrictions are disabled
+                // They're effectively unrestricted, so shouldn't be tracked as manual unlocks
+                if (!config.restrictClueItems() && isClueItem(clogItem))
+                {
+                    continue;
+                }
+
                 // Migration: If item is unlocked but not obtained, it must be a manual addition
                 // This handles upgrading from pre-manual-tracking versions
                 if (unlockedClogItems.contains(itemId) && !manuallyAdded.contains(itemId))
                 {
                     manuallyAdded.add(itemId);
-                    ClogItem clogItem = collectionLogItems.get(itemId);
                     log.debug("Migrated to manual unlock: {} (ID: {})", clogItem.name, itemId);
-                    migratedItems++;
+                    manualTrackingChanges++;
                 }
             }
         }
 
-        log.debug("Scanned {} items, found {} new unlocks, migrated {} items", scannedItems, newUnlocks, migratedItems);
+        log.debug("Scanned {} items, found {} new unlocks, {} manual tracking changes", scannedItems, newUnlocks, manualTrackingChanges);
 
-        if (newUnlocks > 0 || migratedItems > 0)
+        if (newUnlocks > 0 || manualTrackingChanges > 0)
         {
             if (newUnlocks > 0)
             {
                 log.info("Scanned collection log page, found {} new unlocks (total: {})", newUnlocks, unlockedClogItems.size());
             }
 
-            if (migratedItems > 0)
+            if (manualTrackingChanges > 0)
             {
-                log.info("Migrated {} unlocked items to manual unlocks", migratedItems);
+                log.debug("Updated manual unlock tracking for {} items", manualTrackingChanges);
             }
 
             saveUnlockedItems();
