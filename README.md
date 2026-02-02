@@ -1,6 +1,6 @@
 # Clogman Mode
 
-A RuneLite plugin that restricts item usage and provides other miscellanious facilities automatically, based on Collection Log (clog) unlocks. Unlike similar restricted gamemodes, this plugin only restrics collection log items, as well as **derived items**, i.e. items that are dependent on collection log items.
+A RuneLite plugin that restricts item usage and provides other miscellanious facilities automatically, based on Collection Log (clog) unlocks. Unlike similar restricted gamemodes, this plugin only restricts collection log items, as well as **derived items**, i.e. items that are dependent on collection log items.
 
 ## Features
 
