@@ -57,7 +57,7 @@ public class ClogmanPlugin extends Plugin
     // Actions that should be restricted for locked items (O(1) lookup)
     private static final Set<String> RESTRICTED_ACTIONS = Set.of(
         "wear", "wield", "equip", "eat", "drink", "use",
-        "read", "open", "check", "rub", "break", "activate", "commune"
+        "read", "open", "rub", "break", "activate", "commune"
     );
 
     @Inject

@@ -143,6 +143,6 @@ public interface ClogmanConfig extends Config
     )
     default boolean showChatIcon()
     {
-        return true;
+        return false;
     }
 }
