@@ -1,59 +1,16 @@
 # Clogman Mode
 
-A RuneLite plugin that restricts item usage based on Collection Log unlocks. Unlike standard Bronzeman mode, this plugin also restricts **derived items** - items that are crafted from collection log items.
-
-## How It Works
-
-### Collection Log Items
-Any item that appears in the Collection Log is restricted until you obtain it. Once you get the drop and it's added to your collection log, the item becomes unlocked.
-
-### Derived Items
-Items crafted from collection log items are also restricted until you unlock their dependencies. For example:
-
-- **Tormented bracelet** requires: Zenyte shard, Onyx
-- **Soulreaper axe** requires: Leviathan's lure, Siren's staff, Executioner's axe head, Eye of the duke
-- **Confliction gauntlets** requires: Zenyte shard, Onyx, Mokhaiotl cloth, Demon tear
-
-The plugin includes ~627 derived items with their collection log dependencies pre-calculated.
-
-### Effective Unlocking
-Some collection log items can be crafted from other collection log items. The plugin handles this intelligently:
-
-- **Onyx** can be crafted from **Uncut onyx**
-- If you have Uncut onyx in your collection log, all Onyx-derived items (Amulet of fury, Berserker necklace, etc.) become available
-- This works transitively: Zenyte shard + Uncut onyx unlocks all zenyte jewelry
-
-Your sidebar unlock count still reflects your actual collection log progress.
-
-### Restriction Logic
-An item is only restricted if **all** recipes to create it require collection log items. If there's any recipe that doesn't need a clog item, the item won't be restricted.
+A RuneLite plugin that restricts item usage and provides other miscellanious facilities automatically, based on Collection Log (clog) unlocks. Unlike similar restricted gamemodes, this plugin only restrics collection log items, as well as **derived items**, i.e. items that are dependent on collection log items.
 
 ## Features
 
-### Side Panel
-The plugin adds a side panel to manage your unlocks:
-- View all unlocked collection log items
-- Manually add/remove unlocks
-- Reset all unlocks
-- Shows unlock progress (X / 1692)
+- Automatic tracking of new collection log unlocks
+- Configurable restrictions including item usage, bank withdrawal, grand exchange purchasing, etc.
+- Plugin side panel which visually shows all unlocked clog items and allows manual addition and removals of unlocks, as well as unlock search/filtering.
+- Configurable locked item dimming and gold helm icon next to user's name in chat.
+- Chat notifications of newly unlocked items, including derived items which depend on new clog unlocks, as well as clog requirements upon attempted usage of restricted items.
 
-### Restrictions (Configurable)
-- **Grand Exchange** - Locked items won't appear in GE search results
-- **Item Usage** - Can't wear/wield/use/eat/drink locked items
-- **Bank Withdraw** - Can't withdraw locked items from bank
-- **Clue Items** - Optionally disable restrictions for Treasure Trail rewards
-
-### Visual
-- **Item Dimming** - Locked items appear dimmed in inventory and bank
-- **Chat Icon** - Display a Clogman icon before your name in chat (like Ironman mode)
-- Configurable opacity levels (0-255)
-
-### Notifications
-- **Chat Messages** - Get notified when you unlock an item
-- **Newly Available Items** - See which derived items become available after an unlock
-- **Required Clogs** - When blocked from using an item, shows which collection log items you need
-
-## Syncing Your Collection Log
+## Syncing your collection log
 
 When you first install the plugin, it doesn't know what you've already unlocked. To sync:
 
@@ -63,44 +20,31 @@ When you first install the plugin, it doesn't know what you've already unlocked.
 
 You'll see a message: "Clogman: Synced X items from collection log. Browse all tabs to sync everything!"
 
-New unlocks are detected automatically via the "New item added to your collection log" chat message.
+New unlocks are detected automatically via the "New item added to your collection log" chat message. You may need to turn this on in your actual in-game settings.
 
-## Configuration
+## How it works
 
-Access settings via RuneLite's configuration panel:
+#### Collection Log items
+Any item that appears in the Collection Log is restricted until you obtain it. Once you get the drop and it's added to your collection log, the item becomes unlocked.
 
-### Restrictions
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Restrict Grand Exchange | Hide locked items from GE search | On |
-| Restrict Item Usage | Block using/wearing locked items | On |
-| Restrict Bank Withdraw | Block withdrawing locked items | On |
-| Restrict Clue Items | Restrict Treasure Trail rewards | On |
+#### Derived items
+Items crafted from collection log items are also restricted until you unlock their dependencies. For example:
 
-### Notifications
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Chat Message on Unlock | Send chat message on unlock | On |
-| Show Newly Available Items | Show derived items unlocked | On |
+- Tormented bracelet requires: Zenyte shard, Onyx
+- Confliction gauntlets requires: Zenyte shard, Onyx, Mokhaiotl cloth, Demon tear
 
-### Visual
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Inventory Dim Opacity | Opacity for locked items in inventory (0-255) | 100 |
-| Bank Dim Opacity | Opacity for locked items in bank (0-255) | 100 |
-| Show Chat Icon | Display Clogman icon before your name in chat | On |
+#### Effective unlocking
+Some collection log items can be crafted from other collection log items. The plugin handles this. For example: Onyx can be crafted from Uncut onyx, therefore if you have unlocked Uncut onyx, the plugin deems you have effectively locked Onyx, for dependency purposes.
 
-## Data
+#### Restriction logic
+An item is only restricted if **all** recipes to create it require collection log items. If there's any recipe that doesn't need a clog item, the item won't be restricted.
 
-The plugin includes a pre-generated JSON file (`clog_restrictions.json`) containing:
-- **1,692** collection log items
-- **627** derived items with their dependencies
-- **27** clog items craftable from other clog items
+#### Restricted item data
+The plugin includes a pre-generated JSON file (`clog_restrictions.json`) containing collection log items, derived items with their clog dependencies, and clog items craftable from other clog items.
 
-This data was generated from the OSRS Wiki using [osrs-clog-dependencies](https://github.com/mozjay/osrs-clog-dependencies).
+This data was generated from the OSRS Wiki using [osrs-clog-dependencies](https://github.com/mozjay/osrs-clog-dependencies), which was created specifically to aid this plugin.
 
-## Credits
-
-Inspired by:
-- [Another Bronzeman Mode](https://github.com/CodePanter/another-bronzeman-mode)
-- [New Game Plus](https://github.com/Jetter-Work/new-game-plus)
+## Notes
+- This plugin was created to make the game more fun to play for *me*, rather than be a strictly defined gamemode. Still, it's designed to be highly customizable, i.e. you can add/remove unlocks as you wish.
+- There may be some items that aren't/are restricted as they should be. If you notice any, feel free to raise an issue on the github repository and I'll try to incorporate them.
+- At present, some items which are themselves clogs (or dependent) may be restricted, even though you can buy them from shops, e.g. obsidian equipment/armour, or regular crystal weapon seeds. I'm not intending to change this: if you'd like to use these items, or their dependents, without the collection log unlocked, you can add them as unlocks manually in the side panel.
