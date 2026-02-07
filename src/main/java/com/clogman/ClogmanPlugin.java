@@ -644,23 +644,34 @@ public class ClogmanPlugin extends Plugin
             }
         }
 
-        // Check derived items - available if all clog dependencies are effectively unlocked
+        // Check derived items - available if any dependency set has all deps unlocked (OR of AND)
         for (Map.Entry<String, DerivedItem> entry : derivedItems.entrySet())
         {
             DerivedItem derived = entry.getValue();
-            if (derived.clogDependencies != null && !derived.clogDependencies.isEmpty())
+            List<List<Integer>> depSets = derived.getClogDependencies();
+            if (!depSets.isEmpty())
             {
-                boolean allDepsUnlocked = true;
-                for (int depId : derived.clogDependencies)
+                boolean anySetSatisfied = false;
+                for (List<Integer> depSet : depSets)
                 {
-                    if (!isEffectivelyUnlocked(depId))
+                    boolean allDepsUnlocked = true;
+                    for (int depId : depSet)
                     {
-                        allDepsUnlocked = false;
+                        if (!isEffectivelyUnlocked(depId))
+                        {
+                            allDepsUnlocked = false;
+                            break;
+                        }
+                    }
+
+                    if (allDepsUnlocked)
+                    {
+                        anySetSatisfied = true;
                         break;
                     }
                 }
 
-                if (allDepsUnlocked)
+                if (anySetSatisfied)
                 {
                     // Add all variant IDs (e.g., different imbue sources)
                     availableItems.addAll(derived.getAllItemIds());
@@ -1146,17 +1157,41 @@ public class ClogmanPlugin extends Plugin
 
         // Check if it's a derived item
         DerivedItem derived = derivedItemsById.get(itemId);
-        if (derived != null && derived.clogDependencies != null)
+        if (derived != null)
         {
-            for (int depId : derived.clogDependencies)
+            List<List<Integer>> depSets = derived.getClogDependencies();
+            if (!depSets.isEmpty())
             {
-                if (!isEffectivelyUnlocked(depId))
+                // Find the dep set with fewest missing items (closest to complete)
+                List<String> bestMissing = null;
+                for (List<Integer> depSet : depSets)
                 {
-                    ClogItem clogItem = collectionLogItems.get(depId);
-                    if (clogItem != null)
+                    List<String> missing = new ArrayList<>();
+                    for (int depId : depSet)
                     {
-                        required.add(clogItem.name);
+                        if (!isEffectivelyUnlocked(depId))
+                        {
+                            ClogItem clogItem = collectionLogItems.get(depId);
+                            if (clogItem != null)
+                            {
+                                missing.add(clogItem.name);
+                            }
+                        }
                     }
+
+                    if (bestMissing == null || missing.size() < bestMissing.size())
+                    {
+                        bestMissing = missing;
+                        if (missing.isEmpty())
+                        {
+                            break;  // Found a complete set, no need to check others
+                        }
+                    }
+                }
+
+                if (bestMissing != null)
+                {
+                    required.addAll(bestMissing);
                 }
             }
         }
@@ -1460,7 +1495,7 @@ public class ClogmanPlugin extends Plugin
         @SerializedName("item_ids")
         public List<Integer> itemIds;  // All valid item IDs for this derived item
         @SerializedName("clog_dependencies")
-        public List<Integer> clogDependencies;
+        public List<List<Integer>> clogDependencies;  // Outer list: OR, Inner list: AND)
 
         /**
          * Get all valid item IDs for this derived item.
@@ -1468,6 +1503,15 @@ public class ClogmanPlugin extends Plugin
         public List<Integer> getAllItemIds()
         {
             return itemIds != null ? itemIds : java.util.Collections.emptyList();
+        }
+
+        /**
+         * Get clog dependency sets
+         * Returns empty list if no dependencies.
+         */
+        public List<List<Integer>> getClogDependencies()
+        {
+            return clogDependencies != null ? clogDependencies : java.util.Collections.emptyList();
         }
     }
 }
