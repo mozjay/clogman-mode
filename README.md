@@ -2,7 +2,7 @@
 
 A RuneLite plugin that restricts item usage (and more!) based on Collection Log (clog) unlocks. Unlike bronzeman, this plugin only restricts collection log items, as well as _clog derived_ items.
 
-> I made this plugin to make the game for fun to play, I hope it does the same for you. If you have any suggestions to improve the experience, raise an issue on github and let me know!
+> I made this plugin to make the game more fun to play, I hope it does the same for you. If you have any suggestions to improve the experience, raise an issue on github and let me know!
 
 ## Features
 
