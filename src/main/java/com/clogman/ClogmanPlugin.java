@@ -54,6 +54,10 @@ public class ClogmanPlugin extends Plugin
     // Script ID for collection log draw (fires when changing tabs/pages)
     private static final int COLLECTION_LOG_DRAW_LIST_SCRIPT = 2731;
 
+    // Region ID for the Grand Exchange, used to scope GE search restriction to the GE itself
+    // (the same search widget is reused elsewhere, e.g. sailing's mermaid riddle item search)
+    private static final int GE_REGION_ID = 12598;
+
     // Actions that should be restricted for locked items (O(1) lookup)
     private static final Set<String> RESTRICTED_ACTIONS = Set.of(
         "wear", "wield", "equip", "eat", "drink", "use",
@@ -1061,6 +1065,11 @@ public class ClogmanPlugin extends Plugin
 
     private void filterGrandExchangeResults()
     {
+        if (client.getLocalPlayer().getWorldLocation().getRegionID() != GE_REGION_ID)
+        {
+            return;
+        }
+
         Widget grandExchangeSearchResults = client.getWidget(ComponentID.CHATBOX_GE_SEARCH_RESULTS);
         if (grandExchangeSearchResults == null)
         {
