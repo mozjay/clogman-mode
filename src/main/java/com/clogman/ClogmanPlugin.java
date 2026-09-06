@@ -711,56 +711,71 @@ public class ClogmanPlugin extends Plugin
      */
     public void unlockItem(int itemId, boolean isManual)
     {
-        if (!collectionLogItems.containsKey(itemId))
-        {
-            return;
-        }
+        unlockItems(Collections.singletonList(itemId), isManual);
+    }
 
-        if (unlockedClogItems.add(itemId))
+    /**
+     * Unlocks several collection log items as one event: one save, one chat message and one
+     * popup, so a batch of manual unlocks from the side panel doesn't spam.
+     */
+    public void unlockItems(Collection<Integer> itemIds, boolean isManual)
+    {
+        List<String> unlockedNames = new ArrayList<>();
+        for (int itemId : itemIds)
         {
+            if (!collectionLogItems.containsKey(itemId) || !unlockedClogItems.add(itemId))
+            {
+                continue;
+            }
+
             ClogItem item = collectionLogItems.get(itemId);
             log.info("Unlocked collection log item: {} (ID: {})", item.name, itemId);
+            unlockedNames.add(item.name);
 
-            // Remove from manually removed if it was there
+            // Re-unlocking a manually locked item restores it; only a genuinely new manual unlock is tracked
             boolean wasManuallyLocked = manuallyRemoved.remove(itemId);
-
-            // Only track as manual addition if this is actually a manual unlock
             if (isManual && !wasManuallyLocked)
             {
                 manuallyAdded.add(itemId);
             }
+        }
 
-            // Capture items available before recalculation
-            Set<Integer> previouslyAvailable = new HashSet<>(availableItems);
+        if (unlockedNames.isEmpty())
+        {
+            return;
+        }
 
-            saveUnlockedItems();
-            recalculateAvailableItems();
+        // Capture items available before recalculation
+        Set<Integer> previouslyAvailable = new HashSet<>(availableItems);
 
-            List<String> extraUnlocks = findNewlyAvailable(previouslyAvailable, itemId);
+        saveUnlockedItems();
+        recalculateAvailableItems();
 
-            if (config.chatMessageOnUnlock())
-            {
-                sendUnlockMessage(item.name);
-            }
+        List<String> extraUnlocks = findNewlyAvailable(previouslyAvailable, itemIds);
 
-            if (config.showNewlyAvailable() && !extraUnlocks.isEmpty())
-            {
-                sendNewlyAvailableMessage(extraUnlocks);
-            }
+        if (config.chatMessageOnUnlock())
+        {
+            sendUnlockMessage(unlockedNames);
+        }
 
-            // On-screen popup, only when the unlock made something else available. Manual unlocks
-            // never get a native popup, so the overlay shows them standalone. The panel may call
-            // this off the client thread (and while logged out), so hop onto it for the overlay.
-            if (config.showUnlockPopup() && !extraUnlocks.isEmpty() && client.getGameState() == GameState.LOGGED_IN)
-            {
-                final boolean expectNativePopup = !isManual;
-                clientThread.invoke(() -> popupOverlay.enqueue(item.name, extraUnlocks, expectNativePopup));
-            }
+        if (config.showNewlyAvailable() && !extraUnlocks.isEmpty())
+        {
+            sendNewlyAvailableMessage(extraUnlocks);
+        }
 
-            if (panel != null)
-            {
-                panel.refresh();
-            }
+        // On-screen popup, only when the unlock made something else available. Manual unlocks
+        // never get a native popup, so the overlay shows them standalone. The panel may call
+        // this off the client thread (and while logged out), so hop onto it for the overlay.
+        if (config.showUnlockPopup() && !extraUnlocks.isEmpty() && client.getGameState() == GameState.LOGGED_IN)
+        {
+            final boolean expectNativePopup = !isManual;
+            final String firstName = unlockedNames.get(0);
+            clientThread.invoke(() -> popupOverlay.enqueue(firstName, extraUnlocks, expectNativePopup));
+        }
+
+        if (panel != null)
+        {
+            panel.refresh();
         }
     }
 
@@ -769,13 +784,13 @@ public class ClogmanPlugin extends Plugin
      * collection log items now effectively unlocked (e.g. Onyx once Uncut onyx is unlocked) and
      * derived items whose dependencies are now met. Sorted alphabetically.
      */
-    private List<String> findNewlyAvailable(Set<Integer> previouslyAvailable, int unlockedItemId)
+    private List<String> findNewlyAvailable(Set<Integer> previouslyAvailable, Collection<Integer> unlockedItemIds)
     {
         List<String> names = new ArrayList<>();
 
         for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
         {
-            if (entry.getKey() != unlockedItemId && isNewlyAvailable(entry.getKey(), previouslyAvailable))
+            if (!unlockedItemIds.contains(entry.getKey()) && isNewlyAvailable(entry.getKey(), previouslyAvailable))
             {
                 names.add(entry.getValue().name);
             }
@@ -915,7 +930,7 @@ public class ClogmanPlugin extends Plugin
         }
     }
 
-    private void sendUnlockMessage(String itemName)
+    private void sendUnlockMessage(List<String> itemNames)
     {
         String message = new ChatMessageBuilder()
             .append(ChatColorType.HIGHLIGHT)
@@ -923,7 +938,7 @@ public class ClogmanPlugin extends Plugin
             .append(ChatColorType.NORMAL)
             .append("Unlocked ")
             .append(ChatColorType.HIGHLIGHT)
-            .append(itemName)
+            .append(joinNames(itemNames))
             .build();
 
         chatMessageManager.queue(QueuedMessage.builder()
@@ -1142,16 +1157,17 @@ public class ClogmanPlugin extends Plugin
             .runeLiteFormattedMessage(message)
             .build());
 
-        // Show which collection log items are required
+        // Show the way with the fewest missing clog items, and what the alternatives are
         List<String> requiredItems = getRequiredClogItems(itemId);
         if (!requiredItems.isEmpty())
         {
-            String label = requiredItems.size() == 1 ? "Clog required: " : "Clogs required: ";
             String reqMessage = new ChatMessageBuilder()
                 .append(ChatColorType.NORMAL)
-                .append(label)
+                .append("Unlock via: ")
                 .append(ChatColorType.HIGHLIGHT)
                 .append(String.join(", ", requiredItems))
+                .append(ChatColorType.NORMAL)
+                .append(describeAlternatives(itemId))
                 .build();
 
             chatMessageManager.queue(QueuedMessage.builder()
@@ -1159,6 +1175,46 @@ public class ClogmanPlugin extends Plugin
                 .runeLiteFormattedMessage(reqMessage)
                 .build());
         }
+    }
+
+    /**
+     * Suffix describing the other ways to unlock an item: the crafting recipes for a collection
+     * log item (e.g. Oathplate helm from Oathplate shards), or the option count for a derived item.
+     */
+    private String describeAlternatives(int itemId)
+    {
+        Integer primaryClogId = clogIdToPrimaryId.get(itemId);
+        if (primaryClogId != null)
+        {
+            List<String> recipes = new ArrayList<>();
+            for (List<Integer> recipe : collectionLogItems.get(primaryClogId).getCraftableFrom())
+            {
+                List<String> ingredients = new ArrayList<>();
+                for (int id : recipe)
+                {
+                    ClogItem ingredient = collectionLogItems.get(id);
+                    ingredients.add(ingredient != null ? ingredient.name : String.valueOf(id));
+                }
+                recipes.add(String.join(" + ", ingredients));
+            }
+            return recipes.isEmpty() ? "" : " (or craft from " + String.join(" / ", recipes) + ")";
+        }
+
+        DerivedItem derived = derivedItemsById.get(itemId);
+        int options = derived != null ? derived.getClogDependencies().size() : 0;
+        return options > 1 ? " (1 of " + options + " options)" : "";
+    }
+
+    /**
+     * "A", "A and B", or "A, B and C"
+     */
+    private static String joinNames(List<String> names)
+    {
+        if (names.size() == 1)
+        {
+            return names.get(0);
+        }
+        return String.join(", ", names.subList(0, names.size() - 1)) + " and " + names.get(names.size() - 1);
     }
 
     /**
