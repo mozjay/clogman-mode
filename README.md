@@ -11,6 +11,7 @@ A RuneLite plugin that restricts item usage (and more!) based on Collection Log 
 - Plugin side panel which shows all unlocked clog items and allows manual addition and removals of unlocks; play however you want!
 - Configurable locked item dimming and gold clogman helm icon next to user's name in chat.
 - Chat notifications of newly unlocked items, including derived items which depend on new clog unlocks, as well as clog requirements upon attempted usage of restricted items.
+- Toggleable on-screen unlock popup whenever an unlock makes additional items available, showing how many extra items were unlocked and their names.
 
 ## Syncing your collection log
 When you first install the plugin, it doesn't know what you've already unlocked. To sync:

@@ -97,6 +97,9 @@ public class ClogmanPlugin extends Plugin
     @Inject
     private ClogmanOverlay overlay;
 
+    @Inject
+    private ClogmanUnlockPopupOverlay popupOverlay;
+
     private ClogmanPanel panel;
     private NavigationButton navButton;
 
@@ -146,6 +149,7 @@ public class ClogmanPlugin extends Plugin
     {
         loadRestrictionData();
         overlayManager.add(overlay);
+        overlayManager.add(popupOverlay);
 
         // Create and register the side panel
         panel = new ClogmanPanel(this, itemManager, client, clientThread, chatboxItemSearch);
@@ -174,6 +178,8 @@ public class ClogmanPlugin extends Plugin
     protected void shutDown() throws Exception
     {
         overlayManager.remove(overlay);
+        overlayManager.remove(popupOverlay);
+        popupOverlay.clear();
         clientToolbar.removeNavigation(navButton);
         unlockedClogItems.clear();
         manuallyAdded.clear();
@@ -323,6 +329,7 @@ public class ClogmanPlugin extends Plugin
             manuallyAdded.clear();
             manuallyRemoved.clear();
             availableItems.clear();
+            popupOverlay.clear();
             loggingIn = false;
         }
     }
@@ -716,19 +723,25 @@ public class ClogmanPlugin extends Plugin
             saveUnlockedItems();
             recalculateAvailableItems();
 
+            List<String> extraUnlocks = findNewlyAvailable(previouslyAvailable, itemId);
+
             if (config.chatMessageOnUnlock())
             {
                 sendUnlockMessage(item.name);
             }
 
-            // Show newly available derived items
-            if (config.showNewlyAvailable())
+            if (config.showNewlyAvailable() && !extraUnlocks.isEmpty())
             {
-                List<String> newlyAvailable = findNewlyAvailableItems(previouslyAvailable);
-                if (!newlyAvailable.isEmpty())
-                {
-                    sendNewlyAvailableMessage(newlyAvailable);
-                }
+                sendNewlyAvailableMessage(extraUnlocks);
+            }
+
+            // On-screen popup, only when the unlock made something else available. Manual unlocks
+            // never get a native popup, so the overlay shows them standalone. The panel may call
+            // this off the client thread (and while logged out), so hop onto it for the overlay.
+            if (config.showUnlockPopup() && !extraUnlocks.isEmpty() && client.getGameState() == GameState.LOGGED_IN)
+            {
+                final boolean expectNativePopup = !isManual;
+                clientThread.invoke(() -> popupOverlay.enqueue(item.name, extraUnlocks, expectNativePopup));
             }
 
             if (panel != null)
@@ -739,33 +752,38 @@ public class ClogmanPlugin extends Plugin
     }
 
     /**
-     * Find derived items that are newly available after an unlock
+     * Names of everything an unlock made available other than the unlocked item itself: other
+     * collection log items now effectively unlocked (e.g. Onyx once Uncut onyx is unlocked) and
+     * derived items whose dependencies are now met. Sorted alphabetically.
      */
-    private List<String> findNewlyAvailableItems(Set<Integer> previouslyAvailable)
+    private List<String> findNewlyAvailable(Set<Integer> previouslyAvailable, int unlockedItemId)
     {
-        List<String> newlyAvailable = new ArrayList<>();
+        List<String> names = new ArrayList<>();
 
-        for (Map.Entry<String, DerivedItem> entry : derivedItems.entrySet())
+        for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
         {
-            DerivedItem derived = entry.getValue();
-            List<Integer> itemIds = derived.getAllItemIds();
-
-            if (itemIds.isEmpty())
+            if (entry.getKey() != unlockedItemId && isNewlyAvailable(entry.getKey(), previouslyAvailable))
             {
-                continue;
-            }
-
-            // Check if this item is now available but wasn't before
-            int primaryId = itemIds.get(0);
-            if (availableItems.contains(primaryId) && !previouslyAvailable.contains(primaryId))
-            {
-                newlyAvailable.add(derived.name);
+                names.add(entry.getValue().name);
             }
         }
 
-        // Sort alphabetically
-        newlyAvailable.sort(String::compareToIgnoreCase);
-        return newlyAvailable;
+        for (DerivedItem derived : derivedItems.values())
+        {
+            List<Integer> itemIds = derived.getAllItemIds();
+            if (!itemIds.isEmpty() && isNewlyAvailable(itemIds.get(0), previouslyAvailable))
+            {
+                names.add(capitalize(derived.name));
+            }
+        }
+
+        names.sort(String::compareToIgnoreCase);
+        return names;
+    }
+
+    private boolean isNewlyAvailable(int itemId, Set<Integer> previouslyAvailable)
+    {
+        return availableItems.contains(itemId) && !previouslyAvailable.contains(itemId);
     }
 
     /**
@@ -773,31 +791,17 @@ public class ClogmanPlugin extends Plugin
      */
     private void sendNewlyAvailableMessage(List<String> items)
     {
-        StringBuilder sb = new StringBuilder();
-
-        // Show up to 3 items explicitly
+        // Show up to 3 items explicitly, then "and X more"
         int showCount = Math.min(items.size(), 3);
-        for (int i = 0; i < showCount; i++)
-        {
-            if (i > 0)
-            {
-                sb.append(", ");
-            }
-            sb.append(capitalize(items.get(i)));
-        }
-
-        // Add "and X more" if there are more items
         int remaining = items.size() - showCount;
-        if (remaining > 0)
-        {
-            sb.append(" and ").append(remaining).append(" more");
-        }
+        String list = String.join(", ", items.subList(0, showCount))
+            + (remaining > 0 ? " and " + remaining + " more" : "");
 
         String message = new ChatMessageBuilder()
             .append(ChatColorType.NORMAL)
             .append("New items unlocked: ")
             .append(ChatColorType.HIGHLIGHT)
-            .append(sb.toString())
+            .append(list)
             .build();
 
         chatMessageManager.queue(QueuedMessage.builder()
@@ -1229,6 +1233,17 @@ public class ClogmanPlugin extends Plugin
         {
             collectionLogOpen = false;
             log.debug("Collection log closed");
+        }
+    }
+
+    @Subscribe
+    public void onScriptPreFired(ScriptPreFired event)
+    {
+        // Native notification popup open/hold animation scripts - drives the unlock popup timing
+        int scriptId = event.getScriptId();
+        if (scriptId == ScriptID.NOTIFICATION_START || scriptId == ScriptID.NOTIFICATION_DELAY)
+        {
+            popupOverlay.onNotificationScript(scriptId);
         }
     }
 
