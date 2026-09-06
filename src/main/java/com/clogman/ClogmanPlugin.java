@@ -11,6 +11,7 @@ import net.runelite.api.events.*;
 import net.runelite.api.widgets.ComponentID;
 import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatColorType;
 import net.runelite.client.chat.ChatMessageBuilder;
@@ -58,6 +59,11 @@ public class ClogmanPlugin extends Plugin
     // Player-owned house adventure log interfaces; a collection log opened from one may be another player's
     private static final int ADVENTURE_LOG_GROUP = 187;
     private static final int ADVENTURE_LOG_NEW_GROUP = 947;
+
+    // World types with their own collection log for the same character; never sync from these
+    private static final EnumSet<WorldType> NON_STANDARD_WORLDS = EnumSet.of(
+        WorldType.SEASONAL, WorldType.DEADMAN, WorldType.BETA_WORLD, WorldType.NOSAVE_MODE,
+        WorldType.TOURNAMENT_WORLD, WorldType.QUEST_SPEEDRUNNING, WorldType.PVP_ARENA);
 
     // Region ID for the Grand Exchange, used to scope GE search restriction to the GE itself
     // (the same search widget is reused elsewhere, e.g. sailing's mermaid riddle item search)
@@ -1325,7 +1331,7 @@ public class ClogmanPlugin extends Plugin
         {
             popupOverlay.onNotificationScript(scriptId);
         }
-        else if (scriptId == COLLECTION_LOG_ITEM_SCRIPT && collectionLogOpen && !collectionLogReadOnly)
+        else if (scriptId == COLLECTION_LOG_ITEM_SCRIPT && collectionLogOpen && !collectionLogReadOnly && isStandardWorld())
         {
             // Args: [script id, item id, quantity, ...]. The whole log arrives as a burst of
             // chunks within a tick or two of opening, so collect it and process once it goes quiet.
@@ -1444,16 +1450,32 @@ public class ClogmanPlugin extends Plugin
      */
     private void syncCollectionLog()
     {
-        Set<Integer> obtained = new HashSet<>(pendingClogSync);
+        Set<Integer> reported = new HashSet<>(pendingClogSync);
         pendingClogSync.clear();
+
+        // The log is the source of truth, but only when we're sure we saw all of it: it must
+        // still be open (closing it cuts the burst short) and the burst must cover at least
+        // as many items as the game's own obtained count. Otherwise only ever add.
+        int gameCount = client.getVarpValue(VarPlayerID.COLLECTION_COUNT);
+        boolean complete = collectionLogOpen && gameCount > 0 && reported.size() >= gameCount;
+
+        Set<Integer> obtained = new HashSet<>();
+        for (Integer reportedId : reported)
+        {
+            Integer itemId = clogIdToPrimaryId.get(reportedId);
+            if (itemId != null)
+            {
+                obtained.add(itemId);
+            }
+        }
 
         List<String> newUnlocks = new ArrayList<>();
         int confirmedManual = 0;
+        List<String> nowManual = new ArrayList<>();
 
-        for (Integer obtainedId : obtained)
+        for (Integer itemId : obtained)
         {
-            Integer itemId = clogIdToPrimaryId.get(obtainedId);
-            if (itemId == null || manuallyRemoved.contains(itemId))
+            if (manuallyRemoved.contains(itemId))
             {
                 continue;
             }
@@ -1470,14 +1492,27 @@ public class ClogmanPlugin extends Plugin
             }
         }
 
-        if (newUnlocks.isEmpty() && confirmedManual == 0)
+        // Anything unlocked that the (complete) log doesn't show is a manual unlock; keep it, but classify it as one
+        if (complete)
         {
-            log.debug("Collection log sync: no changes ({} obtained items seen)", obtained.size());
+            for (Integer itemId : unlockedClogItems)
+            {
+                if (!obtained.contains(itemId) && manuallyAdded.add(itemId))
+                {
+                    nowManual.add(collectionLogItems.get(itemId).name);
+                }
+            }
+        }
+
+        if (newUnlocks.isEmpty() && confirmedManual == 0 && nowManual.isEmpty())
+        {
+            log.debug("Collection log sync: no changes ({} items reported, complete: {})", reported.size(), complete);
             return;
         }
 
-        log.info("Collection log sync: {} new unlocks {}, {} manual unlocks confirmed ({} obtained items seen, total unlocked: {})",
-            newUnlocks.size(), newUnlocks.size() <= 20 ? newUnlocks : "(first sync)", confirmedManual, obtained.size(), unlockedClogItems.size());
+        log.info("Collection log sync: {} new unlocks {}, {} manual unlocks confirmed, {} reclassified as manual {} ({} items reported, game count {}, complete: {}, total unlocked: {})",
+            newUnlocks.size(), newUnlocks.size() <= 20 ? newUnlocks : "(first sync)", confirmedManual,
+            nowManual.size(), nowManual, reported.size(), gameCount, complete, unlockedClogItems.size());
 
         saveUnlockedItems();
         recalculateAvailableItems();
@@ -1491,6 +1526,11 @@ public class ClogmanPlugin extends Plugin
         {
             panel.refresh();
         }
+    }
+
+    private boolean isStandardWorld()
+    {
+        return Collections.disjoint(client.getWorldType(), NON_STANDARD_WORLDS);
     }
 
     private void sendSyncMessage(int count)

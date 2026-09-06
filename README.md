@@ -21,7 +21,7 @@ When you first install the plugin, it doesn't know what you've already unlocked.
 
 You'll see a message: "Clogman: Synced X new items from your collection log."
 
-Collection logs viewed from another player's house are ignored.
+Collection logs viewed from another player's house are ignored, as are Leagues, Deadman and beta worlds.
 
 New unlocks are detected automatically via the "New item added to your collection log" chat message. You may need to turn this on in your actual in-game settings.
 
