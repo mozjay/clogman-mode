@@ -11,6 +11,7 @@ import net.runelite.api.events.*;
 import net.runelite.api.widgets.ComponentID;
 import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
+import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatColorType;
 import net.runelite.client.chat.ChatMessageBuilder;
@@ -52,7 +53,17 @@ public class ClogmanPlugin extends Plugin
     private static final String MANUALLY_REMOVED_KEY = "manuallyRemoved";
 
     // Script ID for collection log draw (fires when changing tabs/pages)
-    private static final int COLLECTION_LOG_DRAW_LIST_SCRIPT = 2731;
+    // Fired once per obtained item, for the whole log, the tick after the collection log opens
+    private static final int COLLECTION_LOG_ITEM_SCRIPT = 4100;
+
+    // Player-owned house adventure log interfaces; a collection log opened from one may be another player's
+    private static final int ADVENTURE_LOG_GROUP = 187;
+    private static final int ADVENTURE_LOG_NEW_GROUP = 947;
+
+    // World types with their own collection log for the same character; never sync from these
+    private static final EnumSet<WorldType> NON_STANDARD_WORLDS = EnumSet.of(
+        WorldType.SEASONAL, WorldType.DEADMAN, WorldType.BETA_WORLD, WorldType.NOSAVE_MODE,
+        WorldType.TOURNAMENT_WORLD, WorldType.QUEST_SPEEDRUNNING, WorldType.PVP_ARENA);
 
     // Region ID for the Grand Exchange, used to scope GE search restriction to the GE itself
     // (the same search widget is reused elsewhere, e.g. sailing's mermaid riddle item search)
@@ -97,6 +108,9 @@ public class ClogmanPlugin extends Plugin
     @Inject
     private ClogmanOverlay overlay;
 
+    @Inject
+    private ClogmanUnlockPopupOverlay popupOverlay;
+
     private ClogmanPanel panel;
     private NavigationButton navButton;
 
@@ -134,6 +148,14 @@ public class ClogmanPlugin extends Plugin
 
     // Track collection log interface state
     private boolean collectionLogOpen = false;
+    private boolean adventureLogOpen = false;
+
+    // Collection log was opened from an adventure log, so it may belong to another player: never sync it
+    private boolean collectionLogReadOnly = false;
+
+    // Obtained item ids reported by the collection log since the last sync, and the tick the last one arrived
+    private final Set<Integer> pendingClogSync = new HashSet<>();
+    private int lastClogItemTick = -1;
 
     // Chat icon offset in the modIcons array (-1 means not loaded yet)
     private int chatIconOffset = -1;
@@ -146,6 +168,7 @@ public class ClogmanPlugin extends Plugin
     {
         loadRestrictionData();
         overlayManager.add(overlay);
+        overlayManager.add(popupOverlay);
 
         // Create and register the side panel
         panel = new ClogmanPanel(this, itemManager, client, clientThread, chatboxItemSearch);
@@ -174,6 +197,8 @@ public class ClogmanPlugin extends Plugin
     protected void shutDown() throws Exception
     {
         overlayManager.remove(overlay);
+        overlayManager.remove(popupOverlay);
+        popupOverlay.clear();
         clientToolbar.removeNavigation(navButton);
         unlockedClogItems.clear();
         manuallyAdded.clear();
@@ -323,6 +348,7 @@ public class ClogmanPlugin extends Plugin
             manuallyAdded.clear();
             manuallyRemoved.clear();
             availableItems.clear();
+            popupOverlay.clear();
             loggingIn = false;
         }
     }
@@ -438,7 +464,7 @@ public class ClogmanPlugin extends Plugin
             .append(ChatColorType.HIGHLIGHT)
             .append("Clogman Mode: ")
             .append(ChatColorType.NORMAL)
-            .append("Open your Collection Log and browse tabs to sync your unlocks!")
+            .append("Open your Collection Log to sync your unlocks!")
             .build();
 
         chatMessageManager.queue(QueuedMessage.builder()
@@ -691,81 +717,107 @@ public class ClogmanPlugin extends Plugin
      */
     public void unlockItem(int itemId, boolean isManual)
     {
-        if (!collectionLogItems.containsKey(itemId))
-        {
-            return;
-        }
-
-        if (unlockedClogItems.add(itemId))
-        {
-            ClogItem item = collectionLogItems.get(itemId);
-            log.info("Unlocked collection log item: {} (ID: {})", item.name, itemId);
-
-            // Remove from manually removed if it was there
-            boolean wasManuallyLocked = manuallyRemoved.remove(itemId);
-
-            // Only track as manual addition if this is actually a manual unlock
-            if (isManual && !wasManuallyLocked)
-            {
-                manuallyAdded.add(itemId);
-            }
-
-            // Capture items available before recalculation
-            Set<Integer> previouslyAvailable = new HashSet<>(availableItems);
-
-            saveUnlockedItems();
-            recalculateAvailableItems();
-
-            if (config.chatMessageOnUnlock())
-            {
-                sendUnlockMessage(item.name);
-            }
-
-            // Show newly available derived items
-            if (config.showNewlyAvailable())
-            {
-                List<String> newlyAvailable = findNewlyAvailableItems(previouslyAvailable);
-                if (!newlyAvailable.isEmpty())
-                {
-                    sendNewlyAvailableMessage(newlyAvailable);
-                }
-            }
-
-            if (panel != null)
-            {
-                panel.refresh();
-            }
-        }
+        unlockItems(Collections.singletonList(itemId), isManual);
     }
 
     /**
-     * Find derived items that are newly available after an unlock
+     * Unlocks several collection log items as one event: one save, one chat message and one
+     * popup, so a batch of manual unlocks from the side panel doesn't spam.
      */
-    private List<String> findNewlyAvailableItems(Set<Integer> previouslyAvailable)
+    public void unlockItems(Collection<Integer> itemIds, boolean isManual)
     {
-        List<String> newlyAvailable = new ArrayList<>();
-
-        for (Map.Entry<String, DerivedItem> entry : derivedItems.entrySet())
+        List<String> unlockedNames = new ArrayList<>();
+        for (int itemId : itemIds)
         {
-            DerivedItem derived = entry.getValue();
-            List<Integer> itemIds = derived.getAllItemIds();
-
-            if (itemIds.isEmpty())
+            if (!collectionLogItems.containsKey(itemId) || !unlockedClogItems.add(itemId))
             {
                 continue;
             }
 
-            // Check if this item is now available but wasn't before
-            int primaryId = itemIds.get(0);
-            if (availableItems.contains(primaryId) && !previouslyAvailable.contains(primaryId))
+            ClogItem item = collectionLogItems.get(itemId);
+            log.info("Unlocked collection log item: {} (ID: {})", item.name, itemId);
+            unlockedNames.add(item.name);
+
+            // Re-unlocking a manually locked item restores it; only a genuinely new manual unlock is tracked
+            boolean wasManuallyLocked = manuallyRemoved.remove(itemId);
+            if (isManual && !wasManuallyLocked)
             {
-                newlyAvailable.add(derived.name);
+                manuallyAdded.add(itemId);
             }
         }
 
-        // Sort alphabetically
-        newlyAvailable.sort(String::compareToIgnoreCase);
-        return newlyAvailable;
+        if (unlockedNames.isEmpty())
+        {
+            return;
+        }
+
+        // Capture items available before recalculation
+        Set<Integer> previouslyAvailable = new HashSet<>(availableItems);
+
+        saveUnlockedItems();
+        recalculateAvailableItems();
+
+        List<String> extraUnlocks = findNewlyAvailable(previouslyAvailable, itemIds);
+
+        if (config.chatMessageOnUnlock())
+        {
+            sendUnlockMessage(unlockedNames);
+        }
+
+        if (config.showNewlyAvailable() && !extraUnlocks.isEmpty())
+        {
+            sendNewlyAvailableMessage(extraUnlocks);
+        }
+
+        // On-screen popup, only when the unlock made something else available. Manual unlocks
+        // never get a native popup, so the overlay shows them standalone. The panel may call
+        // this off the client thread (and while logged out), so hop onto it for the overlay.
+        if (config.showUnlockPopup() && !extraUnlocks.isEmpty() && client.getGameState() == GameState.LOGGED_IN)
+        {
+            final boolean expectNativePopup = !isManual;
+            final String firstName = unlockedNames.get(0);
+            clientThread.invoke(() -> popupOverlay.enqueue(firstName, extraUnlocks, expectNativePopup));
+        }
+
+        if (panel != null)
+        {
+            panel.refresh();
+        }
+    }
+
+    /**
+     * Names of everything an unlock made available other than the unlocked item itself: other
+     * collection log items now effectively unlocked (e.g. Onyx once Uncut onyx is unlocked) and
+     * derived items whose dependencies are now met. Sorted alphabetically.
+     */
+    private List<String> findNewlyAvailable(Set<Integer> previouslyAvailable, Collection<Integer> unlockedItemIds)
+    {
+        List<String> names = new ArrayList<>();
+
+        for (Map.Entry<Integer, ClogItem> entry : collectionLogItems.entrySet())
+        {
+            if (!unlockedItemIds.contains(entry.getKey()) && isNewlyAvailable(entry.getKey(), previouslyAvailable))
+            {
+                names.add(entry.getValue().name);
+            }
+        }
+
+        for (DerivedItem derived : derivedItems.values())
+        {
+            List<Integer> itemIds = derived.getAllItemIds();
+            if (!itemIds.isEmpty() && isNewlyAvailable(itemIds.get(0), previouslyAvailable))
+            {
+                names.add(capitalize(derived.name));
+            }
+        }
+
+        names.sort(String::compareToIgnoreCase);
+        return names;
+    }
+
+    private boolean isNewlyAvailable(int itemId, Set<Integer> previouslyAvailable)
+    {
+        return availableItems.contains(itemId) && !previouslyAvailable.contains(itemId);
     }
 
     /**
@@ -773,31 +825,17 @@ public class ClogmanPlugin extends Plugin
      */
     private void sendNewlyAvailableMessage(List<String> items)
     {
-        StringBuilder sb = new StringBuilder();
-
-        // Show up to 3 items explicitly
+        // Show up to 3 items explicitly, then "and X more"
         int showCount = Math.min(items.size(), 3);
-        for (int i = 0; i < showCount; i++)
-        {
-            if (i > 0)
-            {
-                sb.append(", ");
-            }
-            sb.append(capitalize(items.get(i)));
-        }
-
-        // Add "and X more" if there are more items
         int remaining = items.size() - showCount;
-        if (remaining > 0)
-        {
-            sb.append(" and ").append(remaining).append(" more");
-        }
+        String list = String.join(", ", items.subList(0, showCount))
+            + (remaining > 0 ? " and " + remaining + " more" : "");
 
         String message = new ChatMessageBuilder()
             .append(ChatColorType.NORMAL)
             .append("New items unlocked: ")
             .append(ChatColorType.HIGHLIGHT)
-            .append(sb.toString())
+            .append(list)
             .build();
 
         chatMessageManager.queue(QueuedMessage.builder()
@@ -898,7 +936,7 @@ public class ClogmanPlugin extends Plugin
         }
     }
 
-    private void sendUnlockMessage(String itemName)
+    private void sendUnlockMessage(List<String> itemNames)
     {
         String message = new ChatMessageBuilder()
             .append(ChatColorType.HIGHLIGHT)
@@ -906,7 +944,7 @@ public class ClogmanPlugin extends Plugin
             .append(ChatColorType.NORMAL)
             .append("Unlocked ")
             .append(ChatColorType.HIGHLIGHT)
-            .append(itemName)
+            .append(joinNames(itemNames))
             .build();
 
         chatMessageManager.queue(QueuedMessage.builder()
@@ -1125,16 +1163,17 @@ public class ClogmanPlugin extends Plugin
             .runeLiteFormattedMessage(message)
             .build());
 
-        // Show which collection log items are required
+        // Show the way with the fewest missing clog items, and what the alternatives are
         List<String> requiredItems = getRequiredClogItems(itemId);
         if (!requiredItems.isEmpty())
         {
-            String label = requiredItems.size() == 1 ? "Clog required: " : "Clogs required: ";
             String reqMessage = new ChatMessageBuilder()
                 .append(ChatColorType.NORMAL)
-                .append(label)
+                .append("Unlock via: ")
                 .append(ChatColorType.HIGHLIGHT)
                 .append(String.join(", ", requiredItems))
+                .append(ChatColorType.NORMAL)
+                .append(describeAlternatives(itemId))
                 .build();
 
             chatMessageManager.queue(QueuedMessage.builder()
@@ -1142,6 +1181,46 @@ public class ClogmanPlugin extends Plugin
                 .runeLiteFormattedMessage(reqMessage)
                 .build());
         }
+    }
+
+    /**
+     * Suffix describing the other ways to unlock an item: the crafting recipes for a collection
+     * log item (e.g. Oathplate helm from Oathplate shards), or the option count for a derived item.
+     */
+    private String describeAlternatives(int itemId)
+    {
+        Integer primaryClogId = clogIdToPrimaryId.get(itemId);
+        if (primaryClogId != null)
+        {
+            List<String> recipes = new ArrayList<>();
+            for (List<Integer> recipe : collectionLogItems.get(primaryClogId).getCraftableFrom())
+            {
+                List<String> ingredients = new ArrayList<>();
+                for (int id : recipe)
+                {
+                    ClogItem ingredient = collectionLogItems.get(id);
+                    ingredients.add(ingredient != null ? ingredient.name : String.valueOf(id));
+                }
+                recipes.add(String.join(" + ", ingredients));
+            }
+            return recipes.isEmpty() ? "" : " (or craft from " + String.join(" / ", recipes) + ")";
+        }
+
+        DerivedItem derived = derivedItemsById.get(itemId);
+        int options = derived != null ? derived.getClogDependencies().size() : 0;
+        return options > 1 ? " (1 of " + options + " options)" : "";
+    }
+
+    /**
+     * "A", "A and B", or "A, B and C"
+     */
+    private static String joinNames(List<String> names)
+    {
+        if (names.size() == 1)
+        {
+            return names.get(0);
+        }
+        return String.join(", ", names.subList(0, names.size() - 1)) + " and " + names.get(names.size() - 1);
     }
 
     /**
@@ -1213,33 +1292,83 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onWidgetLoaded(WidgetLoaded event)
     {
-        if (event.getGroupId() == InterfaceID.COLLECTION_LOG)
+        int groupId = event.getGroupId();
+        if (groupId == ADVENTURE_LOG_GROUP || groupId == ADVENTURE_LOG_NEW_GROUP)
         {
+            adventureLogOpen = true;
+        }
+        else if (groupId == InterfaceID.COLLECTION_LOG)
+        {
+            // The adventure log is still open when a log opened from it loads; its close event follows
             collectionLogOpen = true;
-            log.debug("Collection log opened");
-            // Scan collection log when it's opened
-            clientThread.invokeLater(this::scanCollectionLog);
+            collectionLogReadOnly = adventureLogOpen;
+            log.debug("Collection log opened{}", collectionLogReadOnly ? " from an adventure log, ignoring its contents" : "");
         }
     }
 
     @Subscribe
     public void onWidgetClosed(WidgetClosed event)
     {
-        if (event.getGroupId() == InterfaceID.COLLECTION_LOG)
+        int groupId = event.getGroupId();
+        if (groupId == ADVENTURE_LOG_GROUP || groupId == ADVENTURE_LOG_NEW_GROUP)
+        {
+            adventureLogOpen = false;
+        }
+        else if (groupId == InterfaceID.COLLECTION_LOG)
         {
             collectionLogOpen = false;
+            collectionLogReadOnly = false;
             log.debug("Collection log closed");
         }
     }
 
     @Subscribe
-    public void onScriptPostFired(ScriptPostFired event)
+    public void onScriptPreFired(ScriptPreFired event)
     {
-        // Script 2731 is fired when collection log list is drawn (changing tabs/pages)
-        if (event.getScriptId() == COLLECTION_LOG_DRAW_LIST_SCRIPT && collectionLogOpen)
+        // Native notification popup open/hold animation scripts - drives the unlock popup timing
+        int scriptId = event.getScriptId();
+        if (scriptId == ScriptID.NOTIFICATION_START || scriptId == ScriptID.NOTIFICATION_DELAY)
         {
-            clientThread.invokeLater(this::scanCollectionLog);
+            popupOverlay.onNotificationScript(scriptId);
         }
+        else if (scriptId == COLLECTION_LOG_ITEM_SCRIPT && collectionLogOpen && !collectionLogReadOnly && isStandardWorld())
+        {
+            // Args: [script id, item id, quantity, ...]. The whole log arrives as a burst of
+            // chunks within a tick or two of opening, so collect it and process once it goes quiet.
+            Object[] args = event.getScriptEvent().getArguments();
+            if (args.length > 1 && args[1] instanceof Integer)
+            {
+                pendingClogSync.add((Integer) args[1]);
+            }
+            if (lastClogItemTick < 0)
+            {
+                clientThread.invokeLater(this::syncCollectionLogWhenQuiet);
+            }
+            lastClogItemTick = client.getTickCount();
+        }
+    }
+
+    /**
+     * Re-run each client cycle until the burst has been quiet for two game ticks. Returns true
+     * to stop. Logging out mid-burst stops the tick counter, so give up rather than spin.
+     */
+    private boolean syncCollectionLogWhenQuiet()
+    {
+        if (client.getGameState() != GameState.LOGGED_IN)
+        {
+            pendingClogSync.clear();
+            lastClogItemTick = -1;
+            return true;
+        }
+
+        if (client.getTickCount() < lastClogItemTick + 2)
+        {
+            return false;
+        }
+
+        lastClogItemTick = -1;
+        syncCollectionLog();
+        return true;
     }
 
     @Subscribe
@@ -1315,111 +1444,93 @@ public class ClogmanPlugin extends Plugin
     }
 
     /**
-     * Scans the currently visible collection log page for obtained items.
-     * Users should browse through their collection log to sync their unlocks.
+     * Applies the obtained items the collection log reported when it was opened. Only ever adds
+     * unlocks: anything the log doesn't show stays as it is, so a manual lock or a partial burst
+     * can't remove a confirmed unlock.
      */
-    private void scanCollectionLog()
+    private void syncCollectionLog()
     {
-        // Use ComponentID.COLLECTION_LOG_ENTRY_ITEMS (40697893 = 621 << 16 | 37)
-        Widget itemContainer = client.getWidget(ComponentID.COLLECTION_LOG_ENTRY_ITEMS);
-        if (itemContainer == null)
+        Set<Integer> reported = new HashSet<>(pendingClogSync);
+        pendingClogSync.clear();
+
+        // The log is the source of truth, but only when we're sure we saw all of it: it must
+        // still be open (closing it cuts the burst short) and the burst must cover at least
+        // as many items as the game's own obtained count. Otherwise only ever add.
+        int gameCount = client.getVarpValue(VarPlayerID.COLLECTION_COUNT);
+        boolean complete = collectionLogOpen && gameCount > 0 && reported.size() >= gameCount;
+
+        Set<Integer> obtained = new HashSet<>();
+        for (Integer reportedId : reported)
         {
-            log.debug("Collection log item container widget not found");
-            return;
+            Integer itemId = clogIdToPrimaryId.get(reportedId);
+            if (itemId != null)
+            {
+                obtained.add(itemId);
+            }
         }
 
-        Widget[] items = itemContainer.getDynamicChildren();
-        if (items == null || items.length == 0)
-        {
-            log.debug("No items found in collection log widget");
-            return;
-        }
+        List<String> newUnlocks = new ArrayList<>();
+        int confirmedManual = 0;
+        List<String> nowManual = new ArrayList<>();
 
-        int newUnlocks = 0;
-        int manualTrackingChanges = 0;
-        int scannedItems = 0;
-
-        for (Widget item : items)
+        for (Integer itemId : obtained)
         {
-            int itemId = item.getItemId();
-            if (itemId <= 0)
+            if (manuallyRemoved.contains(itemId))
             {
                 continue;
             }
 
-            scannedItems++;
-
-            // Items with opacity 0 are obtained, greyed out items have higher opacity
-            boolean isObtained = item.getOpacity() == 0;
-
-            if (isObtained && collectionLogItems.containsKey(itemId))
+            if (unlockedClogItems.add(itemId))
             {
-                // Respect manual removals - don't auto-add if user has locked this item
-                if (!manuallyRemoved.contains(itemId))
-                {
-                    if (unlockedClogItems.add(itemId))
-                    {
-                        ClogItem clogItem = collectionLogItems.get(itemId);
-                        log.debug("Found obtained item: {} (ID: {})", clogItem.name, itemId);
-                        newUnlocks++;
-                    }
-
-                    // If this was manually added before, it's now a real unlock
-                    if (manuallyAdded.remove(itemId))
-                    {
-                        manualTrackingChanges++;
-                    }
-                }
+                newUnlocks.add(collectionLogItems.get(itemId).name);
             }
-            else if (!isObtained && collectionLogItems.containsKey(itemId))
+
+            // A manual unlock the log now confirms is a real unlock
+            if (manuallyAdded.remove(itemId))
             {
-                ClogItem clogItem = collectionLogItems.get(itemId);
-
-                // Skip migration for clue items when clue restrictions are disabled
-                // They're effectively unrestricted, so shouldn't be tracked as manual unlocks
-                if (!config.restrictClueItems() && isClueItem(clogItem))
-                {
-                    continue;
-                }
-
-                // Migration: If item is unlocked but not obtained, it must be a manual addition
-                // This handles upgrading from pre-manual-tracking versions
-                if (unlockedClogItems.contains(itemId) && !manuallyAdded.contains(itemId))
-                {
-                    manuallyAdded.add(itemId);
-                    log.debug("Migrated to manual unlock: {} (ID: {})", clogItem.name, itemId);
-                    manualTrackingChanges++;
-                }
+                confirmedManual++;
             }
         }
 
-        log.debug("Scanned {} items, found {} new unlocks, {} manual tracking changes", scannedItems, newUnlocks, manualTrackingChanges);
-
-        if (newUnlocks > 0 || manualTrackingChanges > 0)
+        // Anything unlocked that the (complete) log doesn't show is a manual unlock; keep it, but classify it as one
+        if (complete)
         {
-            if (newUnlocks > 0)
+            for (Integer itemId : unlockedClogItems)
             {
-                log.info("Scanned collection log page, found {} new unlocks (total: {})", newUnlocks, unlockedClogItems.size());
-            }
-
-            if (manualTrackingChanges > 0)
-            {
-                log.debug("Updated manual unlock tracking for {} items", manualTrackingChanges);
-            }
-
-            saveUnlockedItems();
-            recalculateAvailableItems();
-
-            if (newUnlocks > 0)
-            {
-                sendSyncMessage(newUnlocks);
-            }
-
-            if (panel != null)
-            {
-                panel.refresh();
+                if (!obtained.contains(itemId) && manuallyAdded.add(itemId))
+                {
+                    nowManual.add(collectionLogItems.get(itemId).name);
+                }
             }
         }
+
+        if (newUnlocks.isEmpty() && confirmedManual == 0 && nowManual.isEmpty())
+        {
+            log.debug("Collection log sync: no changes ({} items reported, complete: {})", reported.size(), complete);
+            return;
+        }
+
+        log.info("Collection log sync: {} new unlocks {}, {} manual unlocks confirmed, {} reclassified as manual {} ({} items reported, game count {}, complete: {}, total unlocked: {})",
+            newUnlocks.size(), newUnlocks.size() <= 20 ? newUnlocks : "(first sync)", confirmedManual,
+            nowManual.size(), nowManual, reported.size(), gameCount, complete, unlockedClogItems.size());
+
+        saveUnlockedItems();
+        recalculateAvailableItems();
+
+        if (!newUnlocks.isEmpty())
+        {
+            sendSyncMessage(newUnlocks.size());
+        }
+
+        if (panel != null)
+        {
+            panel.refresh();
+        }
+    }
+
+    private boolean isStandardWorld()
+    {
+        return Collections.disjoint(client.getWorldType(), NON_STANDARD_WORLDS);
     }
 
     private void sendSyncMessage(int count)
@@ -1428,7 +1539,7 @@ public class ClogmanPlugin extends Plugin
             .append(ChatColorType.HIGHLIGHT)
             .append("Clogman: ")
             .append(ChatColorType.NORMAL)
-            .append("Synced " + count + " items from collection log. Browse all tabs to sync everything!")
+            .append("Synced " + count + " new items from your collection log.")
             .build();
 
         chatMessageManager.queue(QueuedMessage.builder()

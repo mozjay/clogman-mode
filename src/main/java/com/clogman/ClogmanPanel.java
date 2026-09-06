@@ -398,11 +398,12 @@ public class ClogmanPanel extends PluginPanel
 
         if (confirm == JOptionPane.YES_OPTION)
         {
+            List<Integer> itemIds = new ArrayList<>();
             for (UnlockEntry entry : selected)
             {
-                // Re-add to unlocked items
-                plugin.unlockItem(entry.itemId, true);
+                itemIds.add(entry.itemId);
             }
+            plugin.unlockItems(itemIds, true);
             refresh();
         }
     }

@@ -97,11 +97,23 @@ public interface ClogmanConfig extends Config
     @ConfigItem(
         keyName = "showNewlyAvailable",
         name = "Show Newly Available Items",
-        description = "Show which derived items become available when unlocking a collection log item",
+        description = "Send a chat message listing the additional items an unlock makes available",
         section = notificationsSection,
         position = 1
     )
     default boolean showNewlyAvailable()
+    {
+        return true;
+    }
+
+    @ConfigItem(
+        keyName = "showUnlockPopup",
+        name = "Show Unlock Popup",
+        description = "Show an on-screen popup beneath the collection log popup listing the additional items an unlock makes available",
+        section = notificationsSection,
+        position = 2
+    )
+    default boolean showUnlockPopup()
     {
         return true;
     }
