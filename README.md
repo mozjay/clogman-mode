@@ -17,10 +17,11 @@ A RuneLite plugin that restricts item usage (and more!) based on Collection Log 
 When you first install the plugin, it doesn't know what you've already unlocked. To sync:
 
 1. Open your Collection Log in-game
-2. Browse through each tab
-3. The plugin scans each page you view and syncs obtained items
+2. The plugin reads every obtained item in the log and syncs your unlocks
 
-You'll see a message: "Clogman: Synced X items from collection log. Browse all tabs to sync everything!"
+You'll see a message: "Clogman: Synced X new items from your collection log."
+
+Collection logs viewed from another player's house are ignored.
 
 New unlocks are detected automatically via the "New item added to your collection log" chat message. You may need to turn this on in your actual in-game settings.
 
