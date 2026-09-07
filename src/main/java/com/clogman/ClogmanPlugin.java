@@ -603,6 +603,15 @@ public class ClogmanPlugin extends Plugin
 
     private boolean isEffectivelyUnlocked(int clogItemId, Set<Integer> visited)
     {
+        // A manual lock is authoritative - the exemptions below must not override
+        // it, or the sidebar would list an item as manually locked while the game
+        // still let you use it. Checked inside the recursion so the veto also
+        // blocks any craftable-from path that would route through this item.
+        if (manuallyRemoved.contains(clogItemId))
+        {
+            return false;
+        }
+
         // Direct unlock - always counts
         if (unlockedClogItems.contains(clogItemId))
         {
