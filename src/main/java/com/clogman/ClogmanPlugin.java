@@ -82,6 +82,7 @@ public class ClogmanPlugin extends Plugin
     private ClientThread clientThread;
 
     @Inject
+    @Getter
     private ClogmanConfig config;
 
     @Inject
@@ -361,8 +362,12 @@ public class ClogmanPlugin extends Plugin
             return;
         }
 
-        // Recalculate available items when clue or craftable-from restriction settings change
-        if (event.getKey().equals("restrictClueItems") || event.getKey().equals("restrictCraftableUnlocks"))
+        // Recalculate available items when any restriction setting that changes
+        // what counts as unlocked is toggled
+        if (event.getKey().equals("restrictClueItems")
+            || event.getKey().equals("restrictCraftableUnlocks")
+            || event.getKey().equals("restrictShopBuyable")
+            || event.getKey().equals("restrictDropObtainable"))
         {
             recalculateAvailableItems();
             if (panel != null)
@@ -631,6 +636,14 @@ public class ClogmanPlugin extends Plugin
             return true;
         }
 
+        // If shop restrictions are disabled, anything a shop sells is effectively
+        // unlocked - buying it generally doesn't credit the collection log, so the
+        // player can legitimately own one without the unlock
+        if (!config.restrictShopBuyable() && clogItem.isShopBuyable())
+        {
+            return true;
+        }
+
         // Cycle detection - prevent infinite recursion
         if (visited.contains(clogItemId))
         {
@@ -665,6 +678,16 @@ public class ClogmanPlugin extends Plugin
     }
 
     /**
+     * Get a derived item's dependency sets under the current drop setting.
+     * Every caller must go through this so the "why is this locked" messages
+     * can't contradict what recalculateAvailableItems actually did.
+     */
+    public List<List<Integer>> getEffectiveDependencies(DerivedItem derived)
+    {
+        return derived.getEffectiveDependencies(!config.restrictDropObtainable());
+    }
+
+    /**
      * Recalculates which items are available based on current unlocks
      */
     public void recalculateAvailableItems()
@@ -690,8 +713,13 @@ public class ClogmanPlugin extends Plugin
         for (Map.Entry<String, DerivedItem> entry : derivedItems.entrySet())
         {
             DerivedItem derived = entry.getValue();
-            List<List<Integer>> depSets = derived.getClogDependencies();
-            if (!depSets.isEmpty())
+            List<List<Integer>> depSets = getEffectiveDependencies(derived);
+            if (depSets.isEmpty())
+            {
+                // No dependencies under the current setting - unrestricted
+                availableItems.addAll(derived.getAllItemIds());
+            }
+            else
             {
                 boolean anySetSatisfied = false;
                 for (List<Integer> depSet : depSets)
@@ -1224,7 +1252,7 @@ public class ClogmanPlugin extends Plugin
         }
 
         DerivedItem derived = derivedItemsById.get(itemId);
-        int options = derived != null ? derived.getClogDependencies().size() : 0;
+        int options = derived != null ? getEffectiveDependencies(derived).size() : 0;
         return options > 1 ? " (1 of " + options + " options)" : "";
     }
 
@@ -1264,7 +1292,7 @@ public class ClogmanPlugin extends Plugin
         DerivedItem derived = derivedItemsById.get(itemId);
         if (derived != null)
         {
-            List<List<Integer>> depSets = derived.getClogDependencies();
+            List<List<Integer>> depSets = getEffectiveDependencies(derived);
             if (!depSets.isEmpty())
             {
                 // Find the dep set with fewest missing items (closest to complete)
@@ -1607,6 +1635,8 @@ public class ClogmanPlugin extends Plugin
         public List<Integer> allIds;  // All variant IDs for this clog item (e.g., new/used states)
         @SerializedName("craftable_from")
         public List<List<Integer>> craftableFrom;  // Optional: recipes to craft this from other clog items
+        @SerializedName("shop_buyable")
+        public boolean shopBuyable;  // Optional: some shop stocks this item
 
         /**
          * Get all valid item IDs for this clog item.
@@ -1624,6 +1654,16 @@ public class ClogmanPlugin extends Plugin
         {
             return craftableFrom != null ? craftableFrom : java.util.Collections.emptyList();
         }
+
+        /**
+         * Whether some shop stocks this item, which generally does not credit
+         * the collection log. Which shop and what it charges is left to the
+         * wiki - the plugin only needs to know a shop route exists.
+         */
+        public boolean isShopBuyable()
+        {
+            return shopBuyable;
+        }
     }
 
     public static class DerivedItem
@@ -1633,6 +1673,10 @@ public class ClogmanPlugin extends Plugin
         public List<Integer> itemIds;  // All valid item IDs for this derived item
         @SerializedName("clog_dependencies")
         public List<List<Integer>> clogDependencies;  // Outer list: OR, Inner list: AND)
+        @SerializedName("clog_dependencies_drop_free")
+        public List<List<Integer>> clogDependenciesDropFree;  // Optional: deps when drop-obtainable items count as free
+        @SerializedName("drop_obtainable")
+        public boolean dropObtainable;  // Optional: this item drops directly from something
 
         /**
          * Get all valid item IDs for this derived item.
@@ -1649,6 +1693,34 @@ public class ClogmanPlugin extends Plugin
         public List<List<Integer>> getClogDependencies()
         {
             return clogDependencies != null ? clogDependencies : java.util.Collections.emptyList();
+        }
+
+        /**
+         * Whether this item drops directly from a monster or reward, rather
+         * than only being craftable.
+         */
+        public boolean isDropObtainable()
+        {
+            return dropObtainable;
+        }
+
+        /**
+         * Get the dependency sets that apply under the current drop setting.
+         *
+         * The generated data ships two answers because the plugin has no recipe
+         * graph of its own: it can't work out that freeing Splitbark body also
+         * frees Bloodbark body. An absent drop-free list means the answer is
+         * unchanged; an empty one means the item is unrestricted.
+         *
+         * Returns empty list if the item is unrestricted.
+         */
+        public List<List<Integer>> getEffectiveDependencies(boolean dropsAreFree)
+        {
+            if (dropsAreFree && clogDependenciesDropFree != null)
+            {
+                return clogDependenciesDropFree;
+            }
+            return getClogDependencies();
         }
     }
 }

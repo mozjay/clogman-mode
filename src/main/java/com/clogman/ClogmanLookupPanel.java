@@ -27,6 +27,8 @@ import java.util.Map;
 class ClogmanLookupPanel extends JPanel
 {
     private static final String EXPLORER_URL = "https://mozjay.github.io/osrs-clog-dependencies/";
+    private static final String HINT =
+        "Type an item name, then click a result to see what unlocks it.";
     private static final int MIN_QUERY_LENGTH = 2;
     private static final int MAX_RESULTS = 30;
     private static final int TEXT_WIDTH = 170;
@@ -103,9 +105,17 @@ class ClogmanLookupPanel extends JPanel
                 LinkBrowser.browse(EXPLORER_URL);
             }
         });
-        add(link, BorderLayout.SOUTH);
+        JPanel footer = new JPanel(new BorderLayout());
+        footer.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        footer.add(link, BorderLayout.NORTH);
+        JLabel footerNote = wrapped(
+            "Restrictions depend on the plugin settings. Manual locks and unlocks override them.",
+            ColorScheme.LIGHT_GRAY_COLOR);
+        footerNote.setBorder(new EmptyBorder(8, 0, 0, 0));
+        footer.add(footerNote, BorderLayout.CENTER);
+        add(footer, BorderLayout.SOUTH);
 
-        showHint("Type an item name to see which collection log unlocks it needs.");
+        showHint(HINT);
     }
 
     /**
@@ -144,6 +154,11 @@ class ClogmanLookupPanel extends JPanel
         resultsModel.clear();
         if (query.length() < MIN_QUERY_LENGTH)
         {
+            // Clearing the search closes the open card too - the field's own
+            // clear button is otherwise the only way out of it
+            selected = null;
+            results.clearSelection();
+            showHint(HINT);
             return;
         }
 
@@ -200,25 +215,69 @@ class ClogmanLookupPanel extends JPanel
         detail.add(header);
         detail.add(wrapped(describe(entry), ColorScheme.LIGHT_GRAY_COLOR));
 
+        addSources(entry);
+
         if (entry.clog != null)
         {
+            // Crafting only counts as an unlock while the craftable-from toggle
+            // allows it, so don't advertise recipes that currently do nothing
             List<List<Integer>> recipes = entry.clog.getCraftableFrom();
-            if (!recipes.isEmpty())
+            if (!recipes.isEmpty() && !plugin.getConfig().restrictCraftableUnlocks())
             {
                 addWays("Or craft it from", recipes);
             }
         }
         else
         {
-            addWays("Unlock via", entry.derived.getClogDependencies());
+            addWays("Unlock via", plugin.getEffectiveDependencies(entry.derived));
         }
 
         detail.revalidate();
         detail.repaint();
     }
 
+    /**
+     * Note the non-recipe ways to get this item. Only that a route exists -
+     * which shop or which monster is the wiki's job, and for some items that
+     * list runs to dozens of entries.
+     */
+    private void addSources(Entry entry)
+    {
+        if (entry.clog != null)
+        {
+            if (entry.clog.isShopBuyable())
+            {
+                detail.add(section("Also sold in a shop"));
+            }
+            return;
+        }
+
+        if (!entry.derived.isDropObtainable())
+        {
+            return;
+        }
+
+        detail.add(section("Also drops directly"));
+
+        // Worth calling out only in the non-obvious case: the drop setting is
+        // off, yet this item is still restricted because the drop itself is
+        // gated (the shade chest only drops a runescroll once you have read
+        // the matching book).
+        if (!plugin.getConfig().restrictDropObtainable()
+            && !plugin.getEffectiveDependencies(entry.derived).isEmpty())
+        {
+            detail.add(wrapped("This drop is itself gated by the requirements below.",
+                ColorScheme.LIGHT_GRAY_COLOR));
+        }
+    }
+
     private void addWays(String heading, List<List<Integer>> ways)
     {
+        if (ways.isEmpty())
+        {
+            return;
+        }
+
         List<List<Integer>> sorted = new ArrayList<>(ways);
         sorted.sort(Comparator.comparingInt(this::missingCount));
 
@@ -313,6 +372,10 @@ class ClogmanLookupPanel extends JPanel
     {
         if (entry.clog == null)
         {
+            if (plugin.getEffectiveDependencies(entry.derived).isEmpty())
+            {
+                return "Made from collection log items, but also drops directly";
+            }
             return "Made from collection log items";
         }
         boolean direct = plugin.getUnlockedClogItems().contains(entry.itemId);

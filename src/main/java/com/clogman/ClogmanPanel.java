@@ -98,7 +98,7 @@ public class ClogmanPanel extends PluginPanel
 
         JScrollPane unlockScrollPane = new JScrollPane(unlockList);
         unlockScrollPane.setPreferredSize(new Dimension(0, 250));
-        unlockScrollPane.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
+        unlockScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         // List of manually locked items
         lockedListModel = new DefaultListModel<>();
@@ -109,7 +109,7 @@ public class ClogmanPanel extends PluginPanel
 
         JScrollPane lockedScrollPane = new JScrollPane(lockedList);
         lockedScrollPane.setPreferredSize(new Dimension(0, 120));
-        lockedScrollPane.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
+        lockedScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         // Unlock list buttons
         JPanel unlockButtonPanel = new JPanel(new GridBagLayout());

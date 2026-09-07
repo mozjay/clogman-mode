@@ -16,21 +16,34 @@ public interface ClogmanConfig extends Config
     )
     String restrictionsSection = "restrictions";
 
+    // The "(tick to restrict)" belongs in the name, not just the description:
+    // the description is hover-only, and "Unlock Rules" over a row of ticked
+    // boxes otherwise reads as "these are unlocked" - the opposite of what a
+    // ticked box does here.
+    @ConfigSection(
+        name = "Unlock Rules (tick to restrict)",
+        description = "What counts as unlocked, rather than where restrictions apply",
+        position = 1
+    )
+    String unlockRulesSection = "unlockRules";
+
     @ConfigSection(
         name = "Notifications",
         description = "Configure unlock notifications",
-        position = 1
+        position = 2
     )
     String notificationsSection = "notifications";
 
     @ConfigSection(
         name = "Visual",
         description = "Configure visual appearance",
-        position = 2
+        position = 3
     )
     String visualSection = "visual";
 
     // === RESTRICTIONS SECTION ===
+    // Where restrictions are enforced. What counts as locked in the first
+    // place is decided by the Unlock Rules section below.
 
     @ConfigItem(
         keyName = "restrictGrandExchange",
@@ -70,10 +83,10 @@ public interface ClogmanConfig extends Config
 
     @ConfigItem(
         keyName = "restrictClueItems",
-        name = "Restrict Clue Items",
+        name = "Clue Items",
         description = "Restrict items from Treasure Trail rewards in the Collection Log",
-        section = restrictionsSection,
-        position = 3
+        section = unlockRulesSection,
+        position = 0
     )
     default boolean restrictClueItems()
     {
@@ -82,15 +95,44 @@ public interface ClogmanConfig extends Config
 
     @ConfigItem(
         keyName = "restrictCraftableUnlocks",
-        name = "Restrict Craftable-From Unlocks",
-        description = "Require items to be unlocked directly instead of treating them as unlocked because they're craftable from other unlocked collection log items (e.g. Onyx from Uncut onyx, Oathplate armour from Oathplate shards)",
-        section = restrictionsSection,
-        position = 4
+        name = "Craftable-From",
+        description = "Require collection log items to be unlocked directly, not via crafting, e.g. Onyx from Uncut onyx",
+        section = unlockRulesSection,
+        position = 1
     )
     default boolean restrictCraftableUnlocks()
     {
         return false;
     }
+
+    @ConfigItem(
+        keyName = "restrictShopBuyable",
+        name = "Shop-Buyable",
+        description = "Restrict collection log items sold in shops, e.g. Uncut onyx for tokkul",
+        section = unlockRulesSection,
+        position = 2
+    )
+    default boolean restrictShopBuyable()
+    {
+        return true;
+    }
+
+    @ConfigItem(
+        keyName = "restrictDropObtainable",
+        name = "Drop-Obtainable*",
+        description = "Restrict derived items with their own drop source, e.g. Splitbark body from Chaos Fanatic",
+        section = unlockRulesSection,
+        position = 3
+    )
+    default boolean restrictDropObtainable()
+    {
+        return true;
+    }
+
+    // === UNLOCK RULES SECTION ===
+    // These decide what counts as an unlock, and so what is locked at all.
+    // Ticked always means "restrict", so the polarity matches the section
+    // above even though the names drop the prefix.
 
     // === NOTIFICATIONS SECTION ===
 
