@@ -1612,6 +1612,16 @@ public class ClogmanPlugin extends Plugin
     }
 
     /**
+     * Whether this clog item was actually obtained, as opposed to counting as
+     * unlocked through a config exemption or a crafting recipe. Membership test
+     * only, so callers rendering a list of rows don't copy the whole set per row.
+     */
+    public boolean isDirectlyUnlocked(int clogItemId)
+    {
+        return unlockedClogItems.contains(clogItemId);
+    }
+
+    /**
      * Returns the total number of collection log items
      */
     public int getTotalClogItems()

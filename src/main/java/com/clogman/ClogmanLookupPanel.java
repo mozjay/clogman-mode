@@ -302,7 +302,7 @@ class ClogmanLookupPanel extends JPanel
         ClogmanPlugin.ClogItem clog = plugin.getCollectionLogItems().get(clogId);
         String name = clog != null ? clog.name : "Unknown (" + clogId + ")";
         boolean have = plugin.isEffectivelyUnlocked(clogId);
-        String via = have && !plugin.getUnlockedClogItems().contains(clogId) ? craftedVia(clog) : null;
+        String via = have && !plugin.isDirectlyUnlocked(clogId) ? craftedVia(clog) : null;
 
         String text = "&nbsp;&nbsp;" + (have ? "&#10003; " : "&#10007; ") + name
             + (via != null ? " <font color='#a5a5a5'>(via " + via + ")</font>" : "");
@@ -378,8 +378,45 @@ class ClogmanLookupPanel extends JPanel
             }
             return "Made from collection log items";
         }
-        boolean direct = plugin.getUnlockedClogItems().contains(entry.itemId);
-        return "Collection log item" + (isUnlocked(entry) && !direct ? ", unlocked via crafting" : "");
+        if (plugin.isDirectlyUnlocked(entry.itemId) || !isUnlocked(entry))
+        {
+            return "Collection log item";
+        }
+        return "Collection log item, " + unlockReason(entry.clog);
+    }
+
+    /**
+     * Why an item counts as unlocked without having been obtained. Mirrors the
+     * order of the exemptions in ClogmanPlugin.isEffectivelyUnlocked, so the
+     * card names the rule that actually applied rather than assuming crafting.
+     */
+    private String unlockReason(ClogmanPlugin.ClogItem clog)
+    {
+        if (!plugin.getConfig().restrictClueItems() && isClueItem(clog))
+        {
+            return "unlocked by the Clue Items rule";
+        }
+        if (!plugin.getConfig().restrictShopBuyable() && clog.isShopBuyable())
+        {
+            return "unlocked by the Shop-Buyable rule";
+        }
+        return craftedVia(clog) != null ? "unlocked via crafting" : "unlocked by an unlock rule";
+    }
+
+    private boolean isClueItem(ClogmanPlugin.ClogItem clog)
+    {
+        if (clog == null || clog.tabs == null)
+        {
+            return false;
+        }
+        for (String tab : clog.tabs)
+        {
+            if (tab.contains("Treasure Trail"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showHint(String text)

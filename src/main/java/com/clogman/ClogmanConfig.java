@@ -81,6 +81,11 @@ public interface ClogmanConfig extends Config
         return true;
     }
 
+    // === UNLOCK RULES SECTION ===
+    // These decide what counts as an unlock, and so what is locked at all.
+    // Ticked always means "restrict", so the polarity matches the section
+    // above even though the names drop the prefix.
+
     @ConfigItem(
         keyName = "restrictClueItems",
         name = "Clue Items",
@@ -128,11 +133,6 @@ public interface ClogmanConfig extends Config
     {
         return true;
     }
-
-    // === UNLOCK RULES SECTION ===
-    // These decide what counts as an unlock, and so what is locked at all.
-    // Ticked always means "restrict", so the polarity matches the section
-    // above even though the names drop the prefix.
 
     // === NOTIFICATIONS SECTION ===
 
