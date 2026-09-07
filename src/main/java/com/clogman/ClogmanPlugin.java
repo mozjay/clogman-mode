@@ -361,8 +361,8 @@ public class ClogmanPlugin extends Plugin
             return;
         }
 
-        // Recalculate available items when clue restriction setting changes
-        if (event.getKey().equals("restrictClueItems"))
+        // Recalculate available items when clue or craftable-from restriction settings change
+        if (event.getKey().equals("restrictClueItems") || event.getKey().equals("restrictCraftableUnlocks"))
         {
             recalculateAvailableItems();
             if (panel != null)
@@ -629,23 +629,26 @@ public class ClogmanPlugin extends Plugin
         }
         visited.add(clogItemId);
 
-        // Check if any crafting recipe is satisfiable
-        List<List<Integer>> recipes = clogItem.getCraftableFrom();
-        for (List<Integer> recipe : recipes)
+        // Check if any crafting recipe is satisfiable (unless craftable-from unlocks are restricted)
+        if (!config.restrictCraftableUnlocks())
         {
-            boolean recipeWorks = true;
-            for (int depId : recipe)
+            List<List<Integer>> recipes = clogItem.getCraftableFrom();
+            for (List<Integer> recipe : recipes)
             {
-                // Create new visited set for each branch
-                if (!isEffectivelyUnlocked(depId, new HashSet<>(visited)))
+                boolean recipeWorks = true;
+                for (int depId : recipe)
                 {
-                    recipeWorks = false;
-                    break;
+                    // Create new visited set for each branch
+                    if (!isEffectivelyUnlocked(depId, new HashSet<>(visited)))
+                    {
+                        recipeWorks = false;
+                        break;
+                    }
                 }
-            }
-            if (recipeWorks)
-            {
-                return true;
+                if (recipeWorks)
+                {
+                    return true;
+                }
             }
         }
 
@@ -1192,6 +1195,11 @@ public class ClogmanPlugin extends Plugin
         Integer primaryClogId = clogIdToPrimaryId.get(itemId);
         if (primaryClogId != null)
         {
+            if (config.restrictCraftableUnlocks())
+            {
+                return "";
+            }
+
             List<String> recipes = new ArrayList<>();
             for (List<Integer> recipe : collectionLogItems.get(primaryClogId).getCraftableFrom())
             {

@@ -80,6 +80,18 @@ public interface ClogmanConfig extends Config
         return true;
     }
 
+    @ConfigItem(
+        keyName = "restrictCraftableUnlocks",
+        name = "Restrict Craftable-From Unlocks",
+        description = "Require items to be unlocked directly instead of treating them as unlocked because they're craftable from other unlocked collection log items (e.g. Onyx from Uncut onyx, Oathplate armour from Oathplate shards)",
+        section = restrictionsSection,
+        position = 4
+    )
+    default boolean restrictCraftableUnlocks()
+    {
+        return false;
+    }
+
     // === NOTIFICATIONS SECTION ===
 
     @ConfigItem(
