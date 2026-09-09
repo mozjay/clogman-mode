@@ -9,6 +9,8 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
 
 import net.runelite.client.ui.components.IconTextField;
+import net.runelite.client.ui.components.materialtabs.MaterialTab;
+import net.runelite.client.ui.components.materialtabs.MaterialTabGroup;
 
 import javax.inject.Inject;
 import javax.swing.*;
@@ -37,6 +39,7 @@ public class ClogmanPanel extends PluginPanel
     private final JLabel statsLabel;
     private final IconTextField searchField;
     private final JCheckBox manualOnlyCheckbox;
+    private final ClogmanLookupPanel lookupPanel;
 
     // All entries (unfiltered) - source of truth for display
     private List<UnlockEntry> allEntries = new ArrayList<>();
@@ -95,7 +98,7 @@ public class ClogmanPanel extends PluginPanel
 
         JScrollPane unlockScrollPane = new JScrollPane(unlockList);
         unlockScrollPane.setPreferredSize(new Dimension(0, 250));
-        unlockScrollPane.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
+        unlockScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         // List of manually locked items
         lockedListModel = new DefaultListModel<>();
@@ -106,7 +109,7 @@ public class ClogmanPanel extends PluginPanel
 
         JScrollPane lockedScrollPane = new JScrollPane(lockedList);
         lockedScrollPane.setPreferredSize(new Dimension(0, 120));
-        lockedScrollPane.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
+        lockedScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         // Unlock list buttons
         JPanel unlockButtonPanel = new JPanel(new GridBagLayout());
@@ -160,7 +163,7 @@ public class ClogmanPanel extends PluginPanel
         resetButtonPanel.add(clearButton, gbc);
 
         // Help text
-        JLabel helpLabel = new JLabel("<html>Browse your Collection Log in-game to sync unlocks automatically.</html>");
+        JLabel helpLabel = new JLabel("<html>Open your Collection Log in-game to sync unlocks automatically.</html>");
         helpLabel.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
         helpLabel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
@@ -191,14 +194,32 @@ public class ClogmanPanel extends PluginPanel
         centerPanel.add(unlockSection, BorderLayout.CENTER);
         centerPanel.add(lockedSection, BorderLayout.SOUTH);
 
-        add(centerPanel, BorderLayout.CENTER);
-
         // Bottom panel with reset buttons and help
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
         bottomPanel.add(resetButtonPanel, BorderLayout.NORTH);
         bottomPanel.add(helpLabel, BorderLayout.SOUTH);
-        add(bottomPanel, BorderLayout.SOUTH);
+
+        // Everything above is the Unlocks tab; the Lookup tab lives in its own panel
+        JPanel unlocksContent = new JPanel(new BorderLayout());
+        unlocksContent.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        unlocksContent.add(centerPanel, BorderLayout.CENTER);
+        unlocksContent.add(bottomPanel, BorderLayout.SOUTH);
+
+        lookupPanel = new ClogmanLookupPanel(plugin, itemManager);
+
+        JPanel display = new JPanel();
+        display.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        MaterialTabGroup tabGroup = new MaterialTabGroup(display);
+        tabGroup.setBorder(new EmptyBorder(0, 0, 10, 0));
+        MaterialTab unlocksTab = new MaterialTab("Unlocks", tabGroup, unlocksContent);
+        MaterialTab lookupTab = new MaterialTab("Lookup", tabGroup, lookupPanel);
+        tabGroup.addTab(unlocksTab);
+        tabGroup.addTab(lookupTab);
+        tabGroup.select(unlocksTab);
+
+        add(tabGroup, BorderLayout.NORTH);
+        add(display, BorderLayout.CENTER);
     }
 
     /**
@@ -252,6 +273,7 @@ public class ClogmanPanel extends PluginPanel
 
         // Apply current filter
         filterLists();
+        lookupPanel.refresh();
     }
 
     private void filterLists()

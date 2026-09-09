@@ -36,11 +36,18 @@ Items crafted from collection log items are also restricted until you unlock the
 - Tormented bracelet requires: Zenyte shard, Onyx
 - Confliction gauntlets requires: Zenyte shard, Onyx, Mokhaiotl cloth, Demon tear
 
-#### Effective unlocking
-Some collection log items can be crafted from other collection log items. The plugin handles this. For example: Onyx can be crafted from Uncut onyx, therefore if you have unlocked Uncut onyx, the plugin deems you have effectively locked Onyx, for dependency purposes.
-
 #### Restriction logic
-An item is only restricted if **all** recipes to create it require collection log items. If there's any recipe that doesn't need a clog item, the item won't be restricted.
+An item is only restricted if **every** way to get it requires collection log items. If there's any recipe that doesn't need a clog item, the item won't be restricted.
+
+#### Unlock rules
+The **Unlock Rules** settings decide what counts as unlocked. Tick to restrict. The defaults are recommended, but customise them however you like.
+
+- **Clue Items** - Treasure Trail rewards.
+- **Craftable-From** - clog items craftable from other clog items, e.g. Onyx from Uncut onyx. Off by default.
+- **Shop-Buyable** - clog items sold in shops, e.g. Uncut onyx for tokkul. Blanket: also covers reward shop gear like Graceful and Void, where buying *is* how you earn the slot.
+- **Drop-Obtainable** - derived items that also drop directly, e.g. Splitbark body from the Chaos Fanatic. Never applies to clog items, since obtaining one as a drop is what fills the slot.
+
+Manual unlocks and locks override all of these. A manually locked item stays locked along with anything depending on it, so locking Onyx also keeps Amulet of fury locked.
 
 #### Restricted item data
 The plugin includes a pre-generated JSON file (`clog_restrictions.json`) containing collection log items, derived items with their clog dependencies, and clog items craftable from other clog items.
