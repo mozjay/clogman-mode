@@ -28,7 +28,7 @@ dependencies {
 }
 
 group = 'com.clogman'
-version = '1.4.0'
+version = '1.5.0'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
