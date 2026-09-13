@@ -31,7 +31,9 @@ public class ClogmanOverlay extends WidgetItemOverlay
     @Override
     public void renderItemOverlay(Graphics2D graphics, int itemId, WidgetItem widgetItem)
     {
-        if (plugin.isItemLocked(itemId))
+        // Non-standard worlds (PvP Arena, Deadman, etc.) hand out temporary or
+        // separate loadouts unrelated to the account's real unlocks - never dim there
+        if (plugin.isStandardWorld() && plugin.isItemLocked(itemId))
         {
             Rectangle bounds = widgetItem.getCanvasBounds();
             if (bounds == null)

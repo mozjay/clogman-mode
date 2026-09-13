@@ -1227,7 +1227,7 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onMenuEntryAdded(MenuEntryAdded event)
     {
-        if (!config.restrictItemUsage())
+        if (!config.restrictItemUsage() || !isStandardWorld())
         {
             return;
         }
@@ -1250,6 +1250,13 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
+        // Non-standard worlds (PvP Arena, Deadman, etc.) hand out temporary or
+        // separate loadouts unrelated to the account's real unlocks - never restrict there
+        if (!isStandardWorld())
+        {
+            return;
+        }
+
         // Block usage of locked items
         if (config.restrictItemUsage())
         {
@@ -1317,7 +1324,7 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onGrandExchangeSearched(GrandExchangeSearched event)
     {
-        if (!config.restrictGrandExchange())
+        if (!config.restrictGrandExchange() || !isStandardWorld())
         {
             return;
         }
@@ -1761,7 +1768,7 @@ public class ClogmanPlugin extends Plugin
         }
     }
 
-    private boolean isStandardWorld()
+    boolean isStandardWorld()
     {
         return Collections.disjoint(client.getWorldType(), NON_STANDARD_WORLDS);
     }
