@@ -12,6 +12,7 @@ A RuneLite plugin that restricts item usage (and more!) based on Collection Log 
 - Configurable locked item dimming and gold clogman helm icon next to user's name in chat.
 - Chat notifications of newly unlocked items, including derived items which depend on new clog unlocks, as well as clog requirements upon attempted usage of restricted items.
 - Toggleable on-screen unlock popup whenever an unlock makes additional items available, showing how many extra items were unlocked and their names.
+- Export and import of unlocks and manual locks as a JSON file from the side panel, to back them up, share a ruleset with other players, or combine unlocks from several accounts.
 
 ## Syncing your collection log
 When you first install the plugin, it doesn't know what you've already unlocked. To sync:
@@ -24,6 +25,9 @@ You'll see a message: "Clogman: Synced X new items from your collection log."
 Collection logs viewed from another player's house are ignored, as are Leagues, Deadman and beta worlds.
 
 New unlocks are detected automatically via the "New item added to your collection log" chat message. You may need to turn this on in your actual in-game settings.
+
+## Exporting and importing unlocks
+The Export and Import buttons at the bottom of the side panel save and load your unlocks and manual locks as a JSON file. Importing only ever adds: imported unlocks are treated as manual, and imported locks never override your own.
 
 ## How it works
 

@@ -1,7 +1,9 @@
 package com.clogman;
 
 import net.runelite.api.Client;
+import net.runelite.api.GameState;
 import net.runelite.api.widgets.ComponentID;
+import net.runelite.client.RuneLite;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.chatbox.ChatboxItemSearch;
@@ -17,8 +19,11 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -161,6 +166,18 @@ public class ClogmanPanel extends PluginPanel
         clearButton.addActionListener(e -> onClearAll());
         gbc.gridy = 1;
         resetButtonPanel.add(clearButton, gbc);
+
+        // Export / import, side by side
+        JPanel transferButtonPanel = new JPanel(new GridLayout(1, 2, 4, 0));
+        transferButtonPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        JButton exportButton = new JButton("Export");
+        exportButton.addActionListener(e -> onExport());
+        transferButtonPanel.add(exportButton);
+        JButton importButton = new JButton("Import");
+        importButton.addActionListener(e -> onImport());
+        transferButtonPanel.add(importButton);
+        gbc.gridy = 2;
+        resetButtonPanel.add(transferButtonPanel, gbc);
 
         // Help text
         JLabel helpLabel = new JLabel("<html>Open your Collection Log in-game to sync unlocks automatically.</html>");
@@ -316,12 +333,8 @@ public class ClogmanPanel extends PluginPanel
     {
         // Use chatbox item search to find and add an item
         // This requires the game to be open
-        if (client.getGameState() != net.runelite.api.GameState.LOGGED_IN)
+        if (!requireLoggedIn("add unlocks"))
         {
-            JOptionPane.showMessageDialog(this,
-                "You must be logged in to add unlocks.",
-                "Not Logged In",
-                JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -470,6 +483,141 @@ public class ClogmanPanel extends PluginPanel
             plugin.resetAllUnlocks();
             refresh();
         }
+    }
+
+    private boolean requireLoggedIn(String action)
+    {
+        if (client.getGameState() == GameState.LOGGED_IN)
+        {
+            return true;
+        }
+
+        JOptionPane.showMessageDialog(this,
+            "You must be logged in to " + action + ".",
+            "Not Logged In",
+            JOptionPane.WARNING_MESSAGE);
+        return false;
+    }
+
+    private JFileChooser jsonChooser(String title)
+    {
+        JFileChooser chooser = new JFileChooser(RuneLite.RUNELITE_DIR);
+        chooser.setDialogTitle(title);
+        chooser.setFileFilter(new FileNameExtensionFilter("JSON files", "json"));
+        return chooser;
+    }
+
+    private void onExport()
+    {
+        if (!requireLoggedIn("export unlocks"))
+        {
+            return;
+        }
+
+        JFileChooser chooser = jsonChooser("Export unlocks");
+        chooser.setSelectedFile(new File(RuneLite.RUNELITE_DIR, "clogman-unlocks.json"));
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION)
+        {
+            return;
+        }
+
+        File file = chooser.getSelectedFile();
+        if (!file.getName().toLowerCase().endsWith(".json"))
+        {
+            file = new File(file.getParentFile(), file.getName() + ".json");
+        }
+        if (file.exists() && JOptionPane.showConfirmDialog(this,
+            file.getName() + " already exists. Overwrite?",
+            "Confirm Overwrite",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION)
+        {
+            return;
+        }
+
+        try
+        {
+            plugin.writeExport(file);
+            JOptionPane.showMessageDialog(this,
+                "Exported unlocks to " + file.getName(),
+                "Export Complete",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch (IOException e)
+        {
+            JOptionPane.showMessageDialog(this,
+                "Could not write file: " + e.getMessage(),
+                "Export Failed",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void onImport()
+    {
+        if (!requireLoggedIn("import unlocks"))
+        {
+            return;
+        }
+
+        JFileChooser chooser = jsonChooser("Import unlocks");
+        if (chooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
+        {
+            return;
+        }
+
+        ClogmanPlugin.Export export;
+        try
+        {
+            export = plugin.readExport(chooser.getSelectedFile());
+        }
+        catch (IOException e)
+        {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Import Failed", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ClogmanPlugin.ImportSummary summary = plugin.previewImport(export);
+        String notes = (summary.unknown > 0 ? "<br>" + summary.unknown + " unknown item ID(s) ignored" : "")
+            + (summary.skippedLocked > 0 ? "<br>" + summary.skippedLocked + " unlock(s) skipped as they are locked here" : "");
+
+        if (summary.clogUnlocks.isEmpty() && summary.manualUnlocks.isEmpty() && summary.locks.isEmpty())
+        {
+            JOptionPane.showMessageDialog(this,
+                "<html>Nothing new to import." + notes + "</html>",
+                "Nothing to Import",
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        JCheckBox clogBox = importOption("Import collection log unlocks as manual unlocks", summary.clogUnlocks.size());
+        JCheckBox manualBox = importOption("Import manual unlocks", summary.manualUnlocks.size());
+        JCheckBox locksBox = importOption("Import manual locks", summary.locks.size());
+
+        JPanel content = new JPanel(new GridLayout(0, 1, 0, 4));
+        content.add(new JLabel("<html>File contains " + export.unlocks.size() + " collection log unlocks, "
+            + export.manualUnlocks.size() + " manual unlocks and " + export.manualLocks.size() + " manual locks."
+            + notes + "</html>"));
+        content.add(clogBox);
+        content.add(manualBox);
+        content.add(locksBox);
+
+        int confirm = JOptionPane.showConfirmDialog(this, content, "Import Unlocks",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (confirm != JOptionPane.OK_OPTION
+            || !(clogBox.isSelected() || manualBox.isSelected() || locksBox.isSelected()))
+        {
+            return;
+        }
+
+        plugin.applyImport(summary, clogBox.isSelected(), manualBox.isSelected(), locksBox.isSelected());
+        refresh();
+    }
+
+    private static JCheckBox importOption(String label, int count)
+    {
+        JCheckBox box = new JCheckBox(label + " (" + count + " new)", count > 0);
+        box.setEnabled(count > 0);
+        return box;
     }
 
     /**

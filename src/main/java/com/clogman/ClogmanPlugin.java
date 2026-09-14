@@ -1,6 +1,7 @@
 package com.clogman;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Provides;
@@ -34,8 +35,14 @@ import net.runelite.client.util.Text;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -902,21 +909,8 @@ public class ClogmanPlugin extends Plugin
      */
     public void lockItem(int itemId)
     {
-        if (unlockedClogItems.remove(itemId))
+        if (lockQuietly(itemId))
         {
-            ClogItem item = collectionLogItems.get(itemId);
-            log.info("Locked item: {} (ID: {})", item != null ? item.name : "Unknown", itemId);
-
-            // Check if this was a manual unlock (not from clog)
-            boolean wasManuallyAdded = manuallyAdded.remove(itemId);
-
-            // Only add to manually removed if it wasn't a manual unlock
-            // (i.e., it's from the actual collection log)
-            if (!wasManuallyAdded)
-            {
-                manuallyRemoved.add(itemId);
-            }
-
             saveUnlockedItems();
             recalculateAvailableItems();
 
@@ -925,6 +919,32 @@ public class ClogmanPlugin extends Plugin
                 panel.refresh();
             }
         }
+    }
+
+    /**
+     * Locks an item without saving or refreshing, so a batch (e.g. an import) can do that once.
+     * Returns whether the item was unlocked.
+     */
+    private boolean lockQuietly(int itemId)
+    {
+        if (!unlockedClogItems.remove(itemId))
+        {
+            return false;
+        }
+
+        ClogItem item = collectionLogItems.get(itemId);
+        log.info("Locked item: {} (ID: {})", item != null ? item.name : "Unknown", itemId);
+
+        // Check if this was a manual unlock (not from clog)
+        boolean wasManuallyAdded = manuallyAdded.remove(itemId);
+
+        // Only add to manually removed if it wasn't a manual unlock
+        // (i.e., it's from the actual collection log)
+        if (!wasManuallyAdded)
+        {
+            manuallyRemoved.add(itemId);
+        }
+        return true;
     }
 
     /**
@@ -973,6 +993,170 @@ public class ClogmanPlugin extends Plugin
         if (panel != null)
         {
             panel.refresh();
+        }
+    }
+
+    // === EXPORT / IMPORT ===
+
+    /**
+     * Writes the unlock state to a file as item ID -> name maps. IDs are what import reads;
+     * names are only there for humans. Nothing about the account goes in.
+     */
+    public void writeExport(File file) throws IOException
+    {
+        Set<Integer> real = new HashSet<>(unlockedClogItems);
+        real.removeAll(manuallyAdded);
+
+        Export export = new Export();
+        export.formatVersion = Export.FORMAT_VERSION;
+        export.unlocks = names(real);
+        export.manualUnlocks = names(manuallyAdded);
+        export.manualLocks = names(manuallyRemoved);
+
+        try (Writer writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8))
+        {
+            gson.newBuilder().setPrettyPrinting().create().toJson(export, writer);
+        }
+        log.info("Exported {} unlocks, {} manual unlocks and {} locks to {}",
+            real.size(), manuallyAdded.size(), manuallyRemoved.size(), file);
+    }
+
+    private Map<Integer, String> names(Collection<Integer> itemIds)
+    {
+        Map<Integer, String> names = new HashMap<>();
+        for (Integer itemId : itemIds)
+        {
+            ClogItem item = collectionLogItems.get(itemId);
+            names.put(itemId, item != null ? item.name : "Unknown");
+        }
+
+        Map<Integer, String> sorted = new LinkedHashMap<>();
+        names.entrySet().stream()
+            .sorted(Map.Entry.comparingByValue(String::compareToIgnoreCase))
+            .forEach(e -> sorted.put(e.getKey(), e.getValue()));
+        return sorted;
+    }
+
+    public Export readExport(File file) throws IOException
+    {
+        Export export;
+        try (Reader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8))
+        {
+            export = gson.fromJson(reader, Export.class);
+        }
+        catch (JsonParseException e)
+        {
+            throw new IOException("Not a valid Clogman export file.", e);
+        }
+
+        if (export == null || export.formatVersion < 1)
+        {
+            throw new IOException("Not a Clogman export file.");
+        }
+        if (export.formatVersion > Export.FORMAT_VERSION)
+        {
+            throw new IOException("This file was made by a newer version of Clogman Mode. Please update the plugin.");
+        }
+
+        if (export.unlocks == null)
+        {
+            export.unlocks = Collections.emptyMap();
+        }
+        if (export.manualUnlocks == null)
+        {
+            export.manualUnlocks = Collections.emptyMap();
+        }
+        if (export.manualLocks == null)
+        {
+            export.manualLocks = Collections.emptyMap();
+        }
+        return export;
+    }
+
+    /**
+     * Works out what an import would change here without touching anything. Imported locks only
+     * apply to items unlocked here (as lockItem does); imported unlocks never override a local
+     * lock and are always treated as manual, so the clog sync can confirm them later.
+     */
+    public ImportSummary previewImport(Export export)
+    {
+        ImportSummary summary = new ImportSummary();
+        for (Integer id : export.manualLocks.keySet())
+        {
+            Integer itemId = clogIdToPrimaryId.get(id);
+            if (itemId == null)
+            {
+                summary.unknown++;
+            }
+            else if (unlockedClogItems.contains(itemId))
+            {
+                summary.locks.add(itemId);
+            }
+        }
+        collectImportUnlocks(export.unlocks.keySet(), summary, summary.clogUnlocks);
+        collectImportUnlocks(export.manualUnlocks.keySet(), summary, summary.manualUnlocks);
+        return summary;
+    }
+
+    private void collectImportUnlocks(Collection<Integer> ids, ImportSummary summary, Set<Integer> into)
+    {
+        for (Integer id : ids)
+        {
+            Integer itemId = clogIdToPrimaryId.get(id);
+            if (itemId == null)
+            {
+                summary.unknown++;
+            }
+            else if (summary.locks.contains(itemId) || manuallyRemoved.contains(itemId))
+            {
+                summary.skippedLocked++;
+            }
+            else if (!unlockedClogItems.contains(itemId) && !summary.clogUnlocks.contains(itemId))
+            {
+                into.add(itemId);
+            }
+        }
+    }
+
+    public void applyImport(ImportSummary summary, boolean clogUnlocks, boolean manualUnlocks, boolean locks)
+    {
+        int locked = 0;
+        if (locks)
+        {
+            for (Integer itemId : summary.locks)
+            {
+                if (lockQuietly(itemId))
+                {
+                    locked++;
+                }
+            }
+        }
+
+        List<Integer> unlockIds = new ArrayList<>();
+        if (clogUnlocks)
+        {
+            unlockIds.addAll(summary.clogUnlocks);
+        }
+        if (manualUnlocks)
+        {
+            unlockIds.addAll(summary.manualUnlocks);
+        }
+        log.info("Importing {} unlocks and {} locks", unlockIds.size(), locked);
+
+        // unlockItems saves, recalculates and refreshes; locks on their own need that done here
+        if (!unlockIds.isEmpty())
+        {
+            unlockItems(unlockIds, true);
+        }
+        else if (locked > 0)
+        {
+            saveUnlockedItems();
+            recalculateAvailableItems();
+
+            if (panel != null)
+            {
+                panel.refresh();
+            }
         }
     }
 
@@ -1043,7 +1227,7 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onMenuEntryAdded(MenuEntryAdded event)
     {
-        if (!config.restrictItemUsage())
+        if (!config.restrictItemUsage() || !isStandardWorld())
         {
             return;
         }
@@ -1066,6 +1250,13 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
+        // Non-standard worlds (PvP Arena, Deadman, etc.) hand out temporary or
+        // separate loadouts unrelated to the account's real unlocks - never restrict there
+        if (!isStandardWorld())
+        {
+            return;
+        }
+
         // Block usage of locked items
         if (config.restrictItemUsage())
         {
@@ -1133,7 +1324,7 @@ public class ClogmanPlugin extends Plugin
     @Subscribe
     public void onGrandExchangeSearched(GrandExchangeSearched event)
     {
-        if (!config.restrictGrandExchange())
+        if (!config.restrictGrandExchange() || !isStandardWorld())
         {
             return;
         }
@@ -1264,6 +1455,10 @@ public class ClogmanPlugin extends Plugin
         if (names.size() == 1)
         {
             return names.get(0);
+        }
+        if (names.size() > 5)
+        {
+            return String.join(", ", names.subList(0, 5)) + " and " + (names.size() - 5) + " more";
         }
         return String.join(", ", names.subList(0, names.size() - 1)) + " and " + names.get(names.size() - 1);
     }
@@ -1573,7 +1768,7 @@ public class ClogmanPlugin extends Plugin
         }
     }
 
-    private boolean isStandardWorld()
+    boolean isStandardWorld()
     {
         return Collections.disjoint(client.getWorldType(), NON_STANDARD_WORLDS);
     }
@@ -1635,6 +1830,32 @@ public class ClogmanPlugin extends Plugin
     {
         public Map<Integer, ClogItem> collectionLogItems;
         public Map<String, DerivedItem> derivedItems;
+    }
+
+    /**
+     * Unlock state as written to and read from an export file. Only item data, no account details.
+     */
+    public static class Export
+    {
+        public static final int FORMAT_VERSION = 1;
+
+        public int formatVersion;
+        public Map<Integer, String> unlocks;        // Real collection log unlocks
+        public Map<Integer, String> manualUnlocks;
+        public Map<Integer, String> manualLocks;
+    }
+
+    /**
+     * What an import would change here: the primary clog IDs to unlock or lock, plus counts of
+     * what was ignored.
+     */
+    public static class ImportSummary
+    {
+        public final Set<Integer> clogUnlocks = new LinkedHashSet<>();
+        public final Set<Integer> manualUnlocks = new LinkedHashSet<>();
+        public final Set<Integer> locks = new LinkedHashSet<>();
+        public int unknown;        // IDs not in the clog data
+        public int skippedLocked;  // Unlocks skipped because the item is locked here
     }
 
     public static class ClogItem
