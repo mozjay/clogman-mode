@@ -59,9 +59,11 @@ public class ClogmanPlugin extends Plugin
     private static final String MANUALLY_ADDED_KEY = "manuallyAdded";
     private static final String MANUALLY_REMOVED_KEY = "manuallyRemoved";
 
-    // Script ID for collection log draw (fires when changing tabs/pages)
     // Fired once per obtained item, for the whole log, the tick after the collection log opens
     private static final int COLLECTION_LOG_ITEM_SCRIPT = 4100;
+
+    // Fired once the collection log interface has finished constructing
+    private static final int COLLECTION_LOG_SETUP_SCRIPT = 7797;
 
     // Player-owned house adventure log interfaces; a collection log opened from one may be another player's
     private static final int ADVENTURE_LOG_GROUP = 187;
@@ -164,6 +166,12 @@ public class ClogmanPlugin extends Plugin
     // Obtained item ids reported by the collection log since the last sync, and the tick the last one arrived
     private final Set<Integer> pendingClogSync = new HashSet<>();
     private int lastClogItemTick = -1;
+    // Whether COLLECTION_LOG_ITEM_SCRIPT has fired at all since the log was last opened - tells a
+    // burst that reported nothing apart from one that never started
+    private boolean clogItemScriptSeenThisOpen = false;
+    // Whether the Search toggle has already been triggered for the current open - it re-fires
+    // COLLECTION_LOG_SETUP_SCRIPT itself, so this stops that becoming an infinite loop
+    private boolean collectionLogSearchTriggeredThisOpen = false;
 
     // Chat icon offset in the modIcons array (-1 means not loaded yet)
     private int chatIconOffset = -1;
@@ -561,8 +569,23 @@ public class ClogmanPlugin extends Plugin
             }
         }
 
+        // Drop anything that isn't a current primary clog ID (e.g. from an old data version, or
+        // a hand-edited/imported config) - collectionLogItems.get(itemId) is assumed non-null
+        // everywhere else once an ID is in these sets.
+        filterUnknownClogIds(unlockedClogItems, "unlocked");
+        filterUnknownClogIds(manuallyAdded, "manually added");
+        filterUnknownClogIds(manuallyRemoved, "manually removed");
+
         log.info("Loaded {} unlocked items ({} manual, {} locked) for player {}",
             unlockedClogItems.size(), manuallyAdded.size(), manuallyRemoved.size(), playerName);
+    }
+
+    private void filterUnknownClogIds(Set<Integer> itemIds, String label)
+    {
+        if (itemIds.removeIf(itemId -> !collectionLogItems.containsKey(itemId)))
+        {
+            log.warn("Dropped unknown item ID(s) from saved {} items - not a current primary clog ID", label);
+        }
     }
 
     private void saveUnlockedItems()
@@ -1542,6 +1565,8 @@ public class ClogmanPlugin extends Plugin
             // The adventure log is still open when a log opened from it loads; its close event follows
             collectionLogOpen = true;
             collectionLogReadOnly = adventureLogOpen;
+            clogItemScriptSeenThisOpen = false;
+            collectionLogSearchTriggeredThisOpen = false;
             log.debug("Collection log opened{}", collectionLogReadOnly ? " from an adventure log, ignoring its contents" : "");
         }
     }
@@ -1556,6 +1581,12 @@ public class ClogmanPlugin extends Plugin
         }
         else if (groupId == InterfaceID.COLLECTION_LOG)
         {
+            // The item script never fired at all, so syncCollectionLogWhenQuiet was never scheduled
+            // and syncCollectionLog's own log line never ran either.
+            if (!collectionLogReadOnly && !clogItemScriptSeenThisOpen)
+            {
+                log.warn("Collection log closed without the client reporting any items - sync did not run");
+            }
             collectionLogOpen = false;
             collectionLogReadOnly = false;
             log.debug("Collection log closed");
@@ -1571,20 +1602,46 @@ public class ClogmanPlugin extends Plugin
         {
             popupOverlay.onNotificationScript(scriptId);
         }
-        else if (scriptId == COLLECTION_LOG_ITEM_SCRIPT && collectionLogOpen && !collectionLogReadOnly && isStandardWorld())
+        else if (scriptId == COLLECTION_LOG_ITEM_SCRIPT)
         {
-            // Args: [script id, item id, quantity, ...]. The whole log arrives as a burst of
-            // chunks within a tick or two of opening, so collect it and process once it goes quiet.
-            Object[] args = event.getScriptEvent().getArguments();
-            if (args.length > 1 && args[1] instanceof Integer)
+            clogItemScriptSeenThisOpen = true;
+            // Deliberately not gated on collectionLogOpen - this script can fire after the widget
+            // has already closed, and its own firing is signal enough that a log is being read.
+            if (isOwnCollectionLogEligible())
             {
-                pendingClogSync.add((Integer) args[1]);
+                // Args: [script id, item id, quantity, ...]. The whole log arrives as a burst of
+                // chunks within a tick or two of opening, so collect it and process once it goes quiet.
+                Object[] args = event.getScriptEvent().getArguments();
+                if (args.length > 1 && args[1] instanceof Integer)
+                {
+                    pendingClogSync.add((Integer) args[1]);
+                }
+                if (lastClogItemTick < 0)
+                {
+                    clientThread.invokeLater(this::syncCollectionLogWhenQuiet);
+                }
+                lastClogItemTick = client.getTickCount();
             }
-            if (lastClogItemTick < 0)
+        }
+    }
+
+    @Subscribe
+    public void onScriptPostFired(ScriptPostFired event)
+    {
+        // Opening the collection log alone doesn't make the client request every item's obtained
+        // state - toggling its own Search feature does, so trigger that automatically here rather
+        // than requiring the player to do it manually.
+        if (event.getScriptId() == COLLECTION_LOG_SETUP_SCRIPT && !collectionLogSearchTriggeredThisOpen
+            && isOwnCollectionLogEligible())
+        {
+            // Toggling Search re-fires this same script - latch first so it can't repeat forever.
+            collectionLogSearchTriggeredThisOpen = true;
+            clientThread.invokeLater(() ->
             {
-                clientThread.invokeLater(this::syncCollectionLogWhenQuiet);
-            }
-            lastClogItemTick = client.getTickCount();
+                int searchToggle = net.runelite.api.gameval.InterfaceID.Collection.SEARCH_TOGGLE;
+                client.menuAction(-1, searchToggle, MenuAction.CC_OP, 1, -1, "Search", null);
+                client.menuAction(-1, searchToggle, MenuAction.CC_OP, 1, -1, "Back", null);
+            });
         }
     }
 
@@ -1596,6 +1653,10 @@ public class ClogmanPlugin extends Plugin
     {
         if (client.getGameState() != GameState.LOGGED_IN)
         {
+            if (!pendingClogSync.isEmpty())
+            {
+                log.warn("Collection log sync abandoned - no longer logged in with {} item(s) pending", pendingClogSync.size());
+            }
             pendingClogSync.clear();
             lastClogItemTick = -1;
             return true;
@@ -1700,6 +1761,7 @@ public class ClogmanPlugin extends Plugin
         boolean complete = collectionLogOpen && gameCount > 0 && reported.size() >= gameCount;
 
         Set<Integer> obtained = new HashSet<>();
+        List<Integer> unmapped = new ArrayList<>();
         for (Integer reportedId : reported)
         {
             Integer itemId = clogIdToPrimaryId.get(reportedId);
@@ -1707,22 +1769,38 @@ public class ClogmanPlugin extends Plugin
             {
                 obtained.add(itemId);
             }
+            else
+            {
+                unmapped.add(reportedId);
+            }
+        }
+        if (!unmapped.isEmpty())
+        {
+            log.warn("Collection log sync: {} reported item ID(s) not in clog_restrictions.json: {}", unmapped.size(), unmapped);
         }
 
         List<String> newUnlocks = new ArrayList<>();
         int confirmedManual = 0;
+        int skippedLocked = 0;
         List<String> nowManual = new ArrayList<>();
 
         for (Integer itemId : obtained)
         {
             if (manuallyRemoved.contains(itemId))
             {
+                skippedLocked++;
+                continue;
+            }
+
+            ClogItem item = requireClogItem(itemId);
+            if (item == null)
+            {
                 continue;
             }
 
             if (unlockedClogItems.add(itemId))
             {
-                newUnlocks.add(collectionLogItems.get(itemId).name);
+                newUnlocks.add(item.name);
             }
 
             // A manual unlock the log now confirms is a real unlock
@@ -1737,16 +1815,26 @@ public class ClogmanPlugin extends Plugin
         {
             for (Integer itemId : unlockedClogItems)
             {
-                if (!obtained.contains(itemId) && manuallyAdded.add(itemId))
+                if (obtained.contains(itemId))
                 {
-                    nowManual.add(collectionLogItems.get(itemId).name);
+                    continue;
+                }
+                ClogItem item = requireClogItem(itemId);
+                if (item == null)
+                {
+                    continue;
+                }
+                if (manuallyAdded.add(itemId))
+                {
+                    nowManual.add(item.name);
                 }
             }
         }
 
+        logSyncDiagnostics(reported.size(), gameCount, complete, unmapped, skippedLocked);
+
         if (newUnlocks.isEmpty() && confirmedManual == 0 && nowManual.isEmpty())
         {
-            log.debug("Collection log sync: no changes ({} items reported, complete: {})", reported.size(), complete);
             return;
         }
 
@@ -1768,9 +1856,42 @@ public class ClogmanPlugin extends Plugin
         }
     }
 
+    /**
+     * Looks up a clog item by its primary ID, warning once if it isn't one - callers should
+     * always have a valid ID here, but saved/imported state can go stale as the data updates.
+     */
+    private ClogItem requireClogItem(int itemId)
+    {
+        ClogItem item = collectionLogItems.get(itemId);
+        if (item == null)
+        {
+            log.warn("Collection log sync: item ID {} has no clog_restrictions.json entry", itemId);
+        }
+        return item;
+    }
+
+    /**
+     * Logs what a sync actually saw: how many items were reported, how many were recognised, and
+     * whether the whole log was seen.
+     */
+    private void logSyncDiagnostics(int reportedCount, int gameCount, boolean complete,
+                                      List<Integer> unmapped, int skippedLocked)
+    {
+        log.debug("Collection log sync: {} items reported, {} mapped, {} unmapped, {} skipped (manually locked), "
+                + "game count {}, complete: {}",
+            reportedCount, reportedCount - unmapped.size(), unmapped.size(), skippedLocked, gameCount, complete);
+    }
+
     boolean isStandardWorld()
     {
         return Collections.disjoint(client.getWorldType(), NON_STANDARD_WORLDS);
+    }
+
+    // Whether the currently open collection log is the player's own, on a world where it should
+    // be tracked at all - shared by both the item-capture and Search-toggle triggers.
+    private boolean isOwnCollectionLogEligible()
+    {
+        return !collectionLogReadOnly && isStandardWorld();
     }
 
     private void sendSyncMessage(int count)
