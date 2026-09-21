@@ -65,6 +65,10 @@ public class ClogmanPlugin extends Plugin
     // Fired once the collection log interface has finished constructing
     private static final int COLLECTION_LOG_SETUP_SCRIPT = 7797;
 
+    // Resets the collection log's tab view - closes the Search toggle back out after it's served
+    // its purpose of making the client report every item
+    private static final int COLLECTION_LOG_INIT_SCRIPT = 2240;
+
     // Player-owned house adventure log interfaces; a collection log opened from one may be another player's
     private static final int ADVENTURE_LOG_GROUP = 187;
     private static final int ADVENTURE_LOG_NEW_GROUP = 947;
@@ -1640,7 +1644,7 @@ public class ClogmanPlugin extends Plugin
             {
                 int searchToggle = net.runelite.api.gameval.InterfaceID.Collection.SEARCH_TOGGLE;
                 client.menuAction(-1, searchToggle, MenuAction.CC_OP, 1, -1, "Search", null);
-                client.menuAction(-1, searchToggle, MenuAction.CC_OP, 1, -1, "Back", null);
+                client.runScript(COLLECTION_LOG_INIT_SCRIPT);
             });
         }
     }
